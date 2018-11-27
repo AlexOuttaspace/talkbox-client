@@ -6,3 +6,6 @@ export {
   CurrentUser,
   CurrentUserProvider
 } from './current-user'
+
+export { initApollo } from './init-apollo'
+export { withApolloClient } from './with-apollo-client'

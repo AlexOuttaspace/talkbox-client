@@ -31,10 +31,7 @@ class MyDocument extends Document {
 
     return (
       <html>
-        <Head>
-          <title>With next.js</title>
-          {styleTags}
-        </Head>
+        <Head>{styleTags}</Head>
         <body>
           <Main />
 

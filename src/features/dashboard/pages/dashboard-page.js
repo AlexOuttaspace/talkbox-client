@@ -3,9 +3,26 @@ import { FormattedMessage, defineMessages, intlShape } from 'react-intl'
 import styled from 'styled-components'
 import Head from 'next/head'
 import { compose } from 'ramda'
+import { Query } from 'react-apollo'
+import gql from 'graphql-tag'
 
-import { th } from 'src/theme'
 import { withIntl } from 'src/common'
+import { th } from 'src/theme'
+
+export const allPostsQuery = gql`
+  query allPosts($first: Int!, $skip: Int!) {
+    allPosts(orderBy: createdAt_DESC, first: $first, skip: $skip) {
+      id
+      title
+      votes
+      url
+      createdAt
+    }
+    _allPostsMeta {
+      count
+    }
+  }
+`
 
 const i18n = defineMessages({
   title: {
@@ -22,6 +39,11 @@ const Greeting = styled.h1`
   color: ${th('secondary')};
 `
 
+const allPostsQueryVars = {
+  skip: 0,
+  first: 10
+}
+
 const DashboardPageView = ({ intl }) => {
   return (
     <Fragment>
@@ -32,6 +54,14 @@ const DashboardPageView = ({ intl }) => {
       <Greeting>
         <FormattedMessage {...i18n.greeting} values={{ name: 'Alex' }} />
       </Greeting>
+      <Query query={allPostsQuery} variables={allPostsQueryVars}>
+        {({ loading, error, data: { allPosts, _allPostsMeta }, fetchMore }) => {
+          if (error) return <div>Error occured!</div>
+          if (loading) return <div>Loading...</div>
+
+          return <div>Success, {JSON.stringify(allPosts)}</div>
+        }}
+      </Query>
     </Fragment>
   )
 }
