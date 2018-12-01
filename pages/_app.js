@@ -1,7 +1,9 @@
 import React from 'react'
 import App, { Container } from 'next/app'
 import { addLocaleData, IntlProvider } from 'react-intl'
+import { ApolloProvider } from 'react-apollo'
 
+import { withApolloClient } from 'src/common'
 import { CurrentUserProvider, getCurrentUser } from 'src/common'
 
 // Register React Intl's locale data for the user's locale in the browser. This
@@ -35,14 +37,23 @@ class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps, locale, messages, user } = this.props
+    const {
+      Component,
+      pageProps,
+      locale,
+      messages,
+      user,
+      apolloClient
+    } = this.props
     const now = Date.now()
 
     return (
       <Container>
         <IntlProvider locale={locale} messages={messages} initialNow={now}>
           <CurrentUserProvider user={user}>
-            <Component {...pageProps} />
+            <ApolloProvider client={apolloClient}>
+              <Component {...pageProps} />
+            </ApolloProvider>
           </CurrentUserProvider>
         </IntlProvider>
       </Container>
@@ -51,4 +62,4 @@ class MyApp extends App {
 }
 
 // eslint-disable-next-line import/no-default-export
-export default MyApp
+export default withApolloClient(MyApp)
