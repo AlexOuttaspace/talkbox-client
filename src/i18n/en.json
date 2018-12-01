@@ -1,8 +1,4 @@
 {
-  "login": {
-    "title": "Login page for {name}.",
-    "button": "{name}, please log in."
-  },
   "dashboard": {
     "title": "Dashboard",
     "greeting": "Hello, {name}!"
