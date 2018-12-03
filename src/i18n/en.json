@@ -1,7 +1,6 @@
 {
   "dashboard": {
-    "title": "Dashboard",
-    "greeting": "Hello, {name}!"
+    "greeting": "Hello!"
   },
   "base-layout": {
     "header": {

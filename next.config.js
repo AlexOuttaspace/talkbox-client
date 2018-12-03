@@ -2,6 +2,8 @@ const { ANALYZE } = process.env
 
 const publicRuntimeConfig = {
   // Will be available on both server and client
+  GRAPHQL_ENDPOINT: 'http://localhost:3020/graphql',
+  WS_ENDPOINT: `ws://localhost:3020/api/ws`
 }
 
 const serverRuntimeConfig = {

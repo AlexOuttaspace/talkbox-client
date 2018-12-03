@@ -3,16 +3,21 @@ import { split } from 'apollo-link'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
 import { getMainDefinition } from 'apollo-utilities'
 import fetch from 'isomorphic-unfetch'
+import getConfig from 'next/config'
+
+const {
+  publicRuntimeConfig: { GRAPHQL_ENDPOINT, WS_ENDPOINT }
+} = getConfig()
 
 let apolloClient = null
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:3020/graphql', // Server URL (must be absolute)
+  uri: GRAPHQL_ENDPOINT, // Server URL (must be absolute)
   credentials: 'same-origin' // Additional fetch() options like `credentials` or `headers`
 })
 
 const wsLink = process.browser
-  ? new SubscriptionClient(`ws://localhost:3020/api/ws`, {
+  ? new SubscriptionClient(WS_ENDPOINT, {
       reconnect: true,
       connectionParams: {
         // Connection parameters to pass some validations

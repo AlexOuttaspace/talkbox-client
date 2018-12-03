@@ -8,9 +8,9 @@
     "precommit": "lint-staged",
     "dev": "npm run i18n:extract && nodemon server/index.js",
     "build": "npm run i18n:extract && next build",
-    "start": "NODE_ENV=production node server/index.js",
-    "analyze": "ANALYZE=1 next build",
-    "i18n:extract": "extract-messages -l=en,ru -o ./src/i18n -d en --flat false 'src/**/*.js'"
+    "start": "cross-env NODE_ENV=production node server/index.js",
+    "analyze": "cross-env ANALYZE=1 next build",
+    "i18n:extract": "extract-messages -l=en,ru -o ./src/i18n -d en --flat false \"src/**/*.js\""
   },
   "author": "",
   "license": "ISC",
@@ -49,6 +49,7 @@
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-plugin-ramda": "^1.6.3",
     "babel-plugin-styled-components": "^1.8.0",
+    "cross-env": "^5.2.0",
     "eslint": "^5.9.0",
     "eslint-config-prettier": "^3.3.0",
     "eslint-plugin-import": "^2.14.0",

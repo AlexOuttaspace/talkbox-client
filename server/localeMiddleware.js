@@ -14,15 +14,13 @@ Intl.NumberFormat = IntlPolyfill.NumberFormat
 Intl.DateTimeFormat = IntlPolyfill.DateTimeFormat
 
 // Get the supported languages by looking for translations in the `lang/` dir.
-const languages = glob.sync('./i18n/*.json').map((f) => basename(f, '.json'))
+const languages = glob.sync('src/i18n/*.json').map((f) => basename(f, '.json'))
 
 // We need to expose React Intl's locale data on the request for the user's
 // locale. This function will also cache the scripts by lang in memory.
 const localeDataCache = new Map()
 
-const getLocaleDataScript = (locale) => {
-  const lang = locale.split('-')[0]
-
+const getLocaleDataScript = (lang) => {
   if (!localeDataCache.has(lang)) {
     const localeDataFile = require.resolve(`react-intl/locale-data/${lang}`)
     const localeDataScript = readFileSync(localeDataFile, 'utf8')
@@ -50,7 +48,10 @@ const getMessages = (locale) => {
 
 const createLocaleMiddleware = (dev) => (req, res, next) => {
   const accept = accepts(req)
-  const locale = accept.language(dev ? ['en'] : languages)
+
+  const acceptedLanguage = accept.language(dev ? ['en'] : languages)
+
+  const locale = acceptedLanguage ? acceptedLanguage : 'en'
 
   req.locale = locale
   req.localeDataScript = getLocaleDataScript(locale)
