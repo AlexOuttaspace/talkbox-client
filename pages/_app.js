@@ -3,8 +3,11 @@ import App, { Container } from 'next/app'
 import { addLocaleData, IntlProvider } from 'react-intl'
 import { ApolloProvider } from 'react-apollo'
 
-import { withApolloClient } from 'src/common'
-import { CurrentUserProvider, getCurrentUser } from 'src/common'
+import {
+  CurrentUserProvider,
+  getCurrentUser,
+  withApolloClient
+} from 'src/common'
 
 // Register React Intl's locale data for the user's locale in the browser. This
 // locale data was added to the page by `pages/_document.js`. This only happens
