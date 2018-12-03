@@ -1,7 +1,4 @@
-import Head from 'next/head'
-import Router from 'next/router'
-import NProgress from 'nprogress'
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 
 import { hoistHocStatics } from 'src/lib'
 import { BaseLayout } from 'src/ui/templates'
