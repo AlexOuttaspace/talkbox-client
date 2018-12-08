@@ -3,11 +3,7 @@ import App, { Container } from 'next/app'
 import { addLocaleData, IntlProvider } from 'react-intl'
 import { ApolloProvider } from 'react-apollo'
 
-import {
-  CurrentUserProvider,
-  getCurrentUser,
-  withApolloClient
-} from 'src/common'
+import { withApolloClient } from 'src/common'
 
 // Register React Intl's locale data for the user's locale in the browser. This
 // locale data was added to the page by `pages/_document.js`. This only happens
@@ -34,30 +30,19 @@ class MyApp extends App {
 
     const { locale, messages } = reqData
 
-    const user = getCurrentUser(ctx)
-
-    return { pageProps, locale, messages, user }
+    return { pageProps, locale, messages }
   }
 
   render() {
-    const {
-      Component,
-      pageProps,
-      locale,
-      messages,
-      user,
-      apolloClient
-    } = this.props
+    const { Component, pageProps, locale, messages, apolloClient } = this.props
     const now = Date.now()
 
     return (
       <Container>
         <IntlProvider locale={locale} messages={messages} initialNow={now}>
-          <CurrentUserProvider user={user}>
-            <ApolloProvider client={apolloClient}>
-              <Component {...pageProps} />
-            </ApolloProvider>
-          </CurrentUserProvider>
+          <ApolloProvider client={apolloClient}>
+            <Component {...pageProps} />
+          </ApolloProvider>
         </IntlProvider>
       </Container>
     )

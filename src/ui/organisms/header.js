@@ -2,10 +2,6 @@ import React from 'react'
 import { defineMessages, FormattedMessage } from 'react-intl'
 import styled from 'styled-components'
 
-import { Button } from '../atoms/button'
-
-import { CurrentUser, removeToken } from 'src/common'
-import { redirect } from 'src/lib'
 import { th } from 'src/theme'
 
 const i18n = defineMessages({
@@ -44,24 +40,6 @@ export const Header = () => {
       <Logo>
         <FormattedMessage {...i18n.logo} />
       </Logo>
-
-      <CurrentUser>
-        {({ user, logoutUser }) => {
-          if (!user) return null
-
-          return (
-            <Button
-              onClick={() => {
-                logoutUser()
-                // Redirect to a more useful page when signed out
-                redirect({}, '/login')
-              }}
-            >
-              <FormattedMessage {...i18n.logout} />
-            </Button>
-          )
-        }}
-      </CurrentUser>
     </Root>
   )
 }
