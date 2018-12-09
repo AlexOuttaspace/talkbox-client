@@ -16,29 +16,30 @@ const httpLink = new HttpLink({
   credentials: 'same-origin' // Additional fetch() options like `credentials` or `headers`
 })
 
-const wsLink = process.browser
-  ? new SubscriptionClient(WS_ENDPOINT, {
-      reconnect: true,
-      connectionParams: {
-        // Connection parameters to pass some validations
-        // on server side during first handshake
-      }
-    })
-  : null
+// const wsLink = process.browser
+//   ? new SubscriptionClient(WS_ENDPOINT, {
+//       reconnect: true,
+//       connectionParams: {
+//         // Connection parameters to pass some validations
+//         // on server side during first handshake
+//       }
+//     })
+//   : null
 
 // https://github.com/apollographql/subscriptions-transport-ws/issues/333
-const link = process.browser
-  ? split(
-      //only create the split in the browser
-      // split based on operation type
-      ({ query }) => {
-        const { kind, operation } = getMainDefinition(query)
-        return kind === 'OperationDefinition' && operation === 'subscription'
-      },
-      wsLink,
-      httpLink
-    )
-  : httpLink
+const link = httpLink
+// process.browser // !!! remove todo to enable ws connection
+//   ? split(
+//       //only create the split in the browser
+//       // split based on operation type
+//       ({ query }) => {
+//         const { kind, operation } = getMainDefinition(query)
+//         return kind === 'OperationDefinition' && operation === 'subscription'
+//       },
+//       wsLink,
+//       httpLink
+//     )
+//   : httpLink
 
 // Polyfill fetch() on the server (used by apollo-client)
 if (!process.browser) {

@@ -2,8 +2,6 @@ import React from 'react'
 import { defineMessages, FormattedMessage } from 'react-intl'
 import styled from 'styled-components'
 
-import { th } from 'src/theme'
-
 const i18n = defineMessages({
   logo: {
     id: 'base-layout.header.logo',
@@ -23,14 +21,14 @@ const Root = styled.div`
 
 const Logo = styled.a`
   text-decoration: none;
-  color: ${th('primary')};
+  color: ${(p) => p.theme.primary};
   font-size: 24px;
 
   :active,
   :focus,
   :hover {
     text-decoration: none;
-    color: ${th('primary')};
+    color: ${(p) => p.theme.primary};
   }
 `
 

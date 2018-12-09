@@ -7,5 +7,10 @@
       "logo": "",
       "logout": ""
     }
+  },
+  "register-page": {
+    "sub-header": "",
+    "main-header": "",
+    "submit-button": ""
   }
 }

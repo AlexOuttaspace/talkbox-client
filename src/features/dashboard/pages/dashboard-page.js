@@ -6,7 +6,6 @@ import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 
 import { withIntl } from 'src/common'
-import { th } from 'src/theme'
 
 export const allPostsQuery = gql`
   query {
@@ -25,7 +24,7 @@ const i18n = defineMessages({
 })
 
 const Greeting = styled.h1`
-  color: ${th('secondary')};
+  color: ${(p) => p.theme.secondary};
 `
 
 const allPostsQueryVars = {

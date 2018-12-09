@@ -31,7 +31,13 @@ class MyDocument extends Document {
 
     return (
       <html>
-        <Head>{styleTags}</Head>
+        <Head>
+          {styleTags}
+          <link
+            href="https://fonts.googleapis.com/css?family=Lato:300,400,700"
+            rel="stylesheet"
+          />
+        </Head>
         <body>
           <Main />
 

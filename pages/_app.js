@@ -3,6 +3,7 @@ import App, { Container } from 'next/app'
 import { addLocaleData, IntlProvider } from 'react-intl'
 import { ApolloProvider } from 'react-apollo'
 
+import { setGlobalStyles } from 'src/theme'
 import { withApolloClient } from 'src/common'
 
 // Register React Intl's locale data for the user's locale in the browser. This
@@ -16,6 +17,8 @@ if (typeof window !== 'undefined' && window.ReactIntlLocaleData) {
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
+    setGlobalStyles()
+
     let pageProps = {}
 
     if (Component.getInitialProps) {
