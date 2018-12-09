@@ -11,6 +11,11 @@
   "register-page": {
     "sub-header": "",
     "main-header": "",
-    "submit-button": ""
+    "submit-button": "",
+    "placeholder": {
+      "email": "",
+      "password": "",
+      "confirm-password": ""
+    }
   }
 }

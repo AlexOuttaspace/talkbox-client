@@ -30,8 +30,12 @@ class MyDocument extends Document {
     const polyfill = `https://cdn.polyfill.io/v2/polyfill.min.js?features=Intl.~locale.${locale}`
 
     return (
-      <html>
+      <html lang={locale}>
         <Head>
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+          />
           {styleTags}
           <link
             href="https://fonts.googleapis.com/css?family=Lato:300,400,700"

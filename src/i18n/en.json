@@ -11,6 +11,11 @@
   "register-page": {
     "sub-header": "Fill out the form and join the talkbox community!",
     "main-header": "Register",
-    "submit-button": "Submit"
+    "submit-button": "Submit",
+    "placeholder": {
+      "email": "Email",
+      "password": "Password",
+      "confirm-password": "Confirm password"
+    }
   }
 }
