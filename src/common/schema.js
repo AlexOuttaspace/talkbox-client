@@ -2,6 +2,13 @@ import * as yup from 'yup'
 
 export const required = 'field is required'
 
+export const username = yup
+  .string()
+  .ensure()
+  .required(required)
+  .min(3, 'should be at least 3 characters')
+  .max(16, 'should be at most 16 characters')
+
 export const email = yup
   .string()
   .ensure()
@@ -24,6 +31,7 @@ export const passwordConfirmation = yup
   .max(24)
 
 export const registerSchema = yup.object().shape({
+  username,
   email,
   password,
   passwordConfirmation
