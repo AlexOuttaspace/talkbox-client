@@ -4,7 +4,7 @@
   },
   "base-layout": {
     "header": {
-      "logo": "LOGO",
+      "logo": "Talkbox",
       "logout": "Logout"
     }
   },
