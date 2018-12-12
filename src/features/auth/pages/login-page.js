@@ -10,41 +10,33 @@ import { FormField, FormHeader } from '../molecules'
 import { FormRoot } from '../templates'
 
 import { validateForm } from 'src/lib'
-import { withIntl, registerSchema } from 'src/common'
+import { withIntl, loginSchema } from 'src/common'
 import { registerMutation } from 'src/services'
 
 const i18n = defineMessages({
   mainHeader: {
-    id: 'register-page.main-header',
-    defaultMessage: 'Register'
+    id: 'login-page.main-header',
+    defaultMessage: 'Login'
   },
   subHeader: {
-    id: 'register-page.sub-header',
-    defaultMessage: 'Fill out the form and join the talkbox community!'
-  },
-  usernamePlaceholder: {
-    id: 'register-page.placeholder.username',
-    defaultMessage: 'Username'
+    id: 'login-page.sub-header',
+    defaultMessage: 'Welcome back!'
   },
   emailPlaceholder: {
-    id: 'register-page.placeholder.email',
+    id: 'login-page.placeholder.email',
     defaultMessage: 'Email'
   },
   passwordPlaceholder: {
-    id: 'register-page.placeholder.password',
+    id: 'login-page.placeholder.password',
     defaultMessage: 'Password'
   },
-  confirmPasswordPlaceholder: {
-    id: 'register-page.placeholder.confirm-password',
-    defaultMessage: 'Confirm password'
-  },
   submitButton: {
-    id: 'register-page.submit-button',
+    id: 'login-page.submit-button',
     defaultMessage: 'Submit'
   }
 })
 
-class RegisterPageView extends Component {
+class LoginPageView extends Component {
   static propTypes = {
     intl: intlShape,
     mutate: PropTypes.func.isRequired
@@ -65,7 +57,7 @@ class RegisterPageView extends Component {
       <main>
         <Form
           subscription={{ submitting: true, pristine: true }}
-          validate={validateForm({ schema: registerSchema })}
+          validate={validateForm({ schema: loginSchema })}
           onSubmit={this.onSubmit}
         >
           {({ handleSubmit, pristine, invalid, submitting }) => (
@@ -73,12 +65,6 @@ class RegisterPageView extends Component {
               <FormHeader
                 mainHeading={intl.formatMessage(i18n.mainHeader)}
                 subHeading={intl.formatMessage(i18n.subHeader)}
-              />
-
-              <FormField
-                name="username"
-                type="text"
-                placeholder={intl.formatMessage(i18n.usernamePlaceholder)}
               />
 
               <FormField
@@ -93,14 +79,6 @@ class RegisterPageView extends Component {
                 placeholder={intl.formatMessage(i18n.passwordPlaceholder)}
               />
 
-              <FormField
-                name="passwordConfirmation"
-                type="password"
-                placeholder={intl.formatMessage(
-                  i18n.confirmPasswordPlaceholder
-                )}
-              />
-
               <SubmitButton
                 type="submit"
                 disabled={pristine || invalid || submitting}
@@ -108,9 +86,9 @@ class RegisterPageView extends Component {
                 {intl.formatMessage(i18n.submitButton)}
               </SubmitButton>
               <AuthSwitch
-                title="Already have an account?"
-                textInsideLink="Login!"
-                route="login"
+                title="Don't have an account yet?"
+                textInsideLink="Join talkbox!"
+                route="register"
               />
             </FormRoot>
           )}
@@ -125,4 +103,4 @@ const enhance = compose(
   graphql(registerMutation)
 )
 
-export const RegisterPage = enhance(RegisterPageView)
+export const LoginPage = enhance(LoginPageView)

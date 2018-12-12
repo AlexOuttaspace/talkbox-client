@@ -13,3 +13,8 @@ module.exports = routes()
     pattern: '/register',
     page: 'register'
   })
+  .add({
+    name: 'login',
+    pattern: '/login',
+    page: 'login'
+  })

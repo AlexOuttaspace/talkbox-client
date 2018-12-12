@@ -39,3 +39,8 @@ export const registerSchema = yup.object().shape({
   password,
   passwordConfirmation
 })
+
+export const loginSchema = yup.object().shape({
+  email,
+  password
+})
