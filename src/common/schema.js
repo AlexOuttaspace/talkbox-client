@@ -1,11 +1,14 @@
 import * as yup from 'yup'
 
+const ALPHANUMERIC_REGEXP = /^.[a-zA-Z0-9]+$/
+
 export const required = 'field is required'
 
 export const username = yup
   .string()
   .ensure()
   .required(required)
+  .matches(ALPHANUMERIC_REGEXP, 'can only contain letters and numbers')
   .min(3, 'should be at least 3 characters')
   .max(16, 'should be at most 16 characters')
 

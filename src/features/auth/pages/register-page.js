@@ -53,61 +53,65 @@ class RegisterPageView extends Component {
 
   onSubmit = async (values) => {
     const { mutate } = this.props
-    const { username, email, password } = values // TODO: implement password confirmation on back
+    const { username, email, password } = values
     const response = await mutate({ variables: { username, email, password } })
 
     console.log(response)
   }
 
   render() {
-    const { intl, mutate } = this.props
-    console.log(mutate)
+    const { intl } = this.props
+
     return (
-      <Form
-        subscription={{ submitting: true, pristine: true }}
-        validate={validateForm({ schema: registerSchema })}
-        onSubmit={this.onSubmit}
-      >
-        {({ handleSubmit, pristine, invalid, submitting }) => (
-          <FormRoot onSubmit={handleSubmit}>
-            <FormHeader
-              mainHeading={intl.formatMessage(i18n.mainHeader)}
-              subHeading={intl.formatMessage(i18n.subHeader)}
-            />
+      <main>
+        <Form
+          subscription={{ submitting: true, pristine: true }}
+          // validate={validateForm({ schema: registerSchema })}
+          onSubmit={this.onSubmit}
+        >
+          {({ handleSubmit, pristine, invalid, submitting }) => (
+            <FormRoot onSubmit={handleSubmit}>
+              <FormHeader
+                mainHeading={intl.formatMessage(i18n.mainHeader)}
+                subHeading={intl.formatMessage(i18n.subHeader)}
+              />
 
-            <FormField
-              name="username"
-              type="text"
-              placeholder={intl.formatMessage(i18n.usernamePlaceholder)}
-            />
+              <FormField
+                name="username"
+                type="text"
+                placeholder={intl.formatMessage(i18n.usernamePlaceholder)}
+              />
 
-            <FormField
-              name="email"
-              type="text"
-              placeholder={intl.formatMessage(i18n.emailPlaceholder)}
-            />
+              <FormField
+                name="email"
+                type="text"
+                placeholder={intl.formatMessage(i18n.emailPlaceholder)}
+              />
 
-            <FormField
-              name="password"
-              type="password"
-              placeholder={intl.formatMessage(i18n.passwordPlaceholder)}
-            />
+              <FormField
+                name="password"
+                type="password"
+                placeholder={intl.formatMessage(i18n.passwordPlaceholder)}
+              />
 
-            <FormField
-              name="passwordConfirmation"
-              type="password"
-              placeholder={intl.formatMessage(i18n.confirmPasswordPlaceholder)}
-            />
+              <FormField
+                name="passwordConfirmation"
+                type="password"
+                placeholder={intl.formatMessage(
+                  i18n.confirmPasswordPlaceholder
+                )}
+              />
 
-            <SubmitButton
-              type="submit"
-              disabled={pristine || invalid || submitting}
-            >
-              {intl.formatMessage(i18n.submitButton)}
-            </SubmitButton>
-          </FormRoot>
-        )}
-      </Form>
+              <SubmitButton
+                type="submit"
+                disabled={pristine || invalid || submitting}
+              >
+                {intl.formatMessage(i18n.submitButton)}
+              </SubmitButton>
+            </FormRoot>
+          )}
+        </Form>
+      </main>
     )
   }
 }

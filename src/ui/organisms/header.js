@@ -13,7 +13,7 @@ const i18n = defineMessages({
   }
 })
 
-const Root = styled.div`
+const Root = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
