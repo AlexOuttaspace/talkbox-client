@@ -2,6 +2,19 @@
   "dashboard": {
     "greeting": ""
   },
+  "login-page": {
+    "sub-header": "",
+    "main-header": "",
+    "submit-button": "",
+    "auth-switch": {
+      "text": "",
+      "title": ""
+    },
+    "placeholder": {
+      "email": "",
+      "password": ""
+    }
+  },
   "base-layout": {
     "header": {
       "logo": "",
@@ -12,6 +25,10 @@
     "sub-header": "",
     "main-header": "",
     "submit-button": "",
+    "auth-switch": {
+      "text": "",
+      "title": ""
+    },
     "placeholder": {
       "email": "",
       "password": "",

@@ -13,7 +13,8 @@ export const SubmitButton = styled.button`
   padding: 0.8rem 1rem;
   border-radius: 0.4rem;
 
-  :hover {
+  :hover,
+  :focus {
     background-color: ${(p) => lighten(0.05, p.theme.green)};
   }
 `

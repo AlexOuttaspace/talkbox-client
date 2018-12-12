@@ -32,5 +32,5 @@ export const AuthSwitch = ({ title, textInsideLink, route }) => (
 AuthSwitch.propTypes = {
   title: PropTypes.string.isRequired,
   textInsideLink: PropTypes.string.isRequired,
-  route: PropTypes.oneOf(['login, register']).isRequired
+  route: PropTypes.oneOf(['login', 'register']).isRequired
 }

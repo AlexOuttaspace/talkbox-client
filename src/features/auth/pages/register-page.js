@@ -41,6 +41,14 @@ const i18n = defineMessages({
   submitButton: {
     id: 'register-page.submit-button',
     defaultMessage: 'Submit'
+  },
+  authSwitchTitle: {
+    id: 'register-page.auth-switch.title',
+    defaultMessage: 'Already have an account?'
+  },
+  authSwitchText: {
+    id: 'register-page.auth-switch.text',
+    defaultMessage: 'Login!'
   }
 })
 
@@ -68,7 +76,7 @@ class RegisterPageView extends Component {
           validate={validateForm({ schema: registerSchema })}
           onSubmit={this.onSubmit}
         >
-          {({ handleSubmit, pristine, invalid, submitting }) => (
+          {({ handleSubmit }) => (
             <FormRoot onSubmit={handleSubmit}>
               <FormHeader
                 mainHeading={intl.formatMessage(i18n.mainHeader)}
@@ -101,15 +109,13 @@ class RegisterPageView extends Component {
                 )}
               />
 
-              <SubmitButton
-                type="submit"
-                disabled={pristine || invalid || submitting}
-              >
+              <SubmitButton type="submit">
                 {intl.formatMessage(i18n.submitButton)}
               </SubmitButton>
+
               <AuthSwitch
-                title="Already have an account?"
-                textInsideLink="Login!"
+                title={intl.formatMessage(i18n.authSwitchTitle)}
+                textInsideLink={intl.formatMessage(i18n.authSwitchTitle)}
                 route="login"
               />
             </FormRoot>

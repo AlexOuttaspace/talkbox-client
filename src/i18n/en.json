@@ -2,6 +2,19 @@
   "dashboard": {
     "greeting": "Hello!"
   },
+  "login-page": {
+    "sub-header": "Welcome back!",
+    "main-header": "Login",
+    "submit-button": "Submit",
+    "auth-switch": {
+      "text": "Join talkbox!",
+      "title": "Don't have an account yet?"
+    },
+    "placeholder": {
+      "email": "Email",
+      "password": "Password"
+    }
+  },
   "base-layout": {
     "header": {
       "logo": "Talkbox",
@@ -12,6 +25,10 @@
     "sub-header": "Fill out the form and join the talkbox community!",
     "main-header": "Register",
     "submit-button": "Submit",
+    "auth-switch": {
+      "text": "Login!",
+      "title": "Already have an account?"
+    },
     "placeholder": {
       "email": "Email",
       "password": "Password",

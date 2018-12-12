@@ -33,6 +33,14 @@ const i18n = defineMessages({
   submitButton: {
     id: 'login-page.submit-button',
     defaultMessage: 'Submit'
+  },
+  authSwitchTitle: {
+    id: 'login-page.auth-switch.title',
+    defaultMessage: "Don't have an account yet?"
+  },
+  authSwitchText: {
+    id: 'login-page.auth-switch.text',
+    defaultMessage: 'Join talkbox!'
   }
 })
 
@@ -56,11 +64,11 @@ class LoginPageView extends Component {
     return (
       <main>
         <Form
-          subscription={{ submitting: true, pristine: true }}
+          subscription={{ submitting: true }}
           validate={validateForm({ schema: loginSchema })}
           onSubmit={this.onSubmit}
         >
-          {({ handleSubmit, pristine, invalid, submitting }) => (
+          {({ handleSubmit }) => (
             <FormRoot onSubmit={handleSubmit}>
               <FormHeader
                 mainHeading={intl.formatMessage(i18n.mainHeader)}
@@ -79,15 +87,13 @@ class LoginPageView extends Component {
                 placeholder={intl.formatMessage(i18n.passwordPlaceholder)}
               />
 
-              <SubmitButton
-                type="submit"
-                disabled={pristine || invalid || submitting}
-              >
+              <SubmitButton type="submit">
                 {intl.formatMessage(i18n.submitButton)}
               </SubmitButton>
+
               <AuthSwitch
-                title="Don't have an account yet?"
-                textInsideLink="Join talkbox!"
+                title={intl.formatMessage(i18n.authSwitchTitle)}
+                textInsideLink={intl.formatMessage(i18n.authSwitchTitle)}
                 route="register"
               />
             </FormRoot>
