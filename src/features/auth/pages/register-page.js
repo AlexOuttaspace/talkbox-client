@@ -115,7 +115,7 @@ class RegisterPageView extends Component {
 
               <AuthSwitch
                 title={intl.formatMessage(i18n.authSwitchTitle)}
-                textInsideLink={intl.formatMessage(i18n.authSwitchTitle)}
+                textInsideLink={intl.formatMessage(i18n.authSwitchText)}
                 route="login"
               />
             </FormRoot>

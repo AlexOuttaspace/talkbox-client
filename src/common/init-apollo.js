@@ -1,9 +1,12 @@
-import { ApolloClient, InMemoryCache, HttpLink } from 'apollo-boost'
-import { split } from 'apollo-link'
-import { SubscriptionClient } from 'subscriptions-transport-ws'
-import { getMainDefinition } from 'apollo-utilities'
+import { ApolloClient } from 'apollo-client'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import { HttpLink } from 'apollo-link-http'
+import { withClientState } from 'apollo-link-state'
+import { ApolloLink } from 'apollo-link'
 import fetch from 'isomorphic-unfetch'
 import getConfig from 'next/config'
+
+import { defaultState } from './localState'
 
 const {
   publicRuntimeConfig: { GRAPHQL_ENDPOINT, WS_ENDPOINT }
@@ -11,48 +14,32 @@ const {
 
 let apolloClient = null
 
-const httpLink = new HttpLink({
-  uri: GRAPHQL_ENDPOINT, // Server URL (must be absolute)
-  credentials: 'same-origin' // Additional fetch() options like `credentials` or `headers`
-})
-
-// const wsLink = process.browser
-//   ? new SubscriptionClient(WS_ENDPOINT, {
-//       reconnect: true,
-//       connectionParams: {
-//         // Connection parameters to pass some validations
-//         // on server side during first handshake
-//       }
-//     })
-//   : null
-
-// https://github.com/apollographql/subscriptions-transport-ws/issues/333
-const link = httpLink
-// process.browser // !!! remove todo to enable ws connection
-//   ? split(
-//       //only create the split in the browser
-//       // split based on operation type
-//       ({ query }) => {
-//         const { kind, operation } = getMainDefinition(query)
-//         return kind === 'OperationDefinition' && operation === 'subscription'
-//       },
-//       wsLink,
-//       httpLink
-//     )
-//   : httpLink
-
 // Polyfill fetch() on the server (used by apollo-client)
 if (!process.browser) {
   global.fetch = fetch
 }
 
 function create(initialState) {
+  const cache = new InMemoryCache().restore(initialState || {})
+
+  const stateLink = withClientState({
+    cache,
+    defaults: defaultState
+  })
+
+  const httpLink = new HttpLink({
+    uri: GRAPHQL_ENDPOINT,
+    credentials: 'same-origin' // Additional fetch() options like `credentials` or `headers`
+  })
+
+  const link = ApolloLink.from([stateLink, httpLink])
+
   // Check out https://github.com/zeit/next.js/pull/4611 if you want to use the AWSAppSyncClient
   return new ApolloClient({
     connectToDevTools: process.browser,
     ssrMode: !process.browser, // Disables forceFetch on the server (so queries are only run once)
     link,
-    cache: new InMemoryCache().restore(initialState || {})
+    cache
   })
 }
 
