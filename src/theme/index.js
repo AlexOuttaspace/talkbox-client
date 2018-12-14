@@ -1,4 +1,4 @@
-import { injectGlobal } from 'styled-components'
+import { createGlobalStyle } from 'styled-components'
 import styledNormalize from 'styled-normalize'
 // Colors
 
@@ -41,7 +41,7 @@ export const danger = red
 export const light = gray100
 export const dark = gray800
 
-export const setGlobalStyles = () => injectGlobal`
+export const GlobalStyles = createGlobalStyle`
   ${styledNormalize}
 
   * {
