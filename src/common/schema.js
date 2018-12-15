@@ -8,8 +8,8 @@ export const username = yup
   .string()
   .ensure()
   .required(required)
-  .matches(ALPHANUMERIC_REGEXP, 'can only contain letters and numbers')
   .min(3, 'should be at least 3 characters')
+  .matches(ALPHANUMERIC_REGEXP, 'can only contain letters and numbers')
   .max(16, 'should be at most 16 characters')
 
 export const email = yup

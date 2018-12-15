@@ -44,64 +44,57 @@ const i18n = defineMessages({
   }
 })
 
-class LoginPageView extends Component {
-  static propTypes = {
-    intl: intlShape,
-    mutate: PropTypes.func.isRequired
-  }
+const onSubmit = async (mutate, values) => {
+  const { email, password } = values
+  const response = await mutate({ variables: { email, password } })
 
-  onSubmit = async (values) => {
-    const { mutate } = this.props
-    const { username, email, password } = values
-    const response = await mutate({ variables: { username, email, password } })
+  console.log(response)
+}
 
-    console.log(response)
-  }
+const LoginPageView = ({ intl, mutate }) => (
+  <main>
+    <Form
+      subscription={{ submitting: true }}
+      validate={validateForm({ schema: loginSchema })}
+      onSubmit={(values) => onSubmit(mutate, values)} // TODO: refactor this using react hooks
+    >
+      {({ handleSubmit }) => (
+        <FormRoot onSubmit={handleSubmit}>
+          <FormHeader
+            mainHeading={intl.formatMessage(i18n.mainHeader)}
+            subHeading={intl.formatMessage(i18n.subHeader)}
+          />
 
-  render() {
-    const { intl } = this.props
+          <FormField
+            name="email"
+            type="text"
+            placeholder={intl.formatMessage(i18n.emailPlaceholder)}
+          />
 
-    return (
-      <main>
-        <Form
-          subscription={{ submitting: true }}
-          validate={validateForm({ schema: loginSchema })}
-          onSubmit={this.onSubmit}
-        >
-          {({ handleSubmit }) => (
-            <FormRoot onSubmit={handleSubmit}>
-              <FormHeader
-                mainHeading={intl.formatMessage(i18n.mainHeader)}
-                subHeading={intl.formatMessage(i18n.subHeader)}
-              />
+          <FormField
+            name="password"
+            type="password"
+            placeholder={intl.formatMessage(i18n.passwordPlaceholder)}
+          />
 
-              <FormField
-                name="email"
-                type="text"
-                placeholder={intl.formatMessage(i18n.emailPlaceholder)}
-              />
+          <SubmitButton type="submit">
+            {intl.formatMessage(i18n.submitButton)}
+          </SubmitButton>
 
-              <FormField
-                name="password"
-                type="password"
-                placeholder={intl.formatMessage(i18n.passwordPlaceholder)}
-              />
+          <AuthSwitch
+            title={intl.formatMessage(i18n.authSwitchTitle)}
+            textInsideLink={intl.formatMessage(i18n.authSwitchText)}
+            route="register"
+          />
+        </FormRoot>
+      )}
+    </Form>
+  </main>
+)
 
-              <SubmitButton type="submit">
-                {intl.formatMessage(i18n.submitButton)}
-              </SubmitButton>
-
-              <AuthSwitch
-                title={intl.formatMessage(i18n.authSwitchTitle)}
-                textInsideLink={intl.formatMessage(i18n.authSwitchText)}
-                route="register"
-              />
-            </FormRoot>
-          )}
-        </Form>
-      </main>
-    )
-  }
+LoginPageView.propTypes = {
+  intl: intlShape,
+  mutate: PropTypes.func.isRequired
 }
 
 const enhance = compose(

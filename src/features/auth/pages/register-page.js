@@ -52,78 +52,69 @@ const i18n = defineMessages({
   }
 })
 
-class RegisterPageView extends Component {
-  static propTypes = {
-    intl: intlShape,
-    mutate: PropTypes.func.isRequired
-  }
+const onSubmit = async (mutate, values) => {
+  const { username, email, password } = values
+  const response = await mutate({ variables: { username, email, password } })
 
-  onSubmit = async (values) => {
-    const { mutate } = this.props
-    const { username, email, password } = values
-    const response = await mutate({ variables: { username, email, password } })
+  console.log(response)
+}
 
-    console.log(response)
-  }
+const RegisterPageView = ({ intl, mutate }) => (
+  <main>
+    <Form
+      subscription={{ submitting: true, pristine: true }}
+      validate={validateForm({ schema: registerSchema })}
+      onSubmit={(values) => onSubmit(mutate, values)} // TODO: refactor this using react hooks
+    >
+      {({ handleSubmit }) => (
+        <FormRoot onSubmit={handleSubmit}>
+          <FormHeader
+            mainHeading={intl.formatMessage(i18n.mainHeader)}
+            subHeading={intl.formatMessage(i18n.subHeader)}
+          />
 
-  render() {
-    const { intl } = this.props
+          <FormField
+            name="username"
+            type="text"
+            placeholder={intl.formatMessage(i18n.usernamePlaceholder)}
+          />
 
-    return (
-      <main>
-        <Form
-          subscription={{ submitting: true, pristine: true }}
-          validate={validateForm({ schema: registerSchema })}
-          onSubmit={this.onSubmit}
-        >
-          {({ handleSubmit }) => (
-            <FormRoot onSubmit={handleSubmit}>
-              <FormHeader
-                mainHeading={intl.formatMessage(i18n.mainHeader)}
-                subHeading={intl.formatMessage(i18n.subHeader)}
-              />
+          <FormField
+            name="email"
+            type="text"
+            placeholder={intl.formatMessage(i18n.emailPlaceholder)}
+          />
 
-              <FormField
-                name="username"
-                type="text"
-                placeholder={intl.formatMessage(i18n.usernamePlaceholder)}
-              />
+          <FormField
+            name="password"
+            type="password"
+            placeholder={intl.formatMessage(i18n.passwordPlaceholder)}
+          />
 
-              <FormField
-                name="email"
-                type="text"
-                placeholder={intl.formatMessage(i18n.emailPlaceholder)}
-              />
+          <FormField
+            name="passwordConfirmation"
+            type="password"
+            placeholder={intl.formatMessage(i18n.confirmPasswordPlaceholder)}
+          />
 
-              <FormField
-                name="password"
-                type="password"
-                placeholder={intl.formatMessage(i18n.passwordPlaceholder)}
-              />
+          <SubmitButton type="submit">
+            {intl.formatMessage(i18n.submitButton)}
+          </SubmitButton>
 
-              <FormField
-                name="passwordConfirmation"
-                type="password"
-                placeholder={intl.formatMessage(
-                  i18n.confirmPasswordPlaceholder
-                )}
-              />
+          <AuthSwitch
+            title={intl.formatMessage(i18n.authSwitchTitle)}
+            textInsideLink={intl.formatMessage(i18n.authSwitchText)}
+            route="login"
+          />
+        </FormRoot>
+      )}
+    </Form>
+  </main>
+)
 
-              <SubmitButton type="submit">
-                {intl.formatMessage(i18n.submitButton)}
-              </SubmitButton>
-
-              <AuthSwitch
-                title={intl.formatMessage(i18n.authSwitchTitle)}
-                textInsideLink={intl.formatMessage(i18n.authSwitchText)}
-                route="login"
-              />
-            </FormRoot>
-          )}
-        </Form>
-      </main>
-    )
-  }
+RegisterPageView.propTypes = {
+  intl: intlShape,
+  mutate: PropTypes.func.isRequired
 }
 
 const enhance = compose(
