@@ -5,10 +5,11 @@ import { defineMessages, intlShape } from 'react-intl'
 import { compose } from 'ramda'
 import { graphql } from 'react-apollo'
 
-import { SubmitButton, AuthSwitch } from '../atoms'
-import { FormField, FormHeader } from '../molecules'
 import { FormRoot } from '../templates'
+import { AuthSwitch } from '../atoms'
 
+import { FormField, FormHeader } from 'src/ui/molecules'
+import { SubmitButton } from 'src/ui/atoms'
 import { validateForm } from 'src/lib'
 import { withIntl, registerSchema } from 'src/common'
 import { registerMutation } from 'src/services'

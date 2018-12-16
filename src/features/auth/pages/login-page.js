@@ -5,10 +5,12 @@ import { defineMessages, intlShape } from 'react-intl'
 import { compose } from 'ramda'
 import { graphql } from 'react-apollo'
 
-import { SubmitButton, AuthSwitch } from '../atoms'
-import { FormField, FormHeader } from '../molecules'
+import { AuthSwitch } from '../atoms'
 import { FormRoot } from '../templates'
 
+import { SubmitButton } from 'src/ui/atoms'
+import { FormField, FormHeader } from 'src/ui/molecules'
+import { Router } from 'server/routes'
 import { validateForm } from 'src/lib'
 import {
   withIntl,
@@ -50,14 +52,18 @@ const i18n = defineMessages({
 })
 
 const onSubmit = async (loginMutation, storeTokenMutation, values) => {
-  const { email, password } = values
-  const response = await loginMutation({ variables: { email, password } })
+  try {
+    const { email, password } = values
+    const response = await loginMutation({ variables: { email, password } })
 
-  const { token, refreshToken } = response.data.login
+    const { token, refreshToken } = response.data.login
 
-  // we need to store cookies both in apollo cache and cookies, as we can only access cookies on server
-  storeTokenMutation({ variables: { token, refreshToken } })
-  storeTokensInCookie(token, refreshToken)
+    // we need to store cookies both in apollo cache and cookies, as we can only access cookies on server
+    storeTokenMutation({ variables: { token, refreshToken } })
+    storeTokensInCookie(token, refreshToken)
+
+    Router.pushRoute('/')
+  } catch (error) {} // TODO: add handling of a bad response (email/password are incorrect)
 }
 
 const LoginPageView = ({ intl, loginMutation, storeTokenMutation }) => (
@@ -95,8 +101,6 @@ const LoginPageView = ({ intl, loginMutation, storeTokenMutation }) => (
             textInsideLink={intl.formatMessage(i18n.authSwitchText)}
             route="register"
           />
-
-          <AuthSwitch title="reeeeeeeee" textInsideLink="lol" route="/" />
         </FormRoot>
       )}
     </Form>

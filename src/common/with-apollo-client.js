@@ -47,7 +47,6 @@ export const withApolloClient = (App) => {
 
       // Extract query data from the Apollo store
       const apolloState = apollo.cache.extract()
-      console.log('apollo state', apolloState)
 
       return {
         ...appProps,
