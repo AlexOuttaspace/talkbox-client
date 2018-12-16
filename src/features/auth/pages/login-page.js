@@ -10,7 +10,12 @@ import { FormField, FormHeader } from '../molecules'
 import { FormRoot } from '../templates'
 
 import { validateForm } from 'src/lib'
-import { withIntl, loginSchema } from 'src/common'
+import {
+  withIntl,
+  loginSchema,
+  storeTokenMutation,
+  storeTokensInCookie
+} from 'src/common'
 import { loginMutation } from 'src/services'
 
 const i18n = defineMessages({
@@ -44,19 +49,23 @@ const i18n = defineMessages({
   }
 })
 
-const onSubmit = async (mutate, values) => {
+const onSubmit = async (loginMutation, storeTokenMutation, values) => {
   const { email, password } = values
-  const response = await mutate({ variables: { email, password } })
+  const response = await loginMutation({ variables: { email, password } })
 
-  console.log(response)
+  const { token, refreshToken } = response.data.login
+
+  // we need to store cookies both in apollo cache and cookies, as we can only access cookies on server
+  storeTokenMutation({ variables: { token, refreshToken } })
+  storeTokensInCookie(token, refreshToken)
 }
 
-const LoginPageView = ({ intl, mutate }) => (
+const LoginPageView = ({ intl, loginMutation, storeTokenMutation }) => (
   <main>
     <Form
       subscription={{ submitting: true }}
       validate={validateForm({ schema: loginSchema })}
-      onSubmit={(values) => onSubmit(mutate, values)} // TODO: refactor this using react hooks
+      onSubmit={(values) => onSubmit(loginMutation, storeTokenMutation, values)} // TODO: refactor this using react hooks
     >
       {({ handleSubmit }) => (
         <FormRoot onSubmit={handleSubmit}>
@@ -94,12 +103,14 @@ const LoginPageView = ({ intl, mutate }) => (
 
 LoginPageView.propTypes = {
   intl: intlShape,
-  mutate: PropTypes.func.isRequired
+  loginMutation: PropTypes.func.isRequired,
+  storeTokenMutation: PropTypes.func.isRequired
 }
 
 const enhance = compose(
   withIntl,
-  graphql(loginMutation)
+  graphql(loginMutation, { name: 'loginMutation' }),
+  graphql(storeTokenMutation, { name: 'storeTokenMutation' })
 )
 
 export const LoginPage = enhance(LoginPageView)

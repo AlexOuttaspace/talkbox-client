@@ -6,10 +6,10 @@ import { ApolloLink } from 'apollo-link'
 import fetch from 'isomorphic-unfetch'
 import getConfig from 'next/config'
 
-import { defaultState } from './localState'
+import { defaultState, localStateResolvers } from './localState'
 
 const {
-  publicRuntimeConfig: { GRAPHQL_ENDPOINT, WS_ENDPOINT }
+  publicRuntimeConfig: { GRAPHQL_ENDPOINT, WS_ENDPOINT, DEVELOPMENT_MODE }
 } = getConfig()
 
 let apolloClient = null
@@ -24,7 +24,8 @@ function create(initialState) {
 
   const stateLink = withClientState({
     cache,
-    defaults: defaultState
+    defaults: defaultState,
+    resolvers: localStateResolvers
   })
 
   const httpLink = new HttpLink({
@@ -36,7 +37,7 @@ function create(initialState) {
 
   // Check out https://github.com/zeit/next.js/pull/4611 if you want to use the AWSAppSyncClient
   return new ApolloClient({
-    connectToDevTools: process.browser,
+    connectToDevTools: process.browser && DEVELOPMENT_MODE,
     ssrMode: !process.browser, // Disables forceFetch on the server (so queries are only run once)
     link,
     cache
