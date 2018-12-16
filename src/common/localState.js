@@ -3,8 +3,8 @@ import gql from 'graphql-tag'
 export const defaultState = {
   authState: {
     __typename: 'authState',
-    token: 'lol',
-    refreshToken: null
+    token: '',
+    refreshToken: ''
   }
 }
 
@@ -36,6 +36,12 @@ export const localStateResolvers = {
       }
 
       cache.writeData({ data })
+
+      const queryResult = cache.readQuery({
+        query: getTokens
+      })
+
+      console.log(queryResult)
       return null
     }
   }

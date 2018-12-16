@@ -19,6 +19,9 @@ export const withApolloClient = (App) => {
       // Run all GraphQL queries in the component tree
       // and extract the resulting data
       const apollo = initApollo()
+
+      const { token, refreshToken } = extractTokens(ctx.ctx)
+
       if (!process.browser) {
         try {
           // Run all GraphQL queries
@@ -42,31 +45,36 @@ export const withApolloClient = (App) => {
         Head.rewind()
       }
 
-      // extract tokens from request headers and store them in apollo's cache (im not sure if this is the best way to do this)
-      // const { token, refreshToken } = extractTokens(ctx.ctx)
-      // apollo.cache.writeData({
-      //   data: {
-      //     authState: {
-      //       __typename: 'authState',
-      //       token,
-      //       refreshToken
-      //     }
-      //   }
-      // })
-
       // Extract query data from the Apollo store
       const apolloState = apollo.cache.extract()
       console.log('apollo state', apolloState)
 
       return {
         ...appProps,
+        token,
+        refreshToken,
         apolloState
       }
     }
 
     constructor(props) {
       super(props)
-      this.apolloClient = initApollo(props.apolloState)
+
+      const { token, refreshToken } = props
+
+      // this will store tokens in apollo's cache
+      const apollo = initApollo(props.apolloState)
+      apollo.cache.writeData({
+        data: {
+          authState: {
+            __typename: 'authState',
+            token,
+            refreshToken
+          }
+        }
+      })
+
+      this.apolloClient = apollo
     }
 
     render() {

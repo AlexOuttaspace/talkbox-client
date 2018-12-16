@@ -95,6 +95,8 @@ const LoginPageView = ({ intl, loginMutation, storeTokenMutation }) => (
             textInsideLink={intl.formatMessage(i18n.authSwitchText)}
             route="register"
           />
+
+          <AuthSwitch title="reeeeeeeee" textInsideLink="lol" route="/" />
         </FormRoot>
       )}
     </Form>
