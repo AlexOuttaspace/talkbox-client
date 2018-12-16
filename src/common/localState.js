@@ -3,7 +3,7 @@ import gql from 'graphql-tag'
 export const defaultState = {
   authState: {
     __typename: 'authState',
-    token: null,
+    token: 'lol',
     refreshToken: null
   }
 }
@@ -14,19 +14,19 @@ export const storeTokenMutation = gql`
   }
 `
 
-export const getToken = gql`
-  query @client {
-    token
-    refreshToken
+export const getTokens = gql`
+  query {
+    authState @client {
+      token
+      refreshToken
+    }
   }
 `
 
 export const localStateResolvers = {
   Mutation: {
-    storeTokenMutation: (_, args, { cache }) => {
-      const { token, refreshToken } = args
-      console.log(args)
-      console.log('inside storetokenmutaion resolver!', token, refreshToken)
+    storeTokenMutation: (_, { token, refreshToken }, { cache }) => {
+      console.log('INSIDE storeTokenMutation', { token, refreshToken })
       const data = {
         authState: {
           __typename: 'authState',

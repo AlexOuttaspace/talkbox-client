@@ -1,20 +1,10 @@
 import React, { Fragment } from 'react'
-import { FormattedMessage, defineMessages, intlShape } from 'react-intl'
+import { defineMessages, intlShape } from 'react-intl'
 import styled from 'styled-components'
 import { compose } from 'ramda'
 import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
 
-import { withIntl } from 'src/common'
-
-export const allPostsQuery = gql`
-  query {
-    allUsers {
-      username
-      email
-    }
-  }
-`
+import { withIntl, getTokens } from 'src/common'
 
 const i18n = defineMessages({
   greeting: {
@@ -27,16 +17,11 @@ const Greeting = styled.h1`
   color: ${(p) => p.theme.secondary};
 `
 
-const allPostsQueryVars = {
-  skip: 0,
-  first: 10
-}
-
 const DashboardPageView = ({ intl }) => {
   return (
     <Fragment>
       <Greeting>{intl.formatMessage(i18n.greeting)}</Greeting>
-      <Query query={allPostsQuery} variables={allPostsQueryVars}>
+      <Query query={getTokens}>
         {({ loading, error, data }) => {
           if (error) return <div>Error occured!</div>
           if (loading) return <div>Loading...</div>

@@ -2,6 +2,7 @@ import React from 'react'
 import Head from 'next/head'
 import { getDataFromTree } from 'react-apollo'
 
+import { extractTokens } from './manage-token'
 import { initApollo } from './init-apollo'
 
 export const withApolloClient = (App) => {
@@ -41,8 +42,21 @@ export const withApolloClient = (App) => {
         Head.rewind()
       }
 
+      // extract tokens from request headers and store them in apollo's cache (im not sure if this is the best way to do this)
+      // const { token, refreshToken } = extractTokens(ctx.ctx)
+      // apollo.cache.writeData({
+      //   data: {
+      //     authState: {
+      //       __typename: 'authState',
+      //       token,
+      //       refreshToken
+      //     }
+      //   }
+      // })
+
       // Extract query data from the Apollo store
       const apolloState = apollo.cache.extract()
+      console.log('apollo state', apolloState)
 
       return {
         ...appProps,

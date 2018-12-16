@@ -7,4 +7,8 @@ export { withApolloClient } from './with-apollo-client'
 
 export { registerSchema, loginSchema } from './schema'
 
-export { storeTokenMutation, localStateResolvers } from './localState'
+export {
+  storeTokenMutation,
+  localStateResolvers,
+  getTokens
+} from './localState'
