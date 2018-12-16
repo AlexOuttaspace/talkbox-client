@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { Form } from 'react-final-form'
 import { defineMessages, intlShape } from 'react-intl'
@@ -11,7 +11,7 @@ import { FormRoot } from '../templates'
 
 import { validateForm } from 'src/lib'
 import { withIntl, loginSchema } from 'src/common'
-import { registerMutation } from 'src/services'
+import { loginMutation } from 'src/services'
 
 const i18n = defineMessages({
   mainHeader: {
@@ -99,7 +99,7 @@ LoginPageView.propTypes = {
 
 const enhance = compose(
   withIntl,
-  graphql(registerMutation)
+  graphql(loginMutation)
 )
 
 export const LoginPage = enhance(LoginPageView)

@@ -1,1 +1,1 @@
-export { registerMutation } from './mutations'
+export { registerMutation, loginMutation } from './mutations'
