@@ -54,10 +54,20 @@ const i18n = defineMessages({
 })
 
 const onSubmit = async (mutate, values) => {
-  const { username, email, password } = values
-  const response = await mutate({ variables: { username, email, password } })
+  try {
+    const { username, email, password } = values
+    const response = await mutate({ variables: { username, email, password } })
 
-  console.log(response)
+    const { register } = response.data
+    if (!register.ok) {
+      return register.errors.reduce((acc, error) => {
+        acc[error.path] = error.message
+        return acc
+      }, {})
+    }
+  } catch (error) {
+    // TODO: add handling for network errors
+  }
 }
 
 const RegisterPageView = ({ intl, mutate }) => (
@@ -65,7 +75,7 @@ const RegisterPageView = ({ intl, mutate }) => (
     <Form
       subscription={{ submitting: true, pristine: true }}
       validate={validateForm({ schema: registerSchema })}
-      onSubmit={(values) => onSubmit(mutate, values)} // TODO: refactor this using react hooks
+      onSubmit={(values) => onSubmit(mutate, values)}
     >
       {({ handleSubmit }) => (
         <FormRoot onSubmit={handleSubmit}>
