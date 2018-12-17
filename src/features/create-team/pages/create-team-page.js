@@ -19,7 +19,7 @@ const onSubmit = async (createTeamMutation, values) => {
     const response = await createTeamMutation({ variables: { name } })
 
     console.log(response)
-  } catch (error) {} // TODO: add handling of a bad response (email/password are incorrect)
+  } catch (error) {} // TODO: add handling of a bad response
 }
 
 export const CreateTeamPageView = ({ createTeamMutation }) => (

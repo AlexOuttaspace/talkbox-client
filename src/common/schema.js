@@ -33,6 +33,17 @@ export const passwordConfirmation = yup
   .min(8)
   .max(24)
 
+export const loginSchema = yup.object().shape({
+  email: yup
+    .string()
+    .ensure()
+    .required(required),
+  password: yup
+    .string()
+    .ensure()
+    .required(required)
+})
+
 export const registerSchema = yup.object().shape({
   username,
   email,

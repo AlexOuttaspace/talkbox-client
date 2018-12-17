@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form } from 'react-final-form'
 import { defineMessages, intlShape } from 'react-intl'
@@ -11,8 +11,14 @@ import { FormRoot } from 'src/ui/templates'
 import { SubmitButton } from 'src/ui/atoms'
 import { FormField, FormHeader } from 'src/ui/molecules'
 import { Router } from 'server/routes'
-import { withIntl, storeTokenMutation, storeTokensInCookie } from 'src/common'
+import {
+  withIntl,
+  storeTokenMutation,
+  storeTokensInCookie,
+  loginSchema
+} from 'src/common'
 import { loginMutation } from 'src/services'
+import { validateForm } from 'src/lib'
 
 const i18n = defineMessages({
   mainHeader: {
@@ -45,60 +51,79 @@ const i18n = defineMessages({
   }
 })
 
-const onSubmit = async (loginMutation, storeTokenMutation, values) => {
-  try {
-    const { email, password } = values
-    const response = await loginMutation({ variables: { email, password } })
+class LoginPageView extends Component {
+  onSubmit = async ({ email, password }) => {
+    try {
+      const { loginMutation, storeTokenMutation } = this.props
 
-    const { token, refreshToken } = response.data.login
+      const {
+        data: { login }
+      } = await loginMutation({ variables: { email, password } })
 
-    // we need to store cookies both in apollo cache and cookies, as we can only access cookies on server
-    storeTokenMutation({ variables: { token, refreshToken } })
-    storeTokensInCookie(token, refreshToken)
+      if (!login.ok) {
+        return login.errors.reduce((acc, error) => {
+          acc[error.path] = error.message
+          return acc
+        }, {})
+      }
 
-    Router.pushRoute('/')
-  } catch (error) {} // TODO: add handling of a bad response (email/password are incorrect)
+      const { token, refreshToken } = login
+
+      // we need to store cookies both in apollo cache and cookies, as we can only access cookies on server
+      storeTokenMutation({ variables: { token, refreshToken } })
+      storeTokensInCookie(token, refreshToken)
+
+      Router.pushRoute('/')
+    } catch (error) {
+      // errors occured due to incorrect password/email should not be handled here
+    }
+  }
+
+  render() {
+    const { intl } = this.props
+
+    return (
+      <main>
+        <Form
+          subscription={{ submitting: true }}
+          validate={validateForm({ schema: loginSchema })}
+          onSubmit={(values) => this.onSubmit(values)} // TODO: refactor this using react hooks
+        >
+          {({ handleSubmit }) => (
+            <FormRoot onSubmit={handleSubmit}>
+              <FormHeader
+                mainHeading={intl.formatMessage(i18n.mainHeader)}
+                subHeading={intl.formatMessage(i18n.subHeader)}
+              />
+
+              <FormField
+                name="email"
+                type="text"
+                placeholder={intl.formatMessage(i18n.emailPlaceholder)}
+              />
+
+              <FormField
+                name="password"
+                type="password"
+                placeholder={intl.formatMessage(i18n.passwordPlaceholder)}
+              />
+
+              <SubmitButton type="submit">
+                {intl.formatMessage(i18n.submitButton)}
+              </SubmitButton>
+
+              <AuthSwitch
+                title={intl.formatMessage(i18n.authSwitchTitle)}
+                textInsideLink={intl.formatMessage(i18n.authSwitchText)}
+                route="register"
+              />
+            </FormRoot>
+          )}
+        </Form>
+      </main>
+    )
+  }
 }
-
-const LoginPageView = ({ intl, loginMutation, storeTokenMutation }) => (
-  <main>
-    <Form
-      subscription={{ submitting: true }}
-      onSubmit={(values) => onSubmit(loginMutation, storeTokenMutation, values)} // TODO: refactor this using react hooks
-    >
-      {({ handleSubmit }) => (
-        <FormRoot onSubmit={handleSubmit}>
-          <FormHeader
-            mainHeading={intl.formatMessage(i18n.mainHeader)}
-            subHeading={intl.formatMessage(i18n.subHeader)}
-          />
-
-          <FormField
-            name="email"
-            type="text"
-            placeholder={intl.formatMessage(i18n.emailPlaceholder)}
-          />
-
-          <FormField
-            name="password"
-            type="password"
-            placeholder={intl.formatMessage(i18n.passwordPlaceholder)}
-          />
-
-          <SubmitButton type="submit">
-            {intl.formatMessage(i18n.submitButton)}
-          </SubmitButton>
-
-          <AuthSwitch
-            title={intl.formatMessage(i18n.authSwitchTitle)}
-            textInsideLink={intl.formatMessage(i18n.authSwitchText)}
-            route="register"
-          />
-        </FormRoot>
-      )}
-    </Form>
-  </main>
-)
 
 LoginPageView.propTypes = {
   intl: intlShape,

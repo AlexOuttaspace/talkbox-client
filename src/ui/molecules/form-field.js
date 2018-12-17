@@ -9,7 +9,11 @@ export const FormField = ({ placeholder, name, type }) => (
     {({ input, meta }) => (
       <Fragment>
         <Input type={type} {...input} placeholder={placeholder} />
-        <ValidationError>{meta.touched && meta.error}</ValidationError>
+        <ValidationError>
+          {(meta.error || meta.submitError) &&
+            meta.touched &&
+            (meta.error || meta.submitError)}
+        </ValidationError>
       </Fragment>
     )}
   </Field>
