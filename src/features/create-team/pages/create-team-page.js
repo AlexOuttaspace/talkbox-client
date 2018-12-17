@@ -4,6 +4,7 @@ import { Form } from 'react-final-form'
 import { compose } from 'ramda'
 import { graphql } from 'react-apollo'
 
+import { Router } from 'server/routes'
 import { validateForm } from 'src/lib'
 import { createTeamSchema } from 'src/common'
 import { createTeamMutation } from 'src/services'
@@ -19,6 +20,7 @@ const onSubmit = async (createTeamMutation, values) => {
     console.log('response', response)
   } catch (error) {
     console.log(error)
+    Router.pushRoute('/login')
     // TODO: add handling of a bad response
   }
 }

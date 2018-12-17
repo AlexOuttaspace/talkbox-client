@@ -1,1 +1,3 @@
 should do client.resetStore() on logout so that every private data inside apollo cache is destroyed.
+
+storing tokens in apollo cache is a bad idea, because it makes managing them way harder. Like when user tries to access a private route with bad tokens, we can erase them from headers by setting a 'Set-Cookie' header, but how are we gonna remove those tokens from apollo cache? 

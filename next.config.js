@@ -6,8 +6,8 @@ const publicRuntimeConfig = {
   // Will be available on both server and client
   GRAPHQL_ENDPOINT: 'http://localhost:3020/graphql',
   WS_ENDPOINT: `ws://localhost:3020/api/ws`,
-  TOKEN_MAX_AGE: 25 * 60, // 25 minutes
-  REFRESH_TOKEN_MAX_AGE: 7 * 24 * 60 * 60, // 7 days
+  TOKEN_MAX_AGE: 25 * 60 * 1000, // 25 minutes in milliseconds
+  REFRESH_TOKEN_MAX_AGE: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
   DEVELOPMENT_MODE: process.env.NODE_ENV
 }
 

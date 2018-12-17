@@ -1,19 +1,22 @@
 import hoistStatics from 'hoist-non-react-statics'
 import React, { Component } from 'react'
 
-import { extractTokens } from './manage-token'
+import { extractTokens, checkTokens, storeTokensInCookie } from './manage-token'
 
 import { redirect } from 'src/lib'
 
 export const withAuth = ({ url } = { url: '/login' }) => (W) => {
   class WithAuth extends Component {
     static async getInitialProps(context) {
-      const { token } = await extractTokens(context)
+      const { token, refreshToken } = await extractTokens(context)
 
       // need to compare to string 'null' because that's how cookie.parser parses the token
-      const accessGranted = !!token && token !== 'null'
+      let isAuthenticated = checkTokens(token, refreshToken)
 
-      if (!accessGranted) return redirect(context, url)
+      if (!isAuthenticated) {
+        storeTokensInCookie(1, 2, context)
+        return redirect(context, url)
+      }
 
       let pageProps = {}
       if (W.getInitialProps) {
