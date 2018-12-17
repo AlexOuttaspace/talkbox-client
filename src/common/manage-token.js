@@ -8,8 +8,6 @@ const { TOKEN_MAX_AGE, REFRESH_TOKEN_MAX_AGE } = getConfig().publicRuntimeConfig
 // if arguments' values are null, cookies will be eraser
 export const storeTokensInCookie = (token, refreshToken, context = {}) => {
   if (context.res) {
-    console.log(TOKEN_MAX_AGE, REFRESH_TOKEN_MAX_AGE)
-    console.log(context.res.cookie)
     context.res.cookie('token', token, { maxAge: TOKEN_MAX_AGE })
     context.res.cookie('refreshToken', refreshToken, {
       maxAge: REFRESH_TOKEN_MAX_AGE
@@ -56,7 +54,12 @@ export const extractTokens = (context = {}) => {
 // this function tries to decode tokens. if it fails, user is not authenticated
 export const checkTokens = (token, refreshToken) => {
   try {
-    decode(token)
+    // if we don't have access token it probably means
+    // that it has just expired, so we don't need to
+    // check it's validity, as having only valid refresh
+    // token still means that client can work with API
+    if (token) decode(token)
+
     decode(refreshToken)
   } catch (error) {
     return false

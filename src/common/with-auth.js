@@ -14,8 +14,8 @@ export const withAuth = ({ url } = { url: '/login' }) => (W) => {
       let isAuthenticated = checkTokens(token, refreshToken)
 
       if (!isAuthenticated) {
-        storeTokensInCookie(1, 2, context)
-        return redirect(context, url)
+        storeTokensInCookie(null, null, context)
+        return redirect(context, url, { hard: true })
       }
 
       let pageProps = {}
