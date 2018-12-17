@@ -5,9 +5,9 @@ import { defineMessages, intlShape } from 'react-intl'
 import { compose } from 'ramda'
 import { graphql } from 'react-apollo'
 
-import { FormRoot } from '../templates'
 import { AuthSwitch } from '../atoms'
 
+import { FormRoot } from 'src/ui/templates'
 import { FormField, FormHeader } from 'src/ui/molecules'
 import { SubmitButton } from 'src/ui/atoms'
 import { validateForm } from 'src/lib'

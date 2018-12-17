@@ -40,7 +40,14 @@ export const registerSchema = yup.object().shape({
   passwordConfirmation
 })
 
-export const loginSchema = yup.object().shape({
-  email,
-  password
+export const teamName = yup
+  .string()
+  .ensure()
+  .required(required)
+  .min(3, 'should be at least 3 characters')
+  .matches(ALPHANUMERIC_REGEXP, 'can only contain letters and numbers')
+  .max(30, 'should be at most 30 characters')
+
+export const createTeamSchema = yup.object().shape({
+  name: teamName
 })

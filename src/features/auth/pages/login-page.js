@@ -6,18 +6,12 @@ import { compose } from 'ramda'
 import { graphql } from 'react-apollo'
 
 import { AuthSwitch } from '../atoms'
-import { FormRoot } from '../templates'
 
+import { FormRoot } from 'src/ui/templates'
 import { SubmitButton } from 'src/ui/atoms'
 import { FormField, FormHeader } from 'src/ui/molecules'
 import { Router } from 'server/routes'
-import { validateForm } from 'src/lib'
-import {
-  withIntl,
-  loginSchema,
-  storeTokenMutation,
-  storeTokensInCookie
-} from 'src/common'
+import { withIntl, storeTokenMutation, storeTokensInCookie } from 'src/common'
 import { loginMutation } from 'src/services'
 
 const i18n = defineMessages({
@@ -70,7 +64,6 @@ const LoginPageView = ({ intl, loginMutation, storeTokenMutation }) => (
   <main>
     <Form
       subscription={{ submitting: true }}
-      validate={validateForm({ schema: loginSchema })}
       onSubmit={(values) => onSubmit(loginMutation, storeTokenMutation, values)} // TODO: refactor this using react hooks
     >
       {({ handleSubmit }) => (

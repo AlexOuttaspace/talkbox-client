@@ -10,7 +10,7 @@ export const SubmitButton = styled.button`
   cursor: pointer;
   width: 100%;
   margin-bottom: 1rem;
-  padding: 0.8rem 1rem;
+  padding: 0.6rem 1rem;
   border-radius: 0.4rem;
 
   :hover,
