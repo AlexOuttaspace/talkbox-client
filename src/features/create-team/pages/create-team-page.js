@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { Form } from 'react-final-form'
 import { compose } from 'ramda'
 import { graphql } from 'react-apollo'
@@ -19,7 +18,10 @@ const onSubmit = async (createTeamMutation, values) => {
     const response = await createTeamMutation({ variables: { name } })
 
     console.log(response)
-  } catch (error) {} // TODO: add handling of a bad response
+  } catch (error) {
+    console.log(error)
+    // TODO: add handling of a bad response
+  }
 }
 
 export const CreateTeamPageView = ({ createTeamMutation }) => (

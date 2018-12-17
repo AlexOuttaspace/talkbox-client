@@ -26,7 +26,6 @@ export const getTokens = gql`
 export const localStateResolvers = {
   Mutation: {
     storeTokenMutation: (_, { token, refreshToken }, { cache }) => {
-      console.log('INSIDE storeTokenMutation', { token, refreshToken })
       const data = {
         authState: {
           __typename: 'authState',
@@ -36,12 +35,6 @@ export const localStateResolvers = {
       }
 
       cache.writeData({ data })
-
-      const queryResult = cache.readQuery({
-        query: getTokens
-      })
-
-      console.log(queryResult)
       return null
     }
   }

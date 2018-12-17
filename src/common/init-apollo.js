@@ -3,9 +3,11 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import { HttpLink } from 'apollo-link-http'
 import { withClientState } from 'apollo-link-state'
 import { ApolloLink } from 'apollo-link'
+import { setContext } from 'apollo-link-context'
 import fetch from 'isomorphic-unfetch'
 import getConfig from 'next/config'
 
+import { getTokens } from './localState'
 import { defaultState, localStateResolvers } from './localState'
 
 const {
@@ -22,6 +24,22 @@ if (!process.browser) {
 function create(initialState) {
   const cache = new InMemoryCache().restore(initialState || {})
 
+  // this link will extact token from apollo-link-state and add it to request's headers
+  const authLink = setContext((_, { headers, cache }) => {
+    const {
+      authState: { token }
+    } = cache.readQuery({
+      query: getTokens
+    })
+
+    return {
+      headers: {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : ''
+      }
+    }
+  })
+
   const stateLink = withClientState({
     cache,
     defaults: defaultState,
@@ -29,11 +47,12 @@ function create(initialState) {
   })
 
   const httpLink = new HttpLink({
-    uri: GRAPHQL_ENDPOINT,
-    credentials: 'same-origin' // Additional fetch() options like `credentials` or `headers`
+    uri: GRAPHQL_ENDPOINT
+
+    // Additional fetch() options like `credentials` or `headers` can be added here
   })
 
-  const link = ApolloLink.from([stateLink, httpLink])
+  const link = ApolloLink.from([stateLink, authLink.concat(httpLink)])
 
   // Check out https://github.com/zeit/next.js/pull/4611 if you want to use the AWSAppSyncClient
   return new ApolloClient({
