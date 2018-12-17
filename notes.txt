@@ -1,0 +1,1 @@
+should do client.resetStore() on logout so that every private data inside apollo cache is destroyed.

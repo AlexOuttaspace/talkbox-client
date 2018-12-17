@@ -12,12 +12,11 @@ import { SubmitButton } from 'src/ui/atoms'
 import { FormRoot } from 'src/ui/templates'
 
 const onSubmit = async (createTeamMutation, values) => {
-  console.log('asd')
   try {
     const { name } = values
     const response = await createTeamMutation({ variables: { name } })
 
-    console.log(response)
+    console.log('response', response)
   } catch (error) {
     console.log(error)
     // TODO: add handling of a bad response

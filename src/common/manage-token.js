@@ -4,11 +4,27 @@ import { hasPath } from 'ramda'
 
 const { TOKEN_MAX_AGE, REFRESH_TOKEN_MAX_AGE } = getConfig()
 
+// if arguments' values are null, cookies will be eraser
 export const storeTokensInCookie = (token, refreshToken) => {
-  document.cookie = cookie.serialize('token', token, { maxAge: TOKEN_MAX_AGE })
-  document.cookie = cookie.serialize('refreshToken', refreshToken, {
-    maxAge: REFRESH_TOKEN_MAX_AGE
-  })
+  if (token !== null) {
+    document.cookie = cookie.serialize('token', token, {
+      maxAge: TOKEN_MAX_AGE
+    })
+  } else {
+    document.cookie = cookie.serialize('token', '', {
+      maxAge: -1
+    })
+  }
+
+  if (refreshToken !== null) {
+    document.cookie = cookie.serialize('refreshToken', refreshToken, {
+      maxAge: REFRESH_TOKEN_MAX_AGE
+    })
+  } else {
+    document.cookie = cookie.serialize('refreshToken', '', {
+      maxAge: -1
+    })
+  }
 }
 
 export const extractTokens = (context = {}) => {

@@ -7,8 +7,8 @@ import { setContext } from 'apollo-link-context'
 import fetch from 'isomorphic-unfetch'
 import getConfig from 'next/config'
 
-import { getTokens } from './localState'
-import { defaultState, localStateResolvers } from './localState'
+import { storeTokensInCookie } from './manage-token'
+import { defaultState, localStateResolvers, getTokens } from './localState'
 
 const {
   publicRuntimeConfig: { GRAPHQL_ENDPOINT, WS_ENDPOINT, DEVELOPMENT_MODE }
@@ -24,10 +24,40 @@ if (!process.browser) {
 function create(initialState) {
   const cache = new InMemoryCache().restore(initialState || {})
 
+  // this link will handle refreshing of out tokens
+  const afterwareLink = new ApolloLink((operation, forward) => {
+    return forward(operation).map((response) => {
+      const { headers, cache } = operation.getContext()
+
+      if (headers) {
+        let token = headers['x-token']
+        let refreshToken = headers['x-refresh-token']
+
+        if (!!token || !!refreshToken) {
+          token = null
+          refreshToken = null
+        }
+
+        const data = {
+          authState: {
+            __typename: 'authState',
+            token,
+            refreshToken
+          }
+        }
+
+        cache.writeData({ data })
+        storeTokensInCookie(token, refreshToken)
+      }
+
+      return response
+    })
+  })
+
   // this link will extact token from apollo-link-state and add it to request's headers
   const authLink = setContext((_, { headers, cache }) => {
     const {
-      authState: { token }
+      authState: { token, refreshToken }
     } = cache.readQuery({
       query: getTokens
     })
@@ -35,7 +65,8 @@ function create(initialState) {
     return {
       headers: {
         ...headers,
-        authorization: token ? `Bearer ${token}` : ''
+        ['x-token']: token || '',
+        ['x-refresh-token']: refreshToken || ''
       }
     }
   })
@@ -52,7 +83,9 @@ function create(initialState) {
     // Additional fetch() options like `credentials` or `headers` can be added here
   })
 
-  const link = ApolloLink.from([stateLink, authLink.concat(httpLink)])
+  const httpLinkWithMiddleware = afterwareLink.concat(authLink.concat(httpLink))
+
+  const link = ApolloLink.from([stateLink, httpLinkWithMiddleware])
 
   // Check out https://github.com/zeit/next.js/pull/4611 if you want to use the AWSAppSyncClient
   return new ApolloClient({
