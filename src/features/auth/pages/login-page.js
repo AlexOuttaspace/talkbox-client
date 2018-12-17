@@ -18,7 +18,7 @@ import {
   loginSchema
 } from 'src/common'
 import { loginMutation } from 'src/services'
-import { validateForm } from 'src/lib'
+import { validateForm, handleServerErrors } from 'src/lib'
 
 const i18n = defineMessages({
   mainHeader: {
@@ -61,10 +61,7 @@ class LoginPageView extends Component {
       } = await loginMutation({ variables: { email, password } })
 
       if (!login.ok) {
-        return login.errors.reduce((acc, error) => {
-          acc[error.path] = error.message
-          return acc
-        }, {})
+        return handleServerErrors(login.errors)
       }
 
       const { token, refreshToken } = login

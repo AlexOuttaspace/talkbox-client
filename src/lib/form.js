@@ -31,3 +31,12 @@ export const validateForm = curry(async ({ schema, context = {} }, values) => {
     return yupToFormErrors(error)
   }
 })
+
+// accepts an array of errors in format of [ { path: String, message: String } ]
+// ouputs them in format: { path: message, anotherPath: anotherMessage }
+// this format is accepted as a return value of onSubmit function for react-final-form
+export const handleServerErrors = (errors) =>
+  errors.reduce((acc, error) => {
+    acc[error.path] = error.message
+    return acc
+  }, {})
