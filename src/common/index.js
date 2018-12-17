@@ -1,5 +1,5 @@
 export { withIntl } from './with-intl'
-export { page } from './page'
+export { page, privatePage } from './page'
 export { storeTokensInCookie, extractTokens } from './manage-token'
 
 export { initApollo } from './init-apollo'

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import Head from 'next/head'
 import { getDataFromTree } from 'react-apollo'
 
@@ -6,8 +6,9 @@ import { extractTokens } from './manage-token'
 import { initApollo } from './init-apollo'
 
 export const withApolloClient = (App) => {
-  return class Apollo extends React.Component {
+  return class Apollo extends Component {
     static displayName = 'withApollo(App)'
+
     static async getInitialProps(ctx) {
       const { Component, router } = ctx
 
