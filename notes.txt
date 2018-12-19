@@ -11,3 +11,11 @@ DAMN! if we store tokens only in cookies how are we gonna get them inside an apo
 we use hardRedirect which will use window.location.replase('/login') in order to renew apollo's state, when user tries to access private route on the client
 
 functionality of hard redirect is not tested yet
+
+
+complete token handling schema:
+
+1. request comes to next.js server
+2. We extract rokens from cookies
+3. If there's no tokens, we put null as their values in apollo cache
+4. If we only get refreshToken from cookies, it means that our access token has expired, so we need to send a request to server to refresh our tokens.

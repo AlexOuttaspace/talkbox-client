@@ -2,39 +2,38 @@ import cookie from 'cookie'
 import getConfig from 'next/config'
 import { hasPath } from 'ramda'
 import decode from 'jwt-decode'
+import fetch from 'isomorphic-unfetch'
 
-const { TOKEN_MAX_AGE, REFRESH_TOKEN_MAX_AGE } = getConfig().publicRuntimeConfig
+const {
+  TOKEN_MAX_AGE,
+  REFRESH_TOKEN_MAX_AGE,
+  GRAPHQL_ENDPOINT
+} = getConfig().publicRuntimeConfig
 
 // if arguments' values are null, cookies will be eraser
 export const storeTokensInCookie = (token, refreshToken, context = {}) => {
+  const tokenCookieValue = token ? token : ''
+  const tokenMaxAge = token ? TOKEN_MAX_AGE : -1
+
+  const refreshTokenCookieValue = refreshToken ? refreshToken : ''
+  const refreshTokenMaxAge = refreshToken ? REFRESH_TOKEN_MAX_AGE : ''
+
   if (context.res) {
-    context.res.cookie('token', token, { maxAge: TOKEN_MAX_AGE })
-    context.res.cookie('refreshToken', refreshToken, {
-      maxAge: REFRESH_TOKEN_MAX_AGE
+    context.res.cookie('token', tokenCookieValue, {
+      maxAge: tokenMaxAge * 1000 // express accepts token maxage in ms, so we have to multiply by 1000
+    })
+    context.res.cookie('refreshToken', refreshTokenCookieValue, {
+      maxAge: refreshTokenMaxAge * 1000 // express accepts token maxage in ms, so we have to multiply by 1000
     })
     return
   }
 
-  const tokenCookie =
-    token !== null
-      ? cookie.serialize('token', token, {
-          maxAge: +TOKEN_MAX_AGE
-        })
-      : cookie.serialize('token', '', {
-          maxAge: -1
-        })
-
-  const refreshTokenCookie =
-    refreshToken !== null
-      ? cookie.serialize('refreshToken', refreshToken, {
-          maxAge: +REFRESH_TOKEN_MAX_AGE
-        })
-      : cookie.serialize('refreshToken', '', {
-          maxAge: -1
-        })
-
-  document.cookie = tokenCookie
-  document.cookie = refreshTokenCookie
+  document.cookie = cookie.serialize('token', tokenCookieValue, {
+    maxAge: tokenMaxAge
+  })
+  document.cookie = cookie.serialize('refreshToken', refreshTokenCookieValue, {
+    maxAge: refreshTokenMaxAge
+  })
 }
 
 export const extractTokens = (context = {}) => {
@@ -52,18 +51,37 @@ export const extractTokens = (context = {}) => {
 }
 
 // this function tries to decode tokens. if it fails, user is not authenticated
-export const checkTokens = (token, refreshToken) => {
+export const checkTokens = (refreshToken) => {
   try {
-    // if we don't have access token it probably means
-    // that it has just expired, so we don't need to
-    // check it's validity, as having only valid refresh
-    // token still means that client can work with API
-    if (token) decode(token)
-
     decode(refreshToken)
   } catch (error) {
     return false
   }
 
   return true
+}
+
+export const refreshTokens = async (refreshToken) => {
+  try {
+    const response = await fetch(`${GRAPHQL_ENDPOINT}?onlyRefreshToken=1`, {
+      method: 'POST',
+      headers: {
+        'x-refresh-token': refreshToken
+      }
+    })
+
+    return {
+      newTokens: {
+        token: response.headers.get(['x-token']),
+        refreshToken: response.headers.get(['x-refresh-token'])
+      }
+    }
+  } catch (error) {
+    return {
+      newTokens: {
+        token: null,
+        refreshToken: null
+      }
+    }
+  }
 }

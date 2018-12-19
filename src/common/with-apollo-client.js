@@ -1,8 +1,13 @@
 import React, { Component } from 'react'
 import Head from 'next/head'
 import { getDataFromTree } from 'react-apollo'
+import decode from 'jwt-decode'
 
-import { extractTokens } from './manage-token'
+import {
+  extractTokens,
+  storeTokensInCookie,
+  refreshTokens
+} from './manage-token'
 import { initApollo } from './init-apollo'
 
 export const withApolloClient = (App) => {
@@ -17,11 +22,30 @@ export const withApolloClient = (App) => {
         appProps = await App.getInitialProps(ctx)
       }
 
+      // get tokens from request
+      let { token, refreshToken } = extractTokens(ctx.ctx)
+
+      // we check tokens. if they are invalid, we just remove them.
+      try {
+        decode(refreshToken)
+        if (token) decode(token)
+      } catch (error) {
+        token = null
+        refreshToken = null
+        storeTokensInCookie(token, refreshToken, ctx.ctx)
+      }
+
+      // if token is expired, refresh
+      if (!token && refreshToken) {
+        const { newTokens } = await refreshTokens(refreshToken)
+        token = newTokens.token
+        refreshToken = newTokens.refreshToken
+        storeTokensInCookie(token, refreshToken, ctx.ctx)
+      }
+
       // Run all GraphQL queries in the component tree
       // and extract the resulting data
-      const apollo = initApollo()
-
-      const { token, refreshToken } = extractTokens(ctx.ctx)
+      const apollo = initApollo(null, { token, refreshToken })
 
       if (!process.browser) {
         try {
@@ -61,20 +85,14 @@ export const withApolloClient = (App) => {
       super(props)
 
       const { token, refreshToken } = props
-
-      // this will store tokens in apollo's cache
-      const apollo = initApollo(props.apolloState)
-      apollo.cache.writeData({
-        data: {
-          authState: {
-            __typename: 'authState',
-            token,
-            refreshToken
-          }
-        }
-      })
+      const apollo = initApollo(props.apolloState, { token, refreshToken })
 
       this.apolloClient = apollo
+    }
+
+    componentDidMount = () => {
+      const { token, refreshToken } = this.props
+      storeTokensInCookie(token, refreshToken)
     }
 
     render() {

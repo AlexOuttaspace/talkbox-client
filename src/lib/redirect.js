@@ -8,7 +8,7 @@ export const redirect = (context, target, { hard }) => {
     context.res.end()
   } else {
     if (hard) {
-      return window.locations.push('/login')
+      return window.locations.assign('/login')
     }
     // In the browser, we just pretend like this never even happened ;)
     return Router.replace(target)

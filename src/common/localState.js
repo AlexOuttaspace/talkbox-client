@@ -1,13 +1,5 @@
 import gql from 'graphql-tag'
 
-export const defaultState = {
-  authState: {
-    __typename: 'authState',
-    token: '',
-    refreshToken: ''
-  }
-}
-
 export const storeTokenMutation = gql`
   mutation($token: String, $refreshToken: String) {
     storeTokenMutation(token: $token, refreshToken: $refreshToken) @client

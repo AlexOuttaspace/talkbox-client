@@ -8,10 +8,9 @@ import { redirect } from 'src/lib'
 export const withAuth = ({ url } = { url: '/login' }) => (W) => {
   class WithAuth extends Component {
     static async getInitialProps(context) {
-      const { token, refreshToken } = await extractTokens(context)
+      const { refreshToken } = await extractTokens(context)
 
-      // need to compare to string 'null' because that's how cookie.parser parses the token
-      let isAuthenticated = checkTokens(token, refreshToken)
+      let isAuthenticated = checkTokens(refreshToken)
 
       if (!isAuthenticated) {
         storeTokensInCookie(null, null, context)

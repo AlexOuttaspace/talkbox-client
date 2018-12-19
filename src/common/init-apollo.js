@@ -8,7 +8,7 @@ import fetch from 'isomorphic-unfetch'
 import getConfig from 'next/config'
 
 import { storeTokensInCookie } from './manage-token'
-import { defaultState, localStateResolvers, getTokens } from './localState'
+import { localStateResolvers, getTokens } from './localState'
 
 const {
   publicRuntimeConfig: { GRAPHQL_ENDPOINT, WS_ENDPOINT, DEVELOPMENT_MODE }
@@ -21,22 +21,17 @@ if (!process.browser) {
   global.fetch = fetch
 }
 
-function create(initialState) {
+function create(initialState, { token = '', refreshToken = '' }) {
   const cache = new InMemoryCache().restore(initialState || {})
-
   // this link will handle refreshing of out tokens
   const afterwareLink = new ApolloLink((operation, forward) => {
     return forward(operation).map((response) => {
       const { headers, cache } = operation.getContext()
 
-      if (headers) {
-        let token = headers['x-token']
-        let refreshToken = headers['x-refresh-token']
-
-        if (!!token || !!refreshToken) {
-          token = null
-          refreshToken = null
-        }
+      // check if tokens were refreshed
+      if (headers && headers['x-token'] && headers['x-refresh-token']) {
+        const token = headers['x-token']
+        const refreshToken = headers['x-refresh-token']
 
         const data = {
           authState: {
@@ -47,7 +42,11 @@ function create(initialState) {
         }
 
         cache.writeData({ data })
-        storeTokensInCookie(token, refreshToken)
+        if (typeof window !== 'undefined') {
+          // make sure to only do this on client as this
+          // will try to access window.document
+          storeTokensInCookie(token, refreshToken)
+        }
       }
 
       return response
@@ -73,7 +72,13 @@ function create(initialState) {
 
   const stateLink = withClientState({
     cache,
-    defaults: defaultState,
+    defaults: {
+      authState: {
+        __typename: 'authState',
+        token,
+        refreshToken
+      }
+    },
     resolvers: localStateResolvers
   })
 
@@ -96,16 +101,16 @@ function create(initialState) {
   })
 }
 
-export function initApollo(initialState) {
+export function initApollo(initialState, tokensArg) {
   // Make sure to create a new client for every server-side request so that data
   // isn't shared between connections (which would be bad)
   if (!process.browser) {
-    return create(initialState)
+    return create(initialState, tokensArg)
   }
 
   // Reuse client on the client-side
   if (!apolloClient) {
-    apolloClient = create(initialState)
+    apolloClient = create(initialState, tokensArg)
   }
 
   return apolloClient
