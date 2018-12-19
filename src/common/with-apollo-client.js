@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { getDataFromTree } from 'react-apollo'
 import decode from 'jwt-decode'
 
+import { getTokens } from './localState'
 import {
   extractTokens,
   storeTokensInCookie,
@@ -14,25 +15,22 @@ export const withApolloClient = (App) => {
   return class Apollo extends Component {
     static displayName = 'withApollo(App)'
 
-    static async getInitialProps(ctx) {
-      const { Component, router } = ctx
-
-      let appProps = {}
-      if (App.getInitialProps) {
-        appProps = await App.getInitialProps(ctx)
-      }
+    static async getInitialProps(appContext) {
+      const { Component, router, ctx } = appContext
 
       // get tokens from request
-      let { token, refreshToken } = extractTokens(ctx.ctx)
+      let { token, refreshToken } = extractTokens(ctx)
 
       // we check tokens. if they are invalid, we just remove them.
-      try {
-        decode(refreshToken)
-        if (token) decode(token)
-      } catch (error) {
-        token = null
-        refreshToken = null
-        storeTokensInCookie(token, refreshToken, ctx.ctx)
+      if (token || refreshToken) {
+        try {
+          decode(refreshToken)
+          if (token) decode(token)
+        } catch (error) {
+          token = null
+          refreshToken = null
+          storeTokensInCookie(token, refreshToken, ctx)
+        }
       }
 
       // if token is expired, refresh
@@ -40,7 +38,13 @@ export const withApolloClient = (App) => {
         const { newTokens } = await refreshTokens(refreshToken)
         token = newTokens.token
         refreshToken = newTokens.refreshToken
-        storeTokensInCookie(token, refreshToken, ctx.ctx)
+        storeTokensInCookie(token, refreshToken, ctx)
+      }
+
+      appContext.ctx.authState = { token, refreshToken }
+      let appProps = {}
+      if (App.getInitialProps) {
+        appProps = await App.getInitialProps(appContext)
       }
 
       // Run all GraphQL queries in the component tree
@@ -53,8 +57,8 @@ export const withApolloClient = (App) => {
           await getDataFromTree(
             <App
               {...appProps}
-              Component={Component}
               router={router}
+              Component={Component}
               apolloClient={apollo}
             />
           )
