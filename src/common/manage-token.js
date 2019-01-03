@@ -16,7 +16,7 @@ export const storeTokensInCookie = (token, refreshToken, context = {}) => {
   const tokenMaxAge = token ? TOKEN_MAX_AGE : -1
 
   const refreshTokenCookieValue = refreshToken ? refreshToken : ''
-  const refreshTokenMaxAge = refreshToken ? REFRESH_TOKEN_MAX_AGE : ''
+  const refreshTokenMaxAge = refreshToken ? REFRESH_TOKEN_MAX_AGE : -1
 
   if (context.res) {
     context.res.cookie('token', tokenCookieValue, {
@@ -28,12 +28,20 @@ export const storeTokensInCookie = (token, refreshToken, context = {}) => {
     return
   }
 
-  document.cookie = cookie.serialize('token', tokenCookieValue, {
+  const tokenCookie = cookie.serialize('token', tokenCookieValue, {
     maxAge: tokenMaxAge
   })
-  document.cookie = cookie.serialize('refreshToken', refreshTokenCookieValue, {
-    maxAge: refreshTokenMaxAge
-  })
+
+  const refreshTokenCookie = cookie.serialize(
+    'refreshToken',
+    refreshTokenCookieValue,
+    {
+      maxAge: refreshTokenMaxAge
+    }
+  )
+
+  document.cookie = tokenCookie
+  document.cookie = refreshTokenCookie
 }
 
 export const extractTokens = (context = {}) => {

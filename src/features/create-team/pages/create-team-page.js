@@ -6,7 +6,7 @@ import { graphql } from 'react-apollo'
 
 import { Router } from 'server/routes'
 import { validateForm } from 'src/lib'
-import { createTeamSchema } from 'src/common'
+import { createTeamSchema, storeTokensInCookie } from 'src/common'
 import { createTeamMutation } from 'src/services'
 import { FormHeader, FormField } from 'src/ui/molecules'
 import { SubmitButton } from 'src/ui/atoms'
@@ -17,11 +17,14 @@ const onSubmit = async (createTeamMutation, values) => {
     const { name } = values
     const response = await createTeamMutation({ variables: { name } })
 
-    console.log('response', response)
+    return console.log('response', response)
   } catch (error) {
-    console.log(error)
-    Router.pushRoute('/login')
-    // TODO: add handling of a bad response
+    if (error.message.includes('Not authenticated')) {
+      storeTokensInCookie(null, null)
+      return Router.pushRoute('/login')
+    }
+
+    // TODO: add handling for error that can occured due to network problems
   }
 }
 

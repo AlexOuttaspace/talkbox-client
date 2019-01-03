@@ -9,7 +9,7 @@ export const withAuth = ({ url } = { url: '/login' }) => (W) => {
   class WithAuth extends Component {
     static async getInitialProps(context) {
       //console.log(context.req)
-      const { refreshToken } = context.authState
+      const { refreshToken } = context.authContext
 
       let isAuthenticated = checkTokens(refreshToken)
 

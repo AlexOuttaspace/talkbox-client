@@ -3,7 +3,6 @@ import Head from 'next/head'
 import { getDataFromTree } from 'react-apollo'
 import decode from 'jwt-decode'
 
-import { getTokens } from './localState'
 import {
   extractTokens,
   storeTokensInCookie,
@@ -31,17 +30,15 @@ export const withApolloClient = (App) => {
           refreshToken = null
           storeTokensInCookie(token, refreshToken, ctx)
         }
-      }
-
-      // if token is expired, refresh
-      if (!token && refreshToken) {
+      } else if (!token && refreshToken) {
+        // refresh token if expirde
         const { newTokens } = await refreshTokens(refreshToken)
         token = newTokens.token
         refreshToken = newTokens.refreshToken
         storeTokensInCookie(token, refreshToken, ctx)
       }
 
-      appContext.ctx.authState = { token, refreshToken }
+      appContext.ctx.authContext = { token, refreshToken }
       let appProps = {}
       if (App.getInitialProps) {
         appProps = await App.getInitialProps(appContext)
