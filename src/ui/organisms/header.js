@@ -17,7 +17,9 @@ const Root = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px 10px;
+  height: 100%;
+  padding: 0 20px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
 `
 
 const Logo = styled.a`

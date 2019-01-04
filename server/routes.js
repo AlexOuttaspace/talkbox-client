@@ -18,3 +18,9 @@ module.exports = routes()
     pattern: '/login',
     page: 'login'
   })
+
+  .add({
+    name: 'chat',
+    pattern: '/chat',
+    page: 'chat'
+  })

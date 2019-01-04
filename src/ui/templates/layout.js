@@ -1,10 +1,9 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-import { Header } from '../organisms/header'
-
 const Root = styled.div`
-  height: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 `
@@ -13,9 +12,12 @@ const Main = styled.div`
   flex: 1;
 `
 
-export const BaseLayout = (props) => (
+export const Layout = ({ children }) => (
   <Root>
-    <Header />
-    <Main {...props} />
+    <Main>{children}</Main>
   </Root>
 )
+
+Layout.propTypes = {
+  children: PropTypes.element.isRequired
+}

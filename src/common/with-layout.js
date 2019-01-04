@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 
 import { hoistHocStatics } from 'src/lib'
-import { BaseLayout } from 'src/ui/templates'
+import { Layout } from 'src/ui/templates'
 
 export const withLayoutHoc = (W) => {
   class WithLayout extends Component {
     render() {
       return (
-        <BaseLayout>
+        <Layout>
           <W {...this.props} />
-        </BaseLayout>
+        </Layout>
       )
     }
   }

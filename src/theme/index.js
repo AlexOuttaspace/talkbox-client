@@ -20,11 +20,11 @@ export const black = '#000'
 // used
 export const green = '#008952'
 export const red = '#d72b3f'
+export const purple = '#4D394B'
 
 // not yet used
 export const blue = '#007bff'
 export const indigo = '#6610f2'
-export const purple = '#6f42c1'
 export const pink = '#e83e8c'
 export const brick = '#bd4932'
 export const orange = '#fd7e14'
