@@ -8,10 +8,6 @@ const Root = styled.div`
   grid-template-columns: 80px 220px auto;
   grid-template-rows: 53px auto 80px;
   grid-auto-columns: 1fr;
-
-  > * {
-    border: 1px solid red;
-  }
 `
 
 const TeamsContainer = styled.div`

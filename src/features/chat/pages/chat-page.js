@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Header, Sidebar } from '../organisms'
+import { Header, Sidebar, Teams } from '../organisms'
 import { ChatLayout } from '../templates'
 
 export const ChatPage = () => {
@@ -9,7 +9,7 @@ export const ChatPage = () => {
       sidebarComponent={<Sidebar />}
       headerComponent={<Header />}
       messagesComponent={<h2>Messages component</h2>}
-      teamsComponent={<h2>Teams component</h2>}
+      teamsComponent={<Teams />}
       inputComponent={<h2>Input component</h2>}
     />
   )

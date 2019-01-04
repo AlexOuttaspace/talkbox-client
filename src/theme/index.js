@@ -21,6 +21,7 @@ export const black = '#000'
 export const green = '#008952'
 export const red = '#d72b3f'
 export const purple = '#4D394B'
+export const darkPurple = '#362234'
 
 // not yet used
 export const blue = '#007bff'
