@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Header, Sidebar, Teams } from '../organisms'
+import { Header, Sidebar, Teams, SendMessage } from '../organisms'
 import { ChatLayout } from '../templates'
 
 export const ChatPage = () => {
@@ -17,12 +17,12 @@ export const ChatPage = () => {
           ]}
         />
       }
-      headerComponent={<Header channelName="Russia not today" />}
+      headerComponent={<Header channelName="russia not today" />}
       messagesComponent={<h2>Messages component</h2>}
       teamsComponent={
         <Teams teams={[{ id: 1, name: 'S' }, { id: 2, name: 'O' }]} />
       }
-      sendMessageComponent={<h2>Input component</h2>}
+      sendMessageComponent={<SendMessage channelName="Russia not today" />}
     />
   )
 }
