@@ -5,10 +5,10 @@ import { propShapes } from '../common'
 
 const Root = styled.li``
 
-export const Channel = ({ channel }) => {
-  return <Root># {channel.name}</Root>
+export const Team = ({ team }) => {
+  return <Root>{team.name}</Root>
 }
 
-Channel.propTypes = {
-  channel: propShapes.channel
+Team.propTypes = {
+  team: propShapes.team
 }

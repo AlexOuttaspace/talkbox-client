@@ -9,3 +9,8 @@ export const user = PropTypes.shape({
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired
 })
+
+export const team = PropTypes.shape({
+  id: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired
+})

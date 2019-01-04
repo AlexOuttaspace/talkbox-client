@@ -1,5 +1,9 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
+
+import { TeamList } from '../molecules'
+import { propShapes } from '../common'
 
 const Root = styled.div`
   height: 100%;
@@ -7,6 +11,14 @@ const Root = styled.div`
   background-color: ${(p) => p.theme.darkPurple};
 `
 
-export const Teams = () => {
-  return <Root>Teams</Root>
+export const Teams = ({ teams }) => {
+  return (
+    <Root>
+      <TeamList teams={teams} />
+    </Root>
+  )
+}
+
+Teams.propTypes = {
+  teams: PropTypes.arrayOf(propShapes.team)
 }

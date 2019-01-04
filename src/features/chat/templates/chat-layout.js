@@ -26,7 +26,7 @@ const MessagesContainer = styled.div`
   grid-area: 2 / 3 / 3 / 4;
 `
 
-const InputContainer = styled.div`
+const SendMessagesContainer = styled.div`
   grid-area: 3 / 3 / 4 / 4;
 `
 
@@ -35,12 +35,12 @@ export const ChatLayout = ({
   sidebarComponent,
   messagesComponent,
   teamsComponent,
-  inputComponent
+  sendMessageComponent
 }) => {
   return (
     <Root>
       <TeamsContainer>{teamsComponent}</TeamsContainer>
-      <InputContainer>{inputComponent}</InputContainer>
+      <SendMessagesContainer>{sendMessageComponent}</SendMessagesContainer>
       <HeaderContainer>{headerComponent}</HeaderContainer>
       <SidebarContainer>{sidebarComponent}</SidebarContainer>
       <MessagesContainer>{messagesComponent}</MessagesContainer>
@@ -53,5 +53,5 @@ ChatLayout.propTypes = {
   sidebarComponent: PropTypes.element.isRequired,
   messagesComponent: PropTypes.element.isRequired,
   teamsComponent: PropTypes.element.isRequired,
-  inputComponent: PropTypes.element.isRequired
+  sendMessageComponent: PropTypes.element.isRequired
 }

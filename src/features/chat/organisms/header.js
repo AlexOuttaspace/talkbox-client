@@ -1,17 +1,6 @@
 import React from 'react'
-import { defineMessages, FormattedMessage } from 'react-intl'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
-
-const i18n = defineMessages({
-  logo: {
-    id: 'base-layout.header.logo',
-    defaultMessage: 'Talkbox'
-  },
-  logout: {
-    id: 'base-layout.header.logout',
-    defaultMessage: 'Logout'
-  }
-})
 
 const Root = styled.header`
   display: flex;
@@ -22,10 +11,10 @@ const Root = styled.header`
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
 `
 
-const Logo = styled.a`
+const Logo = styled.h1`
   text-decoration: none;
-  color: ${(p) => p.theme.green};
-  font-size: 24px;
+  color: ${(p) => p.theme.gray800};
+  font-size: 18px;
   cursor: pointer;
   text-transform: capitalize;
 
@@ -36,12 +25,14 @@ const Logo = styled.a`
   }
 `
 
-export const Header = () => {
+export const Header = ({ channelName }) => {
   return (
     <Root>
-      <Logo>
-        <FormattedMessage {...i18n.logo} />
-      </Logo>
+      <Logo># {channelName}</Logo>
     </Root>
   )
+}
+
+Header.propTypes = {
+  channelName: PropTypes.string.isRequired
 }
