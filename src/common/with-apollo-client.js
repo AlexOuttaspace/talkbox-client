@@ -19,7 +19,6 @@ export const withApolloClient = (App) => {
 
       // get tokens from request
       let { token, refreshToken } = extractTokens(ctx)
-
       // we check tokens. if they are invalid, we just remove them.
       if (token || refreshToken) {
         try {
@@ -30,8 +29,10 @@ export const withApolloClient = (App) => {
           refreshToken = null
           storeTokensInCookie(token, refreshToken, ctx)
         }
-      } else if (!token && refreshToken) {
-        // refresh token if expirde
+      }
+
+      if (!token && refreshToken) {
+        // refresh token if expired
         const { newTokens } = await refreshTokens(refreshToken)
         token = newTokens.token
         refreshToken = newTokens.refreshToken
