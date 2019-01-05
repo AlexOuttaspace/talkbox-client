@@ -11,10 +11,10 @@ const Root = styled.header`
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
 `
 
-const Logo = styled.h1`
+const Logo = styled.h2`
   text-decoration: none;
   color: ${(p) => p.theme.gray800};
-  font-size: 18px;
+  font-size: 1.125rem;
   cursor: pointer;
   text-transform: capitalize;
 

@@ -9,6 +9,7 @@ const Root = styled.div`
   height: 100%;
   width: 100%;
   background-color: ${(p) => p.theme.darkPurple};
+  padding-top: 10px;
 `
 
 export const Teams = ({ teams }) => {

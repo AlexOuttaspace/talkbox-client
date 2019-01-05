@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
 import { propShapes } from '../common'
-import { ChannelList, UserList } from '../molecules'
+import { ChannelList, UserList, SidebarHeader } from '../molecules'
 
 const Root = styled.div`
   height: 100%;
@@ -15,8 +15,7 @@ const Root = styled.div`
 export const Sidebar = ({ username, teamName, channels, users }) => {
   return (
     <Root>
-      <div>{username}</div>
-      <div>{teamName}</div>
+      <SidebarHeader username={username} teamName={teamName} />
       <ChannelList channels={channels} />
       <UserList users={users} />
     </Root>

@@ -23,6 +23,8 @@ export const red = '#d72b3f'
 export const purple = '#4D394B'
 export const darkPurple = '#362234'
 export const purpleWhite = '#958993'
+export const purpleHover = '#3e313c'
+export const sidebarWhite = '#fefdfe'
 
 // not yet used
 export const blue = '#007bff'

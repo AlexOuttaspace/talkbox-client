@@ -39,10 +39,10 @@ export const ChatLayout = ({
 }) => {
   return (
     <Root>
-      <TeamsContainer>{teamsComponent}</TeamsContainer>
-      <SendMessagesContainer>{sendMessageComponent}</SendMessagesContainer>
       <HeaderContainer>{headerComponent}</HeaderContainer>
+      <TeamsContainer>{teamsComponent}</TeamsContainer>
       <SidebarContainer>{sidebarComponent}</SidebarContainer>
+      <SendMessagesContainer>{sendMessageComponent}</SendMessagesContainer>
       <MessagesContainer>{messagesComponent}</MessagesContainer>
     </Root>
   )
