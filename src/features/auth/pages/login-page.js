@@ -73,6 +73,7 @@ class LoginPageView extends Component {
       Router.pushRoute('/')
     } catch (error) {
       // errors occured due to incorrect password/email should not be handled here
+      console.log(error)
     }
   }
 

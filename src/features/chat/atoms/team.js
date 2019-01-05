@@ -11,8 +11,8 @@ const Root = styled.li`
   background-color: ${(p) => transparentize(0.7, p.theme.white)};
   width: 60px;
   height: 60px;
-  font-size: 42px;
-  border-radius: 8px;
+  font-size: 38px;
+  border-radius: 12px;
   cursor: pointer;
 
   display: flex;
