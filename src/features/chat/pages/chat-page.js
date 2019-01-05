@@ -18,7 +18,7 @@ export const ChatPage = () => {
         />
       }
       headerComponent={<Header channelName="russia not today" />}
-      messagesComponent={<h2>Messages component</h2>}
+      messagesComponent={<div />}
       teamsComponent={
         <Teams teams={[{ id: 1, name: 'S' }, { id: 2, name: 'O' }]} />
       }
