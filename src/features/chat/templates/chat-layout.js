@@ -4,6 +4,7 @@ import styled from 'styled-components'
 
 const Root = styled.div`
   height: 100vh;
+  overflow-y: hidden;
   display: grid;
   grid-template-columns: 80px 220px auto;
   grid-template-rows: 53px auto 80px;

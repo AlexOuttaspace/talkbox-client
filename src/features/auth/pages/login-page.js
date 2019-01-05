@@ -70,7 +70,7 @@ class LoginPageView extends Component {
       storeTokenMutation({ variables: { token, refreshToken } })
       storeTokensInCookie(token, refreshToken)
 
-      Router.pushRoute('/')
+      Router.pushRoute('/chat')
     } catch (error) {
       // errors occured due to incorrect password/email should not be handled here
       console.log(error)

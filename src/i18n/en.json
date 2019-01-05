@@ -15,12 +15,6 @@
       "password": "Password"
     }
   },
-  "base-layout": {
-    "header": {
-      "logo": "Talkbox",
-      "logout": "Logout"
-    }
-  },
   "register-page": {
     "sub-header": "Fill out the form and join the talkbox community!",
     "main-header": "Register",
@@ -34,6 +28,19 @@
       "password": "Password",
       "username": "Username",
       "confirm-password": "Confirm password"
+    }
+  },
+  "chat-page": {
+    "sidebar": {
+      "user-list": {
+        "title": "Direct messages"
+      },
+      "channels-list": {
+        "title": "Channels"
+      }
+    },
+    "message-input": {
+      "placeholder": "Message"
     }
   }
 }

@@ -15,12 +15,6 @@
       "password": ""
     }
   },
-  "base-layout": {
-    "header": {
-      "logo": "",
-      "logout": ""
-    }
-  },
   "register-page": {
     "sub-header": "",
     "main-header": "",
@@ -34,6 +28,19 @@
       "password": "",
       "username": "",
       "confirm-password": ""
+    }
+  },
+  "chat-page": {
+    "sidebar": {
+      "user-list": {
+        "title": ""
+      },
+      "channels-list": {
+        "title": ""
+      }
+    },
+    "message-input": {
+      "placeholder": ""
     }
   }
 }

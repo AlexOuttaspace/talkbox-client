@@ -18,6 +18,8 @@ const Root = styled.li`
   display: flex;
   align-items: center;
   justify-content: center;
+  vertical-align: middle;
+  text-transform: uppercase;
 
   transition: box-shadow 0.1s;
   :hover {
