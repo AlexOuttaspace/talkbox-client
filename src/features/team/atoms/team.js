@@ -18,8 +18,8 @@ const LinkElement = styled.a`
   display: block;
   color: ${(p) => lighten(0.7, p.theme.purpleWhite)};
   background-color: ${(p) => transparentize(0.7, p.theme.white)};
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   font-size: 38px;
   border-radius: 12px;
   cursor: pointer;
@@ -43,8 +43,10 @@ const LinkElement = styled.a`
   }
 `
 
-const TeamView = withRouter(({ team, ...rest }) => {
-  console.log(Router, rest)
+const TeamView = ({ team, router }) => {
+  // router will be user to get messages id (router.query.messagesId)
+  console.log(router)
+
   return (
     <Root>
       <Link route="team" params={{ teamId: team.id }}>
@@ -52,7 +54,7 @@ const TeamView = withRouter(({ team, ...rest }) => {
       </Link>
     </Root>
   )
-})
+}
 
 TeamView.propTypes = {
   team: propShapes.team,
