@@ -2,25 +2,10 @@ const routes = require('next-routes')
 
 // See https://github.com/fridays/next-routes
 module.exports = routes()
-  .add({
-    name: '',
-    pattern: '/',
-    page: 'dashboard'
-  })
-
-  .add({
-    name: 'register',
-    pattern: '/register',
-    page: 'register'
-  })
-  .add({
-    name: 'login',
-    pattern: '/login',
-    page: 'login'
-  })
-
+  .add('register')
+  .add('login')
+  .add('create-team')
   .add({
     name: 'team',
-    pattern: '/team/:id',
-    page: 'team'
+    pattern: '/team/:teamId'
   })

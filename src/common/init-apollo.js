@@ -53,7 +53,7 @@ function create(initialState, { token = '', refreshToken = '' }) {
     })
   })
 
-  // this link will extact token from apollo-link-state and add it to request's headers
+  // this link will extract token from apollo-link-state and add it to request's headers
   const authLink = setContext((_, { headers, cache }) => {
     const {
       authState: { token, refreshToken }
