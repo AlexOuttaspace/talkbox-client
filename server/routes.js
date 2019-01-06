@@ -5,7 +5,4 @@ module.exports = routes()
   .add('register')
   .add('login')
   .add('create-team')
-  .add({
-    name: 'team',
-    pattern: '/team/:teamId'
-  })
+  .add('/team/:teamId?/:messagesId?', 'team')

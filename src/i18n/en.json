@@ -1,7 +1,4 @@
 {
-  "dashboard": {
-    "greeting": "Hello!"
-  },
   "login-page": {
     "sub-header": "Welcome back!",
     "main-header": "Login",

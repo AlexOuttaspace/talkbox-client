@@ -6,6 +6,7 @@ import { isEmpty } from 'ramda'
 
 import { Header, Sidebar, Teams, SendMessage } from '../organisms'
 import { TeamLayout } from '../templates'
+import { ModalController } from '../common'
 
 import { Router } from 'server/routes'
 import { getTokens } from 'src/common'
@@ -13,17 +14,18 @@ import { allTeamsQuery } from 'src/services'
 
 export class TeamPage extends Component {
   static propTypes = {
-    currentTeamId: PropTypes.number.isRequired
+    currentTeamId: PropTypes.number
   }
 
-  static getInitialProps = async (context) => {
-    const currentTeamId = +context.query.teamId
+  static getInitialProps = async ({ query }) => {
+    const currentTeamId = +query.teamId
+    const currentMessagesId = +query.messagesId
 
-    return { currentTeamId }
+    return { currentTeamId, currentMessagesId }
   }
 
   render() {
-    const { currentTeamId } = this.props
+    const { currentTeamId, currentMessagesId } = this.props
 
     return (
       <Query query={getTokens}>
@@ -62,35 +64,61 @@ export class TeamPage extends Component {
               const currentTeam =
                 allTeams.find((team) => team.id === currentTeamId) || {}
 
-              // this is a hacky way to handle invalid team id's in url
+              // from this line to line 95 is a hacky way
+              // to handle invalid team/messages ids in the url
               // TODO: figure out a way to do this on server, not on client
-              if (isEmpty(currentTeam) && process.browser) {
-                Router.pushRoute(`/team/${allTeams[0].id}`)
+              if (isEmpty(currentTeam)) {
+                if (process.browser) {
+                  const redirectTeamId = allTeams[0].id
+                  const redirectChannelId = allTeams[0].channels[0].id
+                  const redirectLink = `/team/${redirectTeamId}/${redirectChannelId}`
+
+                  Router.pushRoute(redirectLink)
+                }
+                return null
+              }
+
+              const currentChannel =
+                currentTeam.channels.find(
+                  (channel) => channel.id === currentMessagesId
+                ) || {}
+
+              if (isEmpty(currentChannel)) {
+                if (process.browser) {
+                  const generalChannel = currentTeam.channels.find(
+                    (channel) => channel.name === 'general'
+                  )
+
+                  Router.pushRoute(
+                    `/team/${currentTeam.id}/${generalChannel.id}`
+                  )
+                }
+
+                return null
               }
 
               return (
-                <TeamLayout
-                  sidebarComponent={
-                    <Sidebar
-                      teamName={currentTeam.name || ''}
-                      username={username}
-                      channels={[
-                        { id: 1, name: 'general' },
-                        { id: 2, name: 'random' }
-                      ]}
-                      users={[
-                        { id: 1, name: 'talkboxbot' },
-                        { id: 2, name: 'Leonard Euler' }
-                      ]}
-                    />
-                  }
-                  headerComponent={<Header channelName="russia not today" />}
-                  messagesComponent={<div />}
-                  teamsComponent={<Teams teams={teams} />}
-                  sendMessageComponent={
-                    <SendMessage channelName="Russia not today" />
-                  }
-                />
+                <ModalController>
+                  <TeamLayout
+                    sidebarComponent={
+                      <Sidebar
+                        teamName={currentTeam.name || ''}
+                        username={username}
+                        channels={currentTeam.channels}
+                        users={[
+                          { id: 1, name: 'talkboxbot' },
+                          { id: 2, name: 'Leonard Euler' }
+                        ]}
+                      />
+                    }
+                    headerComponent={<Header channelName="russia not today" />}
+                    messagesComponent={<div />}
+                    teamsComponent={<Teams teams={teams} />}
+                    sendMessageComponent={
+                      <SendMessage channelName="Russia not today" />
+                    }
+                  />
+                </ModalController>
               )
             }}
           </Query>

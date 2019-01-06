@@ -15,9 +15,19 @@ import { FormRoot } from 'src/ui/templates'
 const onSubmit = async (createTeamMutation, values) => {
   try {
     const { name } = values
-    const response = await createTeamMutation({ variables: { name } })
+    const {
+      data: {
+        createTeam: { ok, errors, team }
+      }
+    } = await createTeamMutation({ variables: { name } })
 
-    return console.log('response', response)
+    if (!ok) {
+      // TODO: add more error handling here
+      console.log('error:', errors)
+      return
+    }
+
+    return Router.pushRoute(`/team/${team.id}/${team.channels[0].id}`)
   } catch (error) {
     if (error.message.includes('Not authenticated')) {
       storeTokensInCookie(null, null)

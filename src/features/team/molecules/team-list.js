@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { withRouter } from 'next/router'
+import { compose } from 'ramda'
 
 import { propShapes } from '../common'
 import { Team } from '../atoms'
@@ -12,16 +14,28 @@ const Root = styled.ul`
   align-items: center;
 `
 
-export const TeamList = ({ teams }) => {
+const TeamListView = ({ teams, router }) => {
+  const currentTeamId = +router.query.teamId
+  const messagesId = +router.query.messagesId
   return (
     <Root>
       {teams.map((team) => (
-        <Team key={team.id} team={team} />
+        <Team
+          messagesId={messagesId}
+          isCurrent={currentTeamId === team.id}
+          key={team.id}
+          team={team}
+        />
       ))}
     </Root>
   )
 }
 
-TeamList.propTypes = {
-  teams: PropTypes.arrayOf(propShapes.team)
+TeamListView.propTypes = {
+  teams: PropTypes.arrayOf(propShapes.team),
+  router: PropTypes.object.isRequired
 }
+
+const enhance = compose(withRouter)
+
+export const TeamList = enhance(TeamListView)

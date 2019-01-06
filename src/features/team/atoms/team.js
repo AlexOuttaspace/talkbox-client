@@ -1,13 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { lighten, transparentize } from 'polished'
-import { withRouter } from 'next/router'
 import PropTypes from 'prop-types'
-import { compose } from 'ramda'
 
 import { propShapes } from '../common'
 
-import { Link, Router } from 'server/routes'
+import { Link } from 'server/routes'
 
 const Root = styled.li`
   flex-shrink: 0;
@@ -27,7 +25,6 @@ const LinkElement = styled.a`
   display: flex;
   align-items: center;
   justify-content: center;
-  vertical-align: middle;
   text-transform: uppercase;
 
   transition: box-shadow 0.1s;
@@ -35,32 +32,30 @@ const LinkElement = styled.a`
     box-shadow: inset 0 0 5px 2px ${(p) => transparentize(0.7, p.theme.white)};
   }
 
+  ${(p) =>
+    p.isCurrent &&
+    `
+    box-shadow: inset 0 0 5px 2px ${transparentize(0.7, p.theme.white)};
+  `};
+
   :focus,
   :active,
-  :visited: {
+  :visited {
     text-decoration: none;
     color: inherit;
   }
 `
 
-const TeamView = ({ team, router }) => {
-  // router will be user to get messages id (router.query.messagesId)
-  console.log(router)
+export const Team = ({ team, isCurrent, messagesId }) => (
+  <Root>
+    <Link route={`/team/${team.id}/${messagesId}`}>
+      <LinkElement isCurrent={isCurrent}>{team.name}</LinkElement>
+    </Link>
+  </Root>
+)
 
-  return (
-    <Root>
-      <Link route="team" params={{ teamId: team.id }}>
-        <LinkElement>{team.name}</LinkElement>
-      </Link>
-    </Root>
-  )
-}
-
-TeamView.propTypes = {
+Team.propTypes = {
   team: propShapes.team,
-  router: PropTypes.object.isRequired
+  messagesId: PropTypes.number.isRequired,
+  isCurrent: PropTypes.bool.isRequired
 }
-
-const enhance = compose(withRouter)
-
-export const Team = enhance(TeamView)

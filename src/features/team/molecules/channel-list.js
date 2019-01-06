@@ -5,7 +5,7 @@ import { defineMessages, intlShape } from 'react-intl'
 import { compose } from 'ramda'
 
 import { propShapes } from '../common'
-import { Channel } from '../atoms'
+import { Channel, AddChannelButton } from '../atoms'
 
 import { withIntl } from 'src/common'
 
@@ -28,6 +28,7 @@ const Header = styled.header`
 
   display: flex;
   align-items: center;
+  justify-content: space-between;
 `
 
 const Title = styled.h3`
@@ -39,6 +40,7 @@ export const ChannelListView = ({ channels, intl }) => {
     <Root>
       <Header>
         <Title>{intl.formatMessage(i18n.channels)}</Title>
+        <AddChannelButton />
       </Header>
       {channels.map((channel) => (
         <Channel key={channel.id} channel={channel} />
