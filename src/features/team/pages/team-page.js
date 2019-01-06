@@ -3,12 +3,12 @@ import { Query } from 'react-apollo'
 import decode from 'jwt-decode'
 
 import { Header, Sidebar, Teams, SendMessage } from '../organisms'
-import { ChatLayout } from '../templates'
+import { TeamLayout } from '../templates'
 
 import { getTokens } from 'src/common'
 import { allTeamsQuery } from 'src/services'
 
-export const ChatPage = () => {
+export const TeamPage = () => {
   return (
     <Query query={getTokens}>
       {({
@@ -54,7 +54,7 @@ export const ChatPage = () => {
             )
 
             return (
-              <ChatLayout
+              <TeamLayout
                 sidebarComponent={
                   <Sidebar
                     teamName="Super science friends"

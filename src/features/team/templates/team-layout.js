@@ -31,7 +31,7 @@ const SendMessagesContainer = styled.div`
   grid-area: 3 / 3 / 4 / 4;
 `
 
-export const ChatLayout = ({
+export const TeamLayout = ({
   headerComponent,
   sidebarComponent,
   messagesComponent,
@@ -49,7 +49,7 @@ export const ChatLayout = ({
   )
 }
 
-ChatLayout.propTypes = {
+TeamLayout.propTypes = {
   headerComponent: PropTypes.element.isRequired,
   sidebarComponent: PropTypes.element.isRequired,
   messagesComponent: PropTypes.element.isRequired,

@@ -20,7 +20,7 @@ module.exports = routes()
   })
 
   .add({
-    name: 'chat',
-    pattern: '/chat',
-    page: 'chat'
+    name: 'team',
+    pattern: '/team/:id',
+    page: 'team'
   })

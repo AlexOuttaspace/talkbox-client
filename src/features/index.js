@@ -5,4 +5,4 @@ export { LoginPage } from './auth'
 
 export { CreateTeamPage } from './create-team'
 
-export { ChatPage } from './chat'
+export { TeamPage } from './team'
