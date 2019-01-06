@@ -16,7 +16,6 @@ const Logo = styled.h2`
   color: ${(p) => p.theme.gray800};
   font-size: 1.125rem;
   cursor: pointer;
-  text-transform: capitalize;
 
   :active,
   :focus,
@@ -28,7 +27,7 @@ const Logo = styled.h2`
 export const Header = ({ channelName }) => {
   return (
     <Root>
-      <Logo># {channelName}</Logo>
+      <Logo>#{channelName}</Logo>
     </Root>
   )
 }

@@ -111,11 +111,13 @@ export class TeamPage extends Component {
                         ]}
                       />
                     }
-                    headerComponent={<Header channelName="russia not today" />}
+                    headerComponent={
+                      <Header channelName={currentChannel.name} />
+                    }
                     messagesComponent={<div />}
                     teamsComponent={<Teams teams={teams} />}
                     sendMessageComponent={
-                      <SendMessage channelName="Russia not today" />
+                      <SendMessage channelName={currentChannel.name} />
                     }
                   />
                 </ModalController>
