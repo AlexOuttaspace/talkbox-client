@@ -1,5 +1,3 @@
-const CircularDependencyPlugin = require('circular-dependency-plugin')
-
 const { ANALYZE } = process.env
 
 const publicRuntimeConfig = {
@@ -18,6 +16,7 @@ const serverRuntimeConfig = {
 module.exports = {
   publicRuntimeConfig,
   serverRuntimeConfig,
+
   webpack(config, { isServer }) {
     if (ANALYZE) {
       const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
@@ -30,17 +29,6 @@ module.exports = {
         })
       )
     }
-
-    // config.plugins.push(
-    //   new CircularDependencyPlugin({
-    //     // exclude detection of files based on a RegExp
-    //     exclude: /a\.js|node_modules/,
-    //     // add errors to webpack instead of warnings
-    //     failOnError: true,
-    //     // set the current working directory for displaying module paths
-    //     cwd: process.cwd()
-    //   })
-    // )
 
     return config
   }

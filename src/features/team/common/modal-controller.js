@@ -15,10 +15,10 @@ export class ModalController extends Component {
   }
 
   state = {
-    currentModal: ''
+    currentModal: 'add-channel'
   }
 
-  getCurrentModal = () => {
+  getModalContents = () => {
     const { currentModal } = this.state
 
     if (!currentModal) return null
@@ -43,10 +43,9 @@ export class ModalController extends Component {
     return (
       <Provider value={this.setModalComponentTo}>
         {modalIsOpen && (
-          <Modal
-            onClose={() => this.setModalComponentTo('')}
-            modalName={currentModal}
-          />
+          <Modal onClose={() => this.setModalComponentTo('')}>
+            {this.getModalContents()}
+          </Modal>
         )}
         {children}
       </Provider>

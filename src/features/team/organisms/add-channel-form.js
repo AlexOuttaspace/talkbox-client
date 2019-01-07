@@ -65,4 +65,6 @@ class AddChannelFormView extends Component {
   }
 }
 
-export const AddChannelForm = AddChannelFormView
+const enhance = compose(withIntl)
+
+export const AddChannelForm = enhance(AddChannelFormView)

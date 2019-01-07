@@ -2,7 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
+import { ModalCloseButton } from 'src/ui/molecules'
+
 const Root = styled.div`
+  background-color: ${(p) => p.theme.white};
   position: absolute;
   left: 0;
   right: 0;
@@ -14,15 +17,9 @@ const Root = styled.div`
   align-items: center;
 `
 
-const CloseButton = styled.div`
-  position: absolute;
-  right: 5px;
-  top: 5px;
-`
-
 export const Modal = ({ children, onClose }) => (
   <Root>
-    <CloseButton onClick={onClose}>x</CloseButton>
+    <ModalCloseButton onClick={onClose} />
     {children}
   </Root>
 )
