@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { compose } from 'ramda'
 import { Form } from 'react-final-form'
 import { intlShape, defineMessages } from 'react-intl'
+import { withRouter } from 'next/router'
+import { graphql } from 'react-apollo'
 
+import { createChannelMutation, allTeamsQuery } from 'src/services'
 import { SubmitButton } from 'src/ui/atoms'
 import { FormField, FormHeader } from 'src/ui/molecules'
 import { FormRoot } from 'src/ui/templates'
@@ -26,11 +30,41 @@ const i18n = defineMessages({
 
 class AddChannelFormView extends Component {
   static propTypes = {
-    intl: intlShape
+    intl: intlShape,
+    router: PropTypes.object.isRequired,
+    createChannelMutation: PropTypes.func.isRequired,
+    closeModal: PropTypes.func.isRequired
   }
 
-  onSubmit = (values) => {
-    console.log(values)
+  onSubmit = async ({ name }) => {
+    const {
+      closeModal,
+      createChannelMutation,
+      router: { query }
+    } = this.props
+
+    const teamId = +query.teamId
+    try {
+      const response = await createChannelMutation({
+        variables: { teamId, name },
+        update: (store, { data: { createChannel } }) => {
+          const { ok, channel } = createChannel
+          if (!ok) return
+
+          const data = store.readQuery({ query: allTeamsQuery })
+          const teamIndex = data.allTeams.findIndex(
+            (team) => team.id === teamId
+          )
+          data.allTeams[teamIndex].channels.push(channel)
+          console.log(data)
+          store.writeQuery({ query: allTeamsQuery, data })
+        }
+      })
+
+      return closeModal()
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   render() {
@@ -64,6 +98,10 @@ class AddChannelFormView extends Component {
   }
 }
 
-const enhance = compose(withIntl)
+const enhance = compose(
+  withIntl,
+  withRouter,
+  graphql(createChannelMutation, { name: 'createChannelMutation' })
+)
 
 export const AddChannelForm = enhance(AddChannelFormView)

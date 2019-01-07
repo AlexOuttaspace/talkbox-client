@@ -25,7 +25,9 @@ export class ModalController extends Component {
 
     switch (currentModal) {
       case 'add-channel':
-        return <AddChannelForm />
+        return (
+          <AddChannelForm closeModal={() => this.setModalComponentTo('')} />
+        )
       default:
         return null
     }
