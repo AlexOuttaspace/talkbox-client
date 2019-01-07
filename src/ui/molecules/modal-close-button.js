@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
@@ -52,20 +52,38 @@ const Root = styled.button`
       color: ${(p) => p.theme.white};
     }
     background-color: ${(p) => p.theme.green};
+    box-shadow: none;
   }
 `
 
-export const ModalCloseButton = ({ onClick }) => {
-  return (
-    <Root onClick={onClick}>
-      <IconWrapper>
-        <CloseIcon />
-      </IconWrapper>
-      <Esc>esc</Esc>
-    </Root>
-  )
-}
+export class ModalCloseButton extends Component {
+  static propTypes = {
+    onClick: PropTypes.func.isRequired
+  }
 
-ModalCloseButton.propTypes = {
-  onClick: PropTypes.func.isRequired
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleEscapeKey, false)
+  }
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleEscapeKey, false)
+  }
+
+  handleEscapeKey = (e) => {
+    if (e.keyCode === 27) {
+      return this.props.onClick()
+    }
+  }
+
+  render() {
+    const { onClick } = this.props
+
+    return (
+      <Root onClick={onClick}>
+        <IconWrapper>
+          <CloseIcon />
+        </IconWrapper>
+        <Esc>esc</Esc>
+      </Root>
+    )
+  }
 }

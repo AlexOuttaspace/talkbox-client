@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import styled from 'styled-components'
 import { compose } from 'ramda'
 import { Form } from 'react-final-form'
 import { intlShape, defineMessages } from 'react-intl'
