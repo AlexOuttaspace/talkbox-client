@@ -37,13 +37,6 @@ const LinkElement = styled.a`
     `
     box-shadow: inset 0 0 5px 2px ${transparentize(0.7, p.theme.white)};
   `};
-
-  :focus,
-  :active,
-  :visited {
-    text-decoration: none;
-    color: inherit;
-  }
 `
 
 export const Team = ({ team, isCurrent, messagesId }) => (
