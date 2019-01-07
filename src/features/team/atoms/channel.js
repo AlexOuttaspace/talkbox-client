@@ -5,7 +5,23 @@ import { lighten } from 'polished'
 
 import { propShapes } from '../common'
 
+import { Link } from 'server/routes'
+
 const Root = styled.li`
+  width: 100%;
+`
+
+const LinkElement = styled.a`
+  text-decoration: inherit;
+  color: inherit;
+
+  :focus,
+  :hover,
+  :active {
+    text-decoration: inherit;
+    color: inherit;
+  }
+
   width: 100%;
   height: 26px;
 
@@ -39,11 +55,18 @@ const Root = styled.li`
   `};
 `
 
-export const Channel = ({ channel, selected }) => {
-  return <Root selected={selected}>{channel.name}</Root>
+export const Channel = ({ channel, selected, teamId }) => {
+  return (
+    <Root>
+      <Link route={`/team/${teamId}/${channel.id}`}>
+        <LinkElement selected={selected}>{channel.name}</LinkElement>
+      </Link>
+    </Root>
+  )
 }
 
 Channel.propTypes = {
   channel: propShapes.channel,
-  selected: PropTypes.bool.isRequired
+  selected: PropTypes.bool.isRequired,
+  teamId: PropTypes.number.isRequired
 }

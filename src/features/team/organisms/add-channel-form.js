@@ -6,6 +6,7 @@ import { intlShape, defineMessages } from 'react-intl'
 import { withRouter } from 'next/router'
 import { graphql } from 'react-apollo'
 
+import { Router } from 'server/routes'
 import { createChannelMutation, allTeamsQuery } from 'src/services'
 import { SubmitButton } from 'src/ui/atoms'
 import { FormField, FormHeader } from 'src/ui/molecules'
@@ -72,6 +73,10 @@ class AddChannelFormView extends Component {
           data.allTeams[teamIndex].channels.push(channel)
 
           store.writeQuery({ query: allTeamsQuery, data })
+
+          // if it is not an optimistic response
+          if (channel.id !== -1)
+            return Router.pushRoute(`/team/${teamId}/${channel.id}`)
         }
       })
 
