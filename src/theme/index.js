@@ -18,7 +18,7 @@ export const gray900 = '#212529'
 export const black = '#000'
 
 // used
-export const green = '#008952'
+export const green = '#4c9689'
 export const red = '#d72b3f'
 export const purple = '#4D394B'
 export const darkPurple = '#362234'

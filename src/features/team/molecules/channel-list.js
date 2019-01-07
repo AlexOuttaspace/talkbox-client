@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { defineMessages, intlShape } from 'react-intl'
 import { compose } from 'ramda'
+import { withRouter } from 'next/router'
 
 import { propShapes } from '../common'
 import { Channel, AddChannelButton } from '../atoms'
@@ -35,7 +36,9 @@ const Title = styled.h3`
   font-size: 1rem;
 `
 
-export const ChannelListView = ({ channels, intl }) => {
+export const ChannelListView = ({ channels, intl, router }) => {
+  const currentChannelId = +router.query.messagesId
+
   return (
     <Root>
       <Header>
@@ -43,7 +46,11 @@ export const ChannelListView = ({ channels, intl }) => {
         <AddChannelButton />
       </Header>
       {channels.map((channel) => (
-        <Channel key={channel.id} channel={channel} />
+        <Channel
+          selected={currentChannelId === channel.id}
+          key={channel.id}
+          channel={channel}
+        />
       ))}
     </Root>
   )
@@ -51,9 +58,13 @@ export const ChannelListView = ({ channels, intl }) => {
 
 ChannelListView.propTypes = {
   intl: intlShape,
-  channels: PropTypes.arrayOf(propShapes.channel)
+  channels: PropTypes.arrayOf(propShapes.channel),
+  router: PropTypes.object.isRequired
 }
 
-const enhance = compose(withIntl)
+const enhance = compose(
+  withIntl,
+  withRouter
+)
 
 export const ChannelList = enhance(ChannelListView)

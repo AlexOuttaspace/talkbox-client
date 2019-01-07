@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
+import PropTypes from 'prop-types'
+import { lighten } from 'polished'
 
 import { propShapes } from '../common'
 
@@ -23,12 +25,25 @@ const Root = styled.li`
     content: '#';
     margin-right: 6px;
   }
+
+  ${(p) =>
+    p.selected &&
+    `
+    background-color: ${p.theme.green};
+    color: ${lighten(0.7, p.theme.purpleWhite)}
+
+    :hover {
+      background-color: ${p.theme.green};
+      color: ${lighten(0.7, p.theme.purpleWhite)}
+    }
+  `};
 `
 
-export const Channel = ({ channel }) => {
-  return <Root>{channel.name}</Root>
+export const Channel = ({ channel, selected }) => {
+  return <Root selected={selected}>{channel.name}</Root>
 }
 
 Channel.propTypes = {
-  channel: propShapes.channel
+  channel: propShapes.channel,
+  selected: PropTypes.bool.isRequired
 }
