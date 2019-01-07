@@ -5,3 +5,5 @@ export { createTeamMutation } from './team-mutations'
 export { allTeamsQuery } from './team-queries'
 
 export { createChannelMutation } from './channel-mutations'
+
+export { addMemberMutation } from './member-mutation'

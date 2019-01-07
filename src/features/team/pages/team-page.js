@@ -14,7 +14,8 @@ import { allTeamsQuery } from 'src/services'
 
 export class TeamPage extends Component {
   static propTypes = {
-    currentTeamId: PropTypes.number
+    currentTeamId: PropTypes.number,
+    currentMessagesId: PropTypes.number
   }
 
   static getInitialProps = async ({ query }) => {
@@ -37,7 +38,7 @@ export class TeamPage extends Component {
           <Query query={allTeamsQuery}>
             {({ loading, error, data: { allTeams } }) => {
               if (!refreshToken) {
-                console.log('error extracting token')
+                console.log('error extracting token in TeamPage')
                 return null
               }
 
@@ -55,6 +56,8 @@ export class TeamPage extends Component {
               } catch (error) {
                 console.log(error)
               }
+
+              console.log(allTeams)
 
               const teams = allTeams.map((team) => ({
                 id: team.id,

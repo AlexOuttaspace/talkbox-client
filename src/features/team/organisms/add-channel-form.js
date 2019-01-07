@@ -12,7 +12,7 @@ import { SubmitButton } from 'src/ui/atoms'
 import { FormField, FormHeader } from 'src/ui/molecules'
 import { FormRoot } from 'src/ui/templates'
 import { validateForm } from 'src/lib'
-import { createChannelSchema, withIntl } from 'src/common'
+import { createChannelSchema, withIntl, storeTokensInCookie } from 'src/common'
 
 const i18n = defineMessages({
   title: {
@@ -46,7 +46,6 @@ class AddChannelFormView extends Component {
 
     const teamId = +query.teamId
     try {
-      closeModal()
       await createChannelMutation({
         variables: { teamId, name },
         // We can use optimisctic response as channel name is not unique.
@@ -80,8 +79,14 @@ class AddChannelFormView extends Component {
             return Router.pushRoute(`/team/${teamId}/${channel.id}`)
         }
       })
+      closeModal()
     } catch (error) {
-      console.log(error) // :D
+      if (error.message.includes('Not authenticated')) {
+        storeTokensInCookie(null, null)
+        return Router.pushRoute('/login')
+      }
+
+      // TODO: add handling for network errors
     }
   }
 

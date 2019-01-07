@@ -10,7 +10,8 @@ export {
   createTeamSchema,
   loginSchema,
   channelName,
-  createChannelSchema
+  createChannelSchema,
+  addMemberSchema
 } from './schema'
 
 export {

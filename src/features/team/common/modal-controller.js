@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import { Modal } from '../templates'
-import { AddChannelForm } from '../organisms'
+import { AddChannelForm, InviteUserForm } from '../organisms'
 
 const Context = React.createContext()
 
@@ -18,6 +18,8 @@ export class ModalController extends Component {
     currentModal: ''
   }
 
+  closeModal = () => this.setState({ currentModal: '' })
+
   getModalContents = () => {
     const { currentModal } = this.state
 
@@ -25,9 +27,9 @@ export class ModalController extends Component {
 
     switch (currentModal) {
       case 'add-channel':
-        return (
-          <AddChannelForm closeModal={() => this.setModalComponentTo('')} />
-        )
+        return <AddChannelForm closeModal={this.closeModal} />
+      case 'invite-user':
+        return <InviteUserForm closeModal={this.closeModal} />
       default:
         return null
     }

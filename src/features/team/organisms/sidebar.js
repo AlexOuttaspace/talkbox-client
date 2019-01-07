@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
 import { propShapes } from '../common'
+import { InviteUserButton } from '../atoms'
 import { ChannelList, UserList, SidebarHeader } from '../molecules'
 
 const Root = styled.div`
@@ -18,6 +19,7 @@ export const Sidebar = ({ username, teamName, channels, users }) => {
       <SidebarHeader username={username} teamName={teamName} />
       <ChannelList channels={channels} />
       <UserList users={users} />
+      <InviteUserButton />
     </Root>
   )
 }

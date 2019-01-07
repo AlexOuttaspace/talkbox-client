@@ -70,7 +70,8 @@ class LoginPageView extends Component {
       storeTokenMutation({ variables: { token, refreshToken } })
       storeTokensInCookie(token, refreshToken)
 
-      Router.pushRoute('/chat')
+      // TODO: check if user has teams, if not, redirect to /create-teams
+      return Router.pushRoute('/team')
     } catch (error) {
       // errors occured due to incorrect password/email should not be handled here
       console.log(error)

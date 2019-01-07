@@ -74,3 +74,7 @@ export const channelName = yup
 export const createChannelSchema = yup.object().shape({
   name: channelName
 })
+
+export const addMemberSchema = yup.object().shape({
+  email
+})

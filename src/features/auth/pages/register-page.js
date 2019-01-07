@@ -7,6 +7,7 @@ import { graphql } from 'react-apollo'
 
 import { AuthSwitch } from '../atoms'
 
+import { Router } from 'server/routes'
 import { FormRoot } from 'src/ui/templates'
 import { FormField, FormHeader } from 'src/ui/molecules'
 import { SubmitButton } from 'src/ui/atoms'
@@ -66,6 +67,8 @@ class RegisterPageView extends Component {
       if (!register.ok) {
         return handleServerErrors(register.errors)
       }
+
+      return Router.pushRoute('/login')
     } catch (error) {
       // TODO: add handling for network errors
     }

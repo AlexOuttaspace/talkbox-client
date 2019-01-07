@@ -5,7 +5,7 @@ import { compose } from 'ramda'
 import { graphql } from 'react-apollo'
 
 import { Router } from 'server/routes'
-import { validateForm } from 'src/lib'
+import { validateForm, handleServerErrors } from 'src/lib'
 import { createTeamSchema, storeTokensInCookie } from 'src/common'
 import { createTeamMutation } from 'src/services'
 import { FormHeader, FormField } from 'src/ui/molecules'
@@ -22,9 +22,7 @@ const onSubmit = async (createTeamMutation, values) => {
     } = await createTeamMutation({ variables: { name } })
 
     if (!ok) {
-      // TODO: add more error handling here
-      console.log('error:', errors)
-      return
+      return handleServerErrors(errors)
     }
 
     return Router.pushRoute(`/team/${team.id}/${team.channels[0].id}`)
