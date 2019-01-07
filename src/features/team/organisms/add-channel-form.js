@@ -46,6 +46,7 @@ class AddChannelFormView extends Component {
 
     const teamId = +query.teamId
     try {
+      closeModal()
       await createChannelMutation({
         variables: { teamId, name },
         // We can use optimisctic response as channel name is not unique.
@@ -79,10 +80,8 @@ class AddChannelFormView extends Component {
             return Router.pushRoute(`/team/${teamId}/${channel.id}`)
         }
       })
-
-      closeModal()
     } catch (error) {
-      console.log(error)
+      console.log(error) // :D
     }
   }
 
