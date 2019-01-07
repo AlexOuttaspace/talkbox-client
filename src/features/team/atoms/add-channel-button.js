@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { lighten } from 'polished'
-import { compose } from 'ramda'
 
 import { ModalConsumer } from '../common'
 
@@ -29,18 +28,19 @@ const Root = styled.button`
   }
 `
 
-const AddChannelButtonView = () => {
+export const AddChannelButton = () => {
   return (
     <ModalConsumer>
       {(setModalComponentTo) => (
-        <Root onClick={() => setModalComponentTo('add-channel')}>
+        <Root
+          onClick={(e) => {
+            e.target.blur()
+            setModalComponentTo('add-channel')
+          }}
+        >
           <PlusIcon />
         </Root>
       )}
     </ModalConsumer>
   )
 }
-
-const enhance = compose((a) => a)
-
-export const AddChannelButton = enhance(AddChannelButtonView)

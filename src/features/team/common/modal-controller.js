@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import { Modal } from '../templates'
+import { AddChannelForm } from '../organisms'
 
 const Context = React.createContext()
 
@@ -24,7 +25,7 @@ export class ModalController extends Component {
 
     switch (currentModal) {
       case 'add-channel':
-        return <div>add channel modal</div>
+        return <AddChannelForm />
       default:
         return null
     }
@@ -42,9 +43,10 @@ export class ModalController extends Component {
     return (
       <Provider value={this.setModalComponentTo}>
         {modalIsOpen && (
-          <Modal onClose={() => this.setModalComponentTo('')}>
-            {this.getCurrentModal()}
-          </Modal>
+          <Modal
+            onClose={() => this.setModalComponentTo('')}
+            modalName={currentModal}
+          />
         )}
         {children}
       </Provider>

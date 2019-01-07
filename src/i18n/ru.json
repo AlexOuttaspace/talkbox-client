@@ -12,6 +12,15 @@
       "password": ""
     }
   },
+  "add-channel-form": {
+    "title": "",
+    "submit-button": "",
+    "input": {
+      "name": {
+        "placeholder": ""
+      }
+    }
+  },
   "register-page": {
     "sub-header": "",
     "main-header": "",

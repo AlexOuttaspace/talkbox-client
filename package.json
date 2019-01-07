@@ -60,7 +60,6 @@
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-plugin-ramda": "^2.0.0",
     "babel-plugin-styled-components": "^1.9.4",
-    "circular-dependency-plugin": "^5.0.2",
     "cross-env": "^5.2.0",
     "eslint": "^5.10.0",
     "eslint-config-prettier": "^3.3.0",

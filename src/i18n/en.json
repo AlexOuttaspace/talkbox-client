@@ -12,6 +12,15 @@
       "password": "Password"
     }
   },
+  "add-channel-form": {
+    "title": "Add channel",
+    "submit-button": "Create channel",
+    "input": {
+      "name": {
+        "placeholder": "Channel name"
+      }
+    }
+  },
   "register-page": {
     "sub-header": "Fill out the form and join the talkbox community!",
     "main-header": "Register",

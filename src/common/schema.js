@@ -62,3 +62,15 @@ export const teamName = yup
 export const createTeamSchema = yup.object().shape({
   name: teamName
 })
+
+export const channelName = yup
+  .string()
+  .ensure()
+  .required(required)
+  .min(3, 'should be at least 3 characters')
+  .matches(ALPHANUMERIC_REGEXP, 'can only contain letters and numbers')
+  .max(30, 'should be at most 30 characters')
+
+export const createChannelSchema = yup.object().shape({
+  name: channelName
+})
