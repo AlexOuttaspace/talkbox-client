@@ -10,7 +10,7 @@ import { createChannelMutation, allTeamsQuery } from 'src/services'
 import { SubmitButton } from 'src/ui/atoms'
 import { FormField, FormHeader } from 'src/ui/molecules'
 import { FormRoot } from 'src/ui/templates'
-import { validateForm, handleServerErrors } from 'src/lib'
+import { validateForm } from 'src/lib'
 import { createChannelSchema, withIntl } from 'src/common'
 
 const i18n = defineMessages({
@@ -45,8 +45,22 @@ class AddChannelFormView extends Component {
 
     const teamId = +query.teamId
     try {
-      const response = await createChannelMutation({
+      await createChannelMutation({
         variables: { teamId, name },
+        // We can use optimisctic response as channel name is not unique.
+        // For the same reason we don't need to use handleServerErrors function.
+        optimisticResponse: {
+          createChannel: {
+            __typename: 'Mutation',
+            ok: true,
+            errors: null,
+            channel: {
+              __typename: 'Channel',
+              id: -1,
+              name
+            }
+          }
+        },
         update: (store, { data: { createChannel } }) => {
           const { ok, channel } = createChannel
           if (!ok) return
@@ -56,12 +70,12 @@ class AddChannelFormView extends Component {
             (team) => team.id === teamId
           )
           data.allTeams[teamIndex].channels.push(channel)
-          console.log(data)
+
           store.writeQuery({ query: allTeamsQuery, data })
         }
       })
 
-      return closeModal()
+      closeModal()
     } catch (error) {
       console.log(error)
     }
