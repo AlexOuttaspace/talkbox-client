@@ -38,17 +38,19 @@ export class TeamPage extends Component {
         query: allTeamsQuery
       })
 
-      const { allTeams } = response.data
+      const { allTeams, inviteTeams } = response.data
 
-      const userHasNoTeams = allTeams.length === 0
+      const teamsArray = [...allTeams, ...inviteTeams]
+
+      const userHasNoTeams = teamsArray.length === 0
       if (userHasNoTeams) {
         return redirect(context, '/create-team')
       }
 
-      const currentTeam = allTeams.find((team) => team.id === currentTeamId)
+      const currentTeam = teamsArray.find((team) => team.id === currentTeamId)
       if (!currentTeam) {
-        const redirectTeamId = allTeams[0].id
-        const redirectChannelId = allTeams[0].channels[0].id
+        const redirectTeamId = teamsArray[0].id
+        const redirectChannelId = teamsArray[0].channels[0].id
         const redirectLink = `/team/${redirectTeamId}/${redirectChannelId}`
 
         return redirect(context, redirectLink)
@@ -92,22 +94,27 @@ export class TeamPage extends Component {
             return <div>error getting data</div>
           }
 
-          const { allTeams } = data
+          const { allTeams, inviteTeams } = data
+          console.log(inviteTeams)
 
-          let username = ''
+          const teamsArray = [...allTeams, ...inviteTeams]
+
+          let user
           try {
-            const { user } = decode(refreshToken)
-            username = user.username
+            const decoded = decode(refreshToken)
+            user = decoded.user
           } catch (error) {
             console.log(error)
           }
 
-          const teams = allTeams.map((team) => ({
+          const teams = teamsArray.map((team) => ({
             id: team.id,
             name: team.name.charAt(0)
           }))
 
-          const currentTeam = allTeams.find((team) => team.id === currentTeamId)
+          const currentTeam = teamsArray.find(
+            (team) => team.id === currentTeamId
+          )
 
           const currentChannel = currentTeam.channels.find(
             (channel) => channel.id === currentMessagesId
@@ -119,8 +126,9 @@ export class TeamPage extends Component {
                 sidebarComponent={
                   <Sidebar
                     teamName={currentTeam.name || ''}
-                    username={username}
+                    username={user.username}
                     channels={currentTeam.channels}
+                    isOwner={currentTeam.owner === user.id}
                     users={[
                       { id: 1, name: 'talkboxbot' },
                       { id: 2, name: 'Leonard Euler' }

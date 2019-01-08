@@ -36,14 +36,14 @@ const Title = styled.h3`
   font-size: 1rem;
 `
 
-export const ChannelListView = ({ channels, intl, router }) => {
+export const ChannelListView = ({ channels, intl, router, isOwner }) => {
   const currentChannelId = +router.query.messagesId
   const teamId = +router.query.teamId
   return (
     <Root>
       <Header>
         <Title>{intl.formatMessage(i18n.channels)}</Title>
-        <AddChannelButton />
+        {isOwner && <AddChannelButton />}
       </Header>
       {channels.map((channel) => (
         <Channel
@@ -60,7 +60,8 @@ export const ChannelListView = ({ channels, intl, router }) => {
 ChannelListView.propTypes = {
   intl: intlShape,
   channels: PropTypes.arrayOf(propShapes.channel),
-  router: PropTypes.object.isRequired
+  router: PropTypes.object.isRequired,
+  isOwner: PropTypes.bool.isRequired
 }
 
 const enhance = compose(

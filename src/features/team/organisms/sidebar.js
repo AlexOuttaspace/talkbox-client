@@ -13,13 +13,13 @@ const Root = styled.div`
   color: ${(p) => p.theme.purpleWhite};
 `
 
-export const Sidebar = ({ username, teamName, channels, users }) => {
+export const Sidebar = ({ username, teamName, channels, users, isOwner }) => {
   return (
     <Root>
       <SidebarHeader username={username} teamName={teamName} />
-      <ChannelList channels={channels} />
+      <ChannelList channels={channels} isOwner={isOwner} />
       <UserList users={users} />
-      <InviteUserButton />
+      {isOwner && <InviteUserButton />}
     </Root>
   )
 }
@@ -28,5 +28,6 @@ Sidebar.propTypes = {
   username: PropTypes.string.isRequired,
   teamName: PropTypes.string.isRequired,
   channels: PropTypes.arrayOf(propShapes.channel),
-  users: PropTypes.arrayOf(propShapes.user)
+  users: PropTypes.arrayOf(propShapes.user),
+  isOwner: PropTypes.bool.isRequired
 }
