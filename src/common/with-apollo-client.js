@@ -39,15 +39,14 @@ export const withApolloClient = (App) => {
         storeTokensInCookie(token, refreshToken, ctx)
       }
 
+      const apollo = initApollo(null, { token, refreshToken })
+
+      appContext.ctx.apolloClient = apollo
       appContext.ctx.authContext = { token, refreshToken }
       let appProps = {}
       if (App.getInitialProps) {
         appProps = await App.getInitialProps(appContext)
       }
-
-      // Run all GraphQL queries in the component tree
-      // and extract the resulting data
-      const apollo = initApollo(null, { token, refreshToken })
 
       if (!process.browser) {
         try {
@@ -74,6 +73,11 @@ export const withApolloClient = (App) => {
 
       // Extract query data from the Apollo store
       const apolloState = apollo.cache.extract()
+      const apolloClient = initApollo(apolloState, { token, refreshToken })
+      appContext.ctx.apolloClient = apolloClient
+      if (App.getInitialProps) {
+        appProps = await App.getInitialProps(appContext)
+      }
 
       return {
         ...appProps,
@@ -90,11 +94,6 @@ export const withApolloClient = (App) => {
       const apollo = initApollo(props.apolloState, { token, refreshToken })
 
       this.apolloClient = apollo
-    }
-
-    componentDidMount = () => {
-      const { token, refreshToken } = this.props
-      storeTokensInCookie(token, refreshToken)
     }
 
     render() {

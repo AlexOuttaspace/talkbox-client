@@ -1,6 +1,6 @@
 import Router from 'next/router'
 
-export const redirect = (context, target, { hard }) => {
+export const redirect = (context, target, { hard } = { hard: false }) => {
   if (context.res) {
     // server
     // 303: "See other"

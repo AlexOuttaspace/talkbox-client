@@ -46,14 +46,16 @@ class InviteUserFormView extends Component {
 
     const teamId = +query.teamId
     try {
-      const response = await addMemberMutation({
+      const {
+        data: { addTeamMember }
+      } = await addMemberMutation({
         variables: { teamId, email }
       })
 
-      console.log(response)
+      console.log(addTeamMember)
 
-      if (!response.addTeamMember.ok) {
-        return handleServerErrors(response.addTeamMember.errors)
+      if (!addTeamMember.ok) {
+        return handleServerErrors(addTeamMember.errors)
       }
 
       return closeModal()

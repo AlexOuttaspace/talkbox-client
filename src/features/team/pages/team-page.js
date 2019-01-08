@@ -8,6 +8,7 @@ import { Header, Sidebar, Teams, SendMessage } from '../organisms'
 import { TeamLayout } from '../templates'
 import { ModalController } from '../common'
 
+import { redirect } from 'src/lib'
 import { Router } from 'server/routes'
 import { getTokens } from 'src/common'
 import { allTeamsQuery } from 'src/services'
@@ -15,125 +16,124 @@ import { allTeamsQuery } from 'src/services'
 export class TeamPage extends Component {
   static propTypes = {
     currentTeamId: PropTypes.number,
-    currentMessagesId: PropTypes.number
+    currentMessagesId: PropTypes.number,
+    authState: PropTypes.shape({
+      token: PropTypes.string.isRequired,
+      refreshToken: PropTypes.string.isRequired
+    })
   }
 
-  static getInitialProps = async ({ query }) => {
+  static getInitialProps = async (context) => {
+    const { query, apolloClient } = context
+
     const currentTeamId = +query.teamId
     const currentMessagesId = +query.messagesId
 
-    return { currentTeamId, currentMessagesId }
+    try {
+      const response = apolloClient.cache.readQuery({ query: allTeamsQuery })
+
+      const { allTeams } = response
+
+      const userHasNoTeams = allTeams.length === 0
+      if (userHasNoTeams) {
+        return redirect(context, '/create-team')
+      }
+
+      const currentTeam = allTeams.find((team) => team.id === currentTeamId)
+      if (!currentTeam) {
+        const redirectTeamId = allTeams[0].id
+        const redirectChannelId = allTeams[0].channels[0].id
+        const redirectLink = `/team/${redirectTeamId}/${redirectChannelId}`
+
+        return redirect(context, redirectLink)
+      }
+
+      const currentChannel = currentTeam.channels.find(
+        (channel) => channel.id === currentMessagesId
+      )
+      if (!currentChannel) {
+        const generalChannel = currentTeam.channels.find(
+          (channel) => channel.name === 'general'
+        )
+
+        return redirect(context, `/team/${currentTeam.id}/${generalChannel.id}`)
+      }
+    } catch (error) {
+      // this error only occurs when getDataFromTree is run,
+      // because we are trying to get data that's is not yet there
+    }
+
+    const { authState } = apolloClient.cache.readQuery({ query: getTokens })
+
+    return { currentTeamId, currentMessagesId, authState }
   }
 
   render() {
-    const { currentTeamId, currentMessagesId } = this.props
+    const {
+      currentTeamId,
+      currentMessagesId,
+      authState: { refreshToken }
+    } = this.props
 
     return (
-      <Query query={getTokens}>
-        {({
-          data: {
-            authState: { refreshToken }
+      <Query query={allTeamsQuery}>
+        {({ loading, error, data }) => {
+          if (loading) return <div>loading...</div>
+
+          if (error) {
+            console.log(error)
+            return <div>error...</div>
           }
-        }) => (
-          <Query query={allTeamsQuery}>
-            {({ loading, error, data }) => {
-              if (!refreshToken) {
-                console.log('error extracting token in TeamPage')
-                return null
-              }
 
-              if (loading) return <div>loading...</div>
+          if (!data) {
+            return <div>error getting data</div>
+          }
 
-              if (error) {
-                console.log(error)
-                return <div>error...</div>
-              }
+          const { allTeams } = data
 
-              if (!data) {
-                return null
-              }
+          let username = ''
+          try {
+            const { user } = decode(refreshToken)
+            username = user.username
+          } catch (error) {
+            console.log(error)
+          }
 
-              const { allTeams } = data
+          const teams = allTeams.map((team) => ({
+            id: team.id,
+            name: team.name.charAt(0)
+          }))
 
-              let username = ''
-              try {
-                const { user } = decode(refreshToken)
-                username = user.username
-              } catch (error) {
-                console.log(error)
-              }
+          const currentTeam = allTeams.find((team) => team.id === currentTeamId)
 
-              console.log(allTeams)
+          const currentChannel = currentTeam.channels.find(
+            (channel) => channel.id === currentMessagesId
+          )
 
-              const teams = allTeams.map((team) => ({
-                id: team.id,
-                name: team.name.charAt(0)
-              }))
-
-              const currentTeam =
-                allTeams.find((team) => team.id === currentTeamId) || {}
-
-              // from this line to line 95 is a hacky way
-              // to handle invalid team/messages ids in the url
-              // TODO: figure out a way to do this on server, not on client
-              if (isEmpty(currentTeam)) {
-                if (process.browser) {
-                  const redirectTeamId = allTeams[0].id
-                  const redirectChannelId = allTeams[0].channels[0].id
-                  const redirectLink = `/team/${redirectTeamId}/${redirectChannelId}`
-
-                  Router.pushRoute(redirectLink)
-                }
-                return null
-              }
-
-              const currentChannel =
-                currentTeam.channels.find(
-                  (channel) => channel.id === currentMessagesId
-                ) || {}
-
-              if (isEmpty(currentChannel)) {
-                if (process.browser) {
-                  const generalChannel = currentTeam.channels.find(
-                    (channel) => channel.name === 'general'
-                  )
-
-                  Router.pushRoute(
-                    `/team/${currentTeam.id}/${generalChannel.id}`
-                  )
-                }
-
-                return null
-              }
-
-              return (
-                <ModalController>
-                  <TeamLayout
-                    sidebarComponent={
-                      <Sidebar
-                        teamName={currentTeam.name || ''}
-                        username={username}
-                        channels={currentTeam.channels}
-                        users={[
-                          { id: 1, name: 'talkboxbot' },
-                          { id: 2, name: 'Leonard Euler' }
-                        ]}
-                      />
-                    }
-                    headerComponent={
-                      <Header channelName={currentChannel.name} />
-                    }
-                    messagesComponent={<div />}
-                    teamsComponent={<Teams teams={teams} />}
-                    sendMessageComponent={
-                      <SendMessage channelName={currentChannel.name} />
-                    }
+          return (
+            <ModalController>
+              <TeamLayout
+                sidebarComponent={
+                  <Sidebar
+                    teamName={currentTeam.name || ''}
+                    username={username}
+                    channels={currentTeam.channels}
+                    users={[
+                      { id: 1, name: 'talkboxbot' },
+                      { id: 2, name: 'Leonard Euler' }
+                    ]}
                   />
-                </ModalController>
-              )
-            }}
-          </Query>
-        )}
+                }
+                headerComponent={<Header channelName={currentChannel.name} />}
+                messagesComponent={<div />}
+                teamsComponent={<Teams teams={teams} />}
+                sendMessageComponent={
+                  <SendMessage channelName={currentChannel.name} />
+                }
+              />
+            </ModalController>
+          )
+        }}
       </Query>
     )
   }
