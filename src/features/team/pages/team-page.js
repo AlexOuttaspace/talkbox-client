@@ -27,6 +27,12 @@ export class TeamPage extends Component {
     const currentTeamId = +query.teamId
     const currentMessagesId = +query.messagesId
 
+    /*
+    we need to use this if-statement because
+    if we execute redirect while running getDataFromTree it
+    will call res.end() which will lead to the following error on the second run:
+    Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+    */
     if (!apolloExtractData) {
       const response = await apolloClient.query({
         query: allTeamsQuery
