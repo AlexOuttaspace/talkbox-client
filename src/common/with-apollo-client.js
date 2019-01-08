@@ -43,6 +43,8 @@ export const withApolloClient = (App) => {
 
       appContext.ctx.apolloClient = apollo
       appContext.ctx.authContext = { token, refreshToken }
+      // need this property to determine whether app is inside getDataFromTree
+      appContext.ctx.apolloExtractData = true
       let appProps = {}
       if (App.getInitialProps) {
         appProps = await App.getInitialProps(appContext)
@@ -74,6 +76,7 @@ export const withApolloClient = (App) => {
       // Extract query data from the Apollo store
       const apolloState = apollo.cache.extract()
       const apolloClient = initApollo(apolloState, { token, refreshToken })
+      appContext.ctx.apolloExtractData = false
       appContext.ctx.apolloClient = apolloClient
       if (App.getInitialProps) {
         appProps = await App.getInitialProps(appContext)

@@ -21,6 +21,15 @@
       }
     }
   },
+  "invite-user-form": {
+    "title": "Invite users to your team",
+    "submit-button": "Send invite",
+    "input": {
+      "email": {
+        "placeholder": "User's email"
+      }
+    }
+  },
   "register-page": {
     "sub-header": "Fill out the form and join the talkbox community!",
     "main-header": "Register",
@@ -35,6 +44,9 @@
       "username": "Username",
       "confirm-password": "Confirm password"
     }
+  },
+  "sidebar": {
+    "invite-users-button": "Invite users"
   },
   "chat-page": {
     "sidebar": {

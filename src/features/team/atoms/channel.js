@@ -33,7 +33,8 @@ const LinkElement = styled.a`
   font-size: 1rem;
 
   cursor: pointer;
-  :hover {
+  :hover,
+  :focus {
     background-color: ${(p) => p.theme.purpleHover};
   }
 
@@ -42,24 +43,36 @@ const LinkElement = styled.a`
     margin-right: 6px;
   }
 
+  :focus {
+    box-shadow: none;
+    color: ${(p) => p.theme.purpleWhite};
+  }
+
   ${(p) =>
     p.selected &&
     `
     background-color: ${p.theme.green};
-    color: ${lighten(0.7, p.theme.purpleWhite)}
+    color: ${lighten(0.7, p.theme.purpleWhite)};
 
-    :hover {
+    :hover, :focus {
       background-color: ${p.theme.green};
-      color: ${lighten(0.7, p.theme.purpleWhite)}
+      color: ${lighten(0.7, p.theme.purpleWhite)};
+    }
+
+    :focus {
+      color: ${lighten(0.7, p.theme.purpleWhite)};
     }
   `};
 `
 
 export const Channel = ({ channel, selected, teamId }) => {
+  const route = `/team/${teamId}/${channel.id}`
   return (
     <Root>
-      <Link route={`/team/${teamId}/${channel.id}`}>
-        <LinkElement selected={selected}>{channel.name}</LinkElement>
+      <Link route={route}>
+        <LinkElement href={route} selected={selected}>
+          {channel.name}
+        </LinkElement>
       </Link>
     </Root>
   )

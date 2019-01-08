@@ -26,6 +26,7 @@ const LinkElement = styled.a`
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
+  text-decoration: none;
 
   transition: box-shadow 0.1s;
   :hover {
@@ -39,13 +40,18 @@ const LinkElement = styled.a`
   `};
 `
 
-export const Team = ({ team, isCurrent, messagesId }) => (
-  <Root>
-    <Link route={`/team/${team.id}/${messagesId}`}>
-      <LinkElement isCurrent={isCurrent}>{team.name}</LinkElement>
-    </Link>
-  </Root>
-)
+export const Team = ({ team, isCurrent, messagesId }) => {
+  const route = `/team/${team.id}/${messagesId}`
+  return (
+    <Root>
+      <Link route={route}>
+        <LinkElement href={route} isCurrent={isCurrent}>
+          {team.name}
+        </LinkElement>
+      </Link>
+    </Root>
+  )
+}
 
 Team.propTypes = {
   team: propShapes.team,

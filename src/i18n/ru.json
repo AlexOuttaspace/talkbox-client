@@ -21,6 +21,15 @@
       }
     }
   },
+  "invite-user-form": {
+    "title": "",
+    "submit-button": "",
+    "input": {
+      "email": {
+        "placeholder": ""
+      }
+    }
+  },
   "register-page": {
     "sub-header": "",
     "main-header": "",
@@ -35,6 +44,9 @@
       "username": "",
       "confirm-password": ""
     }
+  },
+  "sidebar": {
+    "invite-users-button": ""
   },
   "chat-page": {
     "sidebar": {

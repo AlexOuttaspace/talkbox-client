@@ -2,14 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Query } from 'react-apollo'
 import decode from 'jwt-decode'
-import { isEmpty } from 'ramda'
 
 import { Header, Sidebar, Teams, SendMessage } from '../organisms'
 import { TeamLayout } from '../templates'
 import { ModalController } from '../common'
 
 import { redirect } from 'src/lib'
-import { Router } from 'server/routes'
 import { getTokens } from 'src/common'
 import { allTeamsQuery } from 'src/services'
 
@@ -24,15 +22,17 @@ export class TeamPage extends Component {
   }
 
   static getInitialProps = async (context) => {
-    const { query, apolloClient } = context
+    const { query, apolloClient, apolloExtractData } = context
 
     const currentTeamId = +query.teamId
     const currentMessagesId = +query.messagesId
 
-    try {
-      const response = apolloClient.cache.readQuery({ query: allTeamsQuery })
+    if (!apolloExtractData) {
+      const response = await apolloClient.query({
+        query: allTeamsQuery
+      })
 
-      const { allTeams } = response
+      const { allTeams } = response.data
 
       const userHasNoTeams = allTeams.length === 0
       if (userHasNoTeams) {
@@ -58,9 +58,6 @@ export class TeamPage extends Component {
 
         return redirect(context, `/team/${currentTeam.id}/${generalChannel.id}`)
       }
-    } catch (error) {
-      // this error only occurs when getDataFromTree is run,
-      // because we are trying to get data that's is not yet there
     }
 
     const { authState } = apolloClient.cache.readQuery({ query: getTokens })

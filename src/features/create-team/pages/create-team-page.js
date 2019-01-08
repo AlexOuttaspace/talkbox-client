@@ -31,7 +31,7 @@ const onSubmit = async (createTeamMutation, values) => {
       storeTokensInCookie(null, null)
       return Router.pushRoute('/login')
     }
-
+    console.log(error)
     // TODO: add handling for error that can occured due to network problems
   }
 }
