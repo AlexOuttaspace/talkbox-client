@@ -1,4 +1,4 @@
-import Router from 'next/router'
+import { Router } from 'server/routes'
 
 export const redirect = (context, target, { hard } = { hard: false }) => {
   if (context.res) {
@@ -10,7 +10,8 @@ export const redirect = (context, target, { hard } = { hard: false }) => {
     if (hard) {
       return window.locations.assign('/login')
     }
+
     // In the browser, we just pretend like this never even happened ;)
-    return Router.pushRoute(target)
+    return Router.replaceRoute(target)
   }
 }
