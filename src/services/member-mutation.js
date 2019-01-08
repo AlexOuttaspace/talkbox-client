@@ -2,7 +2,7 @@ import gql from 'graphql-tag'
 
 export const addMemberMutation = gql`
   mutation($email: String!, $teamId: Int!) {
-    addTeamMember(email: $email, teamIf: $teamIf) {
+    addTeamMember(email: $email, teamId: $teamIf) {
       ok
       errors {
         path

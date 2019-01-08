@@ -1,4 +1,3 @@
-import hoistStatics from 'hoist-non-react-statics'
 import React, { Component } from 'react'
 
 import { checkTokens, storeTokensInCookie } from './manage-token'
@@ -6,7 +5,7 @@ import { checkTokens, storeTokensInCookie } from './manage-token'
 import { redirect } from 'src/lib'
 
 export const withAuth = ({ url } = { url: '/login' }) => (W) => {
-  class WithAuth extends Component {
+  return class WithAuth extends Component {
     static async getInitialProps(context) {
       const { refreshToken } = context.authContext
 
@@ -22,13 +21,14 @@ export const withAuth = ({ url } = { url: '/login' }) => (W) => {
         pageProps = await W.getInitialProps(context)
       }
 
-      return { ...pageProps }
+      return { pageProps, isAuthenticated }
     }
 
     render() {
-      return <W {...this.props} />
+      const { pageProps, isAuthenticated } = this.props
+
+      if (!isAuthenticated) return null
+      return <W {...pageProps} />
     }
   }
-
-  return hoistStatics(WithAuth, W)
 }

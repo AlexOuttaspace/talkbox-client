@@ -33,21 +33,21 @@ class InviteUserFormView extends Component {
   static propTypes = {
     intl: intlShape,
     router: PropTypes.object.isRequired,
-    createChannelMutation: PropTypes.func.isRequired,
+    addMemberMutation: PropTypes.func.isRequired,
     closeModal: PropTypes.func.isRequired
   }
 
-  onSubmit = async ({ name }) => {
+  onSubmit = async ({ email }) => {
     const {
       closeModal,
-      createChannelMutation,
+      addMemberMutation,
       router: { query }
     } = this.props
 
     const teamId = +query.teamId
     try {
-      const response = await createChannelMutation({
-        variables: { teamId, name }
+      const response = await addMemberMutation({
+        variables: { teamId, email }
       })
 
       console.log(response)

@@ -20,10 +20,16 @@ export const storeTokensInCookie = (token, refreshToken, context = {}) => {
 
   if (context.res) {
     context.res.cookie('token', tokenCookieValue, {
-      maxAge: tokenMaxAge * 1000 // express accepts token maxage in ms, so we have to multiply by 1000
+      // express accepts token maxage in ms,
+      // so we have to multiply by 1000
+      maxAge: tokenMaxAge * 1000,
+      path: '/'
     })
     context.res.cookie('refreshToken', refreshTokenCookieValue, {
-      maxAge: refreshTokenMaxAge * 1000 // express accepts token maxage in ms, so we have to multiply by 1000
+      // express accepts token maxage in ms,
+      // so we have to multiply by 1000
+      maxAge: refreshTokenMaxAge * 1000,
+      path: '/'
     })
     return
   }

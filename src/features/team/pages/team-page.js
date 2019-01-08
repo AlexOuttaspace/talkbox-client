@@ -36,7 +36,7 @@ export class TeamPage extends Component {
           }
         }) => (
           <Query query={allTeamsQuery}>
-            {({ loading, error, data: { allTeams } }) => {
+            {({ loading, error, data }) => {
               if (!refreshToken) {
                 console.log('error extracting token in TeamPage')
                 return null
@@ -48,6 +48,12 @@ export class TeamPage extends Component {
                 console.log(error)
                 return <div>error...</div>
               }
+
+              if (!data) {
+                return null
+              }
+
+              const { allTeams } = data
 
               let username = ''
               try {
