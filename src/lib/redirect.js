@@ -11,6 +11,6 @@ export const redirect = (context, target, { hard } = { hard: false }) => {
       return window.locations.assign('/login')
     }
     // In the browser, we just pretend like this never even happened ;)
-    return Router.replace(target)
+    return Router.pushRoute(target)
   }
 }

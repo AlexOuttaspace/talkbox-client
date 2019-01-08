@@ -40,8 +40,8 @@ const LinkElement = styled.a`
   `};
 `
 
-export const Team = ({ team, isCurrent, messagesId }) => {
-  const route = `/team/${team.id}/${messagesId}`
+export const Team = ({ team, isCurrent }) => {
+  const route = `/team/${team.id}`
   return (
     <Root>
       <Link route={route}>
@@ -55,6 +55,5 @@ export const Team = ({ team, isCurrent, messagesId }) => {
 
 Team.propTypes = {
   team: propShapes.team,
-  messagesId: PropTypes.number.isRequired,
   isCurrent: PropTypes.bool.isRequired
 }

@@ -16,16 +16,11 @@ const Root = styled.ul`
 
 const TeamListView = ({ teams, router }) => {
   const currentTeamId = +router.query.teamId
-  const messagesId = +router.query.messagesId
+
   return (
     <Root>
       {teams.map((team) => (
-        <Team
-          messagesId={messagesId}
-          isCurrent={currentTeamId === team.id}
-          key={team.id}
-          team={team}
-        />
+        <Team isCurrent={currentTeamId === team.id} key={team.id} team={team} />
       ))}
     </Root>
   )
