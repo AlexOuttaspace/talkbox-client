@@ -23,6 +23,7 @@
     "apollo-link-http": "^1.5.8",
     "apollo-link-state": "^0.4.2",
     "apollo-utilities": "^1.0.26",
+    "dayjs": "^1.7.8",
     "express": "^4.16.4",
     "final-form": "^4.11.0",
     "flat": "^4.1.0",

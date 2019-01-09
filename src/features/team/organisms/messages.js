@@ -23,20 +23,19 @@ export const MessagesView = ({ router }) => {
 
   return (
     <Query query={messagesQuery} variables={{ channelId }}>
-      {({ loading, data, error }) => {
+      {({ loading, error, data: { messages } }) => {
         if (loading) return <div>loading</div>
 
         if (error) {
           console.log(error)
           return <div>error</div>
         }
-
-        console.log(data)
+        console.log(messages)
         return (
           <Root>
-            <MessagesItem />
-            <MessagesItem />
-            <MessagesItem />
+            {messages.map((message) => (
+              <MessagesItem message={message} key={message.id} />
+            ))}
           </Root>
         )
       }}

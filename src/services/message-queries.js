@@ -7,6 +7,7 @@ export const messagesQuery = gql`
       text
       created_at
       user {
+        id
         username
       }
     }
