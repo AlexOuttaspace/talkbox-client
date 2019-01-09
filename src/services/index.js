@@ -6,4 +6,8 @@ export { allTeamsQuery } from './team-queries'
 
 export { createChannelMutation } from './channel-mutations'
 
-export { addMemberMutation } from './member-mutation'
+export { addMemberMutation } from './member-mutations'
+
+export { createMessageMutation } from './message-mutations'
+
+export { messagesQuery } from './message-queries'

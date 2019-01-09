@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Query } from 'react-apollo'
 import decode from 'jwt-decode'
 
-import { Header, Sidebar, Teams, SendMessage } from '../organisms'
+import { Header, Sidebar, Teams, SendMessage, Messages } from '../organisms'
 import { TeamLayout } from '../templates'
 import { ModalController } from '../common'
 
@@ -95,7 +95,6 @@ export class TeamPage extends Component {
           }
 
           const { allTeams, inviteTeams } = data
-          console.log(inviteTeams)
 
           const teamsArray = [...allTeams, ...inviteTeams]
 
@@ -136,11 +135,9 @@ export class TeamPage extends Component {
                   />
                 }
                 headerComponent={<Header channelName={currentChannel.name} />}
-                messagesComponent={<div />}
+                messagesComponent={<Messages />}
                 teamsComponent={<Teams teams={teams} />}
-                sendMessageComponent={
-                  <SendMessage channelName={currentChannel.name} />
-                }
+                sendMessageComponent={<SendMessage channel={currentChannel} />}
               />
             </ModalController>
           )

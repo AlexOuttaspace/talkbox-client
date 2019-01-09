@@ -4,8 +4,12 @@ import PropTypes from 'prop-types'
 import { intlShape, defineMessages } from 'react-intl'
 import { compose } from 'ramda'
 import { Form, Field } from 'react-final-form'
+import { graphql } from 'react-apollo'
+
+import { propShapes } from '../common'
 
 import { withIntl } from 'src/common'
+import { createMessageMutation } from 'src/services'
 
 const i18n = defineMessages({
   placeholder: {
@@ -44,16 +48,25 @@ const FormRoot = styled.form`
 
 class SendMessageView extends Component {
   static propTypes = {
-    channelName: PropTypes.string.isRequired,
-    intl: intlShape
+    channel: propShapes.channel,
+    intl: intlShape,
+    createMessageMutation: PropTypes.func.isRequired
   }
 
   onSubmit = async (values) => {
-    console.log(values)
+    const { createMessageMutation, channel } = this.props
+
+    const response = await createMessageMutation({
+      variables: {
+        channelId: channel.id,
+        text: values.message
+      }
+    })
+    console.log(response)
   }
 
   render() {
-    const { channelName, intl } = this.props
+    const { channel, intl } = this.props
 
     return (
       <Root>
@@ -65,9 +78,9 @@ class SendMessageView extends Component {
                   <MessageInput
                     type="text"
                     {...input}
-                    placeholder={`${intl.formatMessage(
-                      i18n.placeholder
-                    )} #${channelName}`}
+                    placeholder={`${intl.formatMessage(i18n.placeholder)} #${
+                      channel.name
+                    }`}
                   />
                 )}
               </Field>
@@ -79,6 +92,9 @@ class SendMessageView extends Component {
   }
 }
 
-const enhance = compose(withIntl)
+const enhance = compose(
+  withIntl,
+  graphql(createMessageMutation, { name: 'createMessageMutation' })
+)
 
 export const SendMessage = enhance(SendMessageView)
