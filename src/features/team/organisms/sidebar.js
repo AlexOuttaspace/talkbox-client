@@ -8,8 +8,7 @@ import { InviteUserButton } from '../atoms'
 import { ChannelList, UserList, SidebarHeader } from '../molecules'
 
 const Root = styled.div`
-  height: 100%;
-  width: 100%;
+  min-height: 100%;
   background-color: ${(p) => p.theme.purple};
   color: ${(p) => p.theme.purpleWhite};
   overflow: hidden;
@@ -17,14 +16,14 @@ const Root = styled.div`
 
 export const Sidebar = ({ username, teamName, channels, users, isOwner }) => {
   return (
-    <Root>
-      <ScrollContainer>
+    <ScrollContainer>
+      <Root>
         <SidebarHeader username={username} teamName={teamName} />
         <ChannelList channels={channels} isOwner={isOwner} />
         <UserList users={users} />
         {isOwner && <InviteUserButton />}
-      </ScrollContainer>
-    </Root>
+      </Root>
+    </ScrollContainer>
   )
 }
 

@@ -11,9 +11,8 @@ import { MessagesItem } from '../molecules'
 import { messagesQuery } from 'src/services'
 
 const Root = styled.ul`
-  width: 100%;
-  height: 100%;
   list-style-type: none;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -34,13 +33,13 @@ export const MessagesView = ({ router }) => {
         }
         console.log(messages)
         return (
-          <Root>
-            <ScrollContainer>
+          <ScrollContainer>
+            <Root>
               {messages.map((message) => (
                 <MessagesItem message={message} key={message.id} />
               ))}
-            </ScrollContainer>
-          </Root>
+            </Root>
+          </ScrollContainer>
         )
       }}
     </Query>

@@ -7,8 +7,7 @@ import { propShapes } from '../common'
 import { ScrollContainer } from '../templates'
 
 const Root = styled.div`
-  height: 100%;
-  width: 100%;
+  min-height: 100%;
   background-color: ${(p) => p.theme.darkPurple};
   padding-top: 10px;
   overflow: hidden;
@@ -16,11 +15,11 @@ const Root = styled.div`
 
 export const Teams = ({ teams }) => {
   return (
-    <Root>
-      <ScrollContainer>
+    <ScrollContainer>
+      <Root>
         <TeamList teams={teams} />
-      </ScrollContainer>
-    </Root>
+      </Root>
+    </ScrollContainer>
   )
 }
 
