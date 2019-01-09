@@ -5,6 +5,7 @@ import { withRouter } from 'next/router'
 import { compose } from 'ramda'
 import { Query } from 'react-apollo'
 
+import { ScrollContainer } from '../templates'
 import { MessagesItem } from '../molecules'
 
 import { messagesQuery } from 'src/services'
@@ -16,6 +17,7 @@ const Root = styled.ul`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  overflow: hidden;
 `
 
 export const MessagesView = ({ router }) => {
@@ -33,9 +35,11 @@ export const MessagesView = ({ router }) => {
         console.log(messages)
         return (
           <Root>
-            {messages.map((message) => (
-              <MessagesItem message={message} key={message.id} />
-            ))}
+            <ScrollContainer>
+              {messages.map((message) => (
+                <MessagesItem message={message} key={message.id} />
+              ))}
+            </ScrollContainer>
           </Root>
         )
       }}

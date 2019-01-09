@@ -7,7 +7,7 @@ const Root = styled.div`
   overflow-y: hidden;
   display: grid;
   grid-template-columns: 80px 220px auto;
-  grid-template-rows: 53px auto 80px;
+  grid-template-rows: 53px auto 60px;
   grid-auto-columns: 1fr;
 `
 

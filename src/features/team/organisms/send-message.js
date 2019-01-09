@@ -23,7 +23,6 @@ const Root = styled.div`
   height: 100%;
 
   display: flex;
-  align-items: center;
 `
 
 const MessageInput = styled.input`

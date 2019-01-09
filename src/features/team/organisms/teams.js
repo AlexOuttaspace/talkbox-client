@@ -4,18 +4,22 @@ import styled from 'styled-components'
 
 import { TeamList } from '../molecules'
 import { propShapes } from '../common'
+import { ScrollContainer } from '../templates'
 
 const Root = styled.div`
   height: 100%;
   width: 100%;
   background-color: ${(p) => p.theme.darkPurple};
   padding-top: 10px;
+  overflow: hidden;
 `
 
 export const Teams = ({ teams }) => {
   return (
     <Root>
-      <TeamList teams={teams} />
+      <ScrollContainer>
+        <TeamList teams={teams} />
+      </ScrollContainer>
     </Root>
   )
 }

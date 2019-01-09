@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import { propShapes } from '../common'
 
 const Root = styled.li`
-  padding-left: 1.125rem;
+  padding-left: 1.5rem;
   padding-right: 1.125rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
@@ -29,8 +29,9 @@ const Date = styled.time`
 
 export const MessagesItem = ({ message }) => {
   const date = dayjs
-    .unix(parseInt(message.created_at, 10))
+    .unix(parseInt(message.created_at, 10) / 1000)
     .format('MMM DD HH:mm A')
+
   return (
     <Root>
       <Header>
