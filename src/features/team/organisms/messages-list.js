@@ -18,11 +18,11 @@ const Root = styled.ul`
 export class MessagesList extends Component {
   static propTypes = {
     messages: PropTypes.arrayOf(propShapes.message).isRequired,
-    subscribeToNewComments: PropTypes.func.isRequired
+    subscribeToNewMessages: PropTypes.func.isRequired
   }
 
   componentDidMount = () => {
-    this.props.subscribeToNewComments()
+    this.props.subscribeToNewMessages()
   }
 
   render() {

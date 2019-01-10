@@ -6,6 +6,10 @@ export const newChannelMessageSubscription = gql`
       id
       text
       created_at
+      user {
+        id
+        username
+      }
     }
   }
 `

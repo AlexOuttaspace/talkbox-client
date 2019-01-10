@@ -52,16 +52,15 @@ class SendMessageView extends Component {
     createMessageMutation: PropTypes.func.isRequired
   }
 
-  onSubmit = async (values) => {
+  onSubmit = (values) => {
     const { createMessageMutation, channel } = this.props
 
-    const response = await createMessageMutation({
+    createMessageMutation({
       variables: {
         channelId: channel.id,
         text: values.message
       }
     })
-    console.log(response)
   }
 
   render() {
@@ -71,7 +70,12 @@ class SendMessageView extends Component {
       <Root>
         <Form subscription={{ submitting: true }} onSubmit={this.onSubmit}>
           {({ handleSubmit, form: { reset } }) => (
-            <FormRoot onSubmit={(event) => handleSubmit(event).then(reset)}>
+            <FormRoot
+              onSubmit={(event) => {
+                handleSubmit(event)
+                reset()
+              }}
+            >
               <Field name="message">
                 {({ input }) => (
                   <MessageInput

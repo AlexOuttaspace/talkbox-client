@@ -25,21 +25,22 @@ export const MessagesView = ({ router }) => {
 
         return (
           <MessagesList
-            subscribeToNewComments={() =>
+            subscribeToNewMessages={() =>
               subscribeToMore({
                 document: newChannelMessageSubscription,
                 variables: { channelId },
                 updateQuery: (prev, { subscriptionData }) => {
-                  if (!subscriptionData) return prev
-                  console.log(prev)
-                  return {
-                    ...prev,
-                    messages: [
-                      ...prev.messages,
-                      subscriptionData.newChannelMessage
-                    ]
-                  }
+                  // if (!subscriptionData) return prev
+                  // console.log(prev)
+                  // return {
+                  //   ...prev,
+                  //   messages: [
+                  //     ...prev.messages,
+                  //     subscriptionData.newChannelMessage
+                  //   ]
+                  // }
                 }
+                //onError: (err) => console.log(err)
               })
             }
             messages={data.messages || []}
