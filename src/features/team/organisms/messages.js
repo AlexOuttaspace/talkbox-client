@@ -43,6 +43,7 @@ export const MessagesView = ({ router }) => {
                 onError: (error) => console.log(error)
               })
             }
+            channelId={channelId}
             messages={data.messages || []}
           />
         )

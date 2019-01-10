@@ -18,17 +18,19 @@ const Root = styled.ul`
 export class MessagesList extends Component {
   static propTypes = {
     messages: PropTypes.arrayOf(propShapes.message).isRequired,
-    subscribeToNewMessages: PropTypes.func.isRequired
+    subscribeToNewMessages: PropTypes.func.isRequired,
+    channelId: PropTypes.number.isRequired
   }
 
   constructor(props) {
     super(props)
     this.scrollbarRef = React.createRef()
+    this.unsubscribe = () => {} // method placeholder
   }
 
   componentDidMount = () => {
     this.scrollbarRef.current.scrollToBottom()
-    this.props.subscribeToNewMessages()
+    this.unsubscribe = this.props.subscribeToNewMessages()
   }
 
   getSnapshotBeforeUpdate(prevProps) {
@@ -49,10 +51,28 @@ export class MessagesList extends Component {
     // If we have a snapshot value, we've just added new items.
     // Adjust scroll so these new items don't push the old ones out of view.
     // (snapshot here is the value returned from getSnapshotBeforeUpdate)
-    console.log(shouldMoveScrollToBottom)
     if (shouldMoveScrollToBottom) {
       this.scrollbarRef.current.scrollToBottom()
     }
+
+    if (prevProps.channelId !== this.props.channelId) {
+      this.resubscribe()
+    }
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe()
+  }
+
+  resubscribe() {
+    /*
+      after page is loaded and channel is switched for
+      the first time, only componentWillUnmount gets called,
+      but on later channel switches componentDidUpdate gets called,
+      so we have to call this method in both lifecycle methods
+    */
+    this.unsubscribe()
+    this.unsubscribe = this.props.subscribeToNewMessages()
   }
 
   render() {
