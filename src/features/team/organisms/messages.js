@@ -30,17 +30,25 @@ export const MessagesView = ({ router }) => {
                 document: newChannelMessageSubscription,
                 variables: { channelId },
                 updateQuery: (prev, { subscriptionData }) => {
-                  // if (!subscriptionData) return prev
-                  // console.log(prev)
-                  // return {
-                  //   ...prev,
-                  //   messages: [
-                  //     ...prev.messages,
-                  //     subscriptionData.newChannelMessage
-                  //   ]
-                  // }
-                }
-                //onError: (err) => console.log(err)
+                  if (!subscriptionData) return prev
+
+                  const temp = {
+                    ...prev,
+                    messages: [
+                      ...prev.messages,
+                      subscriptionData.data.newChannelMessage
+                    ]
+                  }
+
+                  console.log(
+                    temp,
+                    subscriptionData.newChannelMessage,
+                    subscriptionData
+                  )
+
+                  return temp
+                },
+                onError: (error) => console.log(error)
               })
             }
             messages={data.messages || []}
