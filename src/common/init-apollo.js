@@ -96,11 +96,13 @@ function create(initialState, { token = '', refreshToken = '' }) {
 
   const httpLink = new HttpLink({
     uri: GRAPHQL_ENDPOINT
-
-    // Additional fetch() options like `credentials` or `headers` can be added here
   })
 
-  const wsHttpLink = process.browser
+  const httpLinkWithMiddleware = afterwareLink.concat(authLink.concat(httpLink))
+
+  const httpLinkWithState = ApolloLink.from([stateLink, httpLinkWithMiddleware])
+
+  const link = process.browser
     ? split(
         //only create the split in the browser
         // split based on operation type
@@ -109,15 +111,9 @@ function create(initialState, { token = '', refreshToken = '' }) {
           return kind === 'OperationDefinition' && operation === 'subscription'
         },
         wsLink,
-        httpLink
+        httpLinkWithState
       )
-    : httpLink
-
-  const wsHttpLinkWithMiddleware = afterwareLink.concat(
-    authLink.concat(wsHttpLink)
-  )
-
-  const link = ApolloLink.from([stateLink, wsHttpLinkWithMiddleware])
+    : httpLinkWithState
 
   // Check out https://github.com/zeit/next.js/pull/4611 if you want to use the AWSAppSyncClient
   return new ApolloClient({

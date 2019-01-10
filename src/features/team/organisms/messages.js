@@ -1,30 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { withRouter } from 'next/router'
 import { compose } from 'ramda'
 import { Query } from 'react-apollo'
 
-import { ScrollContainer } from '../templates'
-import { MessagesItem } from '../molecules'
+import { MessagesList } from './messages-list'
 
-import { messagesQuery } from 'src/services'
-
-const Root = styled.ul`
-  list-style-type: none;
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  overflow: hidden;
-`
+import { messagesQuery, newChannelMessageSubscription } from 'src/services'
 
 export const MessagesView = ({ router }) => {
   const channelId = +router.query.messagesId
 
   return (
     <Query query={messagesQuery} variables={{ channelId }}>
-      {({ loading, error, data: { messages } }) => {
+      {({ loading, error, data, subscribeToMore }) => {
         if (loading) return <div>loading</div>
 
         if (error) {
@@ -32,14 +21,29 @@ export const MessagesView = ({ router }) => {
           return <div>error</div>
         }
 
+        if (!data) return null
+
         return (
-          <ScrollContainer>
-            <Root>
-              {messages.map((message) => (
-                <MessagesItem message={message} key={message.id} />
-              ))}
-            </Root>
-          </ScrollContainer>
+          <MessagesList
+            subscribeToNewComments={() =>
+              subscribeToMore({
+                document: newChannelMessageSubscription,
+                variables: { channelId },
+                updateQuery: (prev, { subscriptionData }) => {
+                  if (!subscriptionData) return prev
+                  console.log(prev)
+                  return {
+                    ...prev,
+                    messages: [
+                      ...prev.messages,
+                      subscriptionData.newChannelMessage
+                    ]
+                  }
+                }
+              })
+            }
+            messages={data.messages || []}
+          />
         )
       }}
     </Query>
