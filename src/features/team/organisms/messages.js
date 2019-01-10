@@ -12,7 +12,11 @@ export const MessagesView = ({ router }) => {
   const channelId = +router.query.messagesId
 
   return (
-    <Query query={messagesQuery} variables={{ channelId }}>
+    <Query
+      query={messagesQuery}
+      variables={{ channelId }}
+      fetchPolicy="cache-and-network"
+    >
       {({ loading, error, data, subscribeToMore }) => {
         if (loading) return <div>loading</div>
 
