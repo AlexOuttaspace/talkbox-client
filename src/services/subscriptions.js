@@ -5,10 +5,6 @@ export const newChannelMessageSubscription = gql`
     newChannelMessage(channelId: $channelId) {
       id
       text
-      user {
-        id
-        username
-      }
       created_at
     }
   }
