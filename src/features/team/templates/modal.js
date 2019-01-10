@@ -5,6 +5,8 @@ import styled from 'styled-components'
 import { ModalCloseButton } from 'src/ui/molecules'
 
 const Root = styled.div`
+  z-index: 200;
+
   background-color: ${(p) => p.theme.white};
   position: absolute;
   left: 0;

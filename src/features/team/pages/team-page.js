@@ -28,10 +28,10 @@ export class TeamPage extends Component {
     const currentMessagesId = +query.messagesId
 
     /*
-    we need to use this if-statement because
-    if we execute redirect while running getDataFromTree it
-    will call res.end() which will lead to the following error on the second run:
-    Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+      we need to use this if-statement because
+      if we execute redirect while running getDataFromTree it
+      will call res.end() which will lead to the following error on the second run:
+      Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
     */
     if (!apolloExtractData) {
       const response = await apolloClient.query({
@@ -97,6 +97,13 @@ export class TeamPage extends Component {
           const { allTeams, inviteTeams } = data
 
           const teamsArray = [...allTeams, ...inviteTeams]
+
+          if (teamsArray.length === 0) {
+            return (
+              // TODO: create a component or redirect here
+              <div>You do not have teams yet</div>
+            )
+          }
 
           let user
           try {

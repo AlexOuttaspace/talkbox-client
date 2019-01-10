@@ -31,7 +31,7 @@ export const MessagesView = ({ router }) => {
           console.log(error)
           return <div>error</div>
         }
-        console.log(messages)
+
         return (
           <ScrollContainer>
             <Root>
