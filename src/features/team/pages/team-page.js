@@ -59,6 +59,7 @@ export class TeamPage extends Component {
       const currentChannel = currentTeam.channels.find(
         (channel) => channel.id === currentMessagesId
       )
+
       if (!currentChannel) {
         const generalChannel = currentTeam.channels.find(
           (channel) => channel.name === 'general'

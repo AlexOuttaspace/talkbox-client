@@ -2,10 +2,12 @@ import { ApolloClient } from 'apollo-client'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { HttpLink } from 'apollo-link-http'
 import { withClientState } from 'apollo-link-state'
-import { ApolloLink } from 'apollo-link'
+import { ApolloLink, split } from 'apollo-link'
 import { setContext } from 'apollo-link-context'
+import { getMainDefinition } from 'apollo-utilities'
 import fetch from 'isomorphic-unfetch'
 import getConfig from 'next/config'
+import { SubscriptionClient } from 'subscriptions-transport-ws'
 
 import { storeTokensInCookie } from './manage-token'
 import { localStateResolvers, getTokens } from './localState'
@@ -70,6 +72,16 @@ function create(initialState, { token = '', refreshToken = '' }) {
     }
   })
 
+  const wsLink = process.browser
+    ? new SubscriptionClient(WS_ENDPOINT, {
+        reconnect: true,
+        connectionParams: {
+          // Connection parameters to pass some validations
+          // on server side during first handshake
+        }
+      })
+    : null
+
   const stateLink = withClientState({
     cache,
     defaults: {
@@ -88,9 +100,24 @@ function create(initialState, { token = '', refreshToken = '' }) {
     // Additional fetch() options like `credentials` or `headers` can be added here
   })
 
-  const httpLinkWithMiddleware = afterwareLink.concat(authLink.concat(httpLink))
+  const wsHttpLink = process.browser
+    ? split(
+        //only create the split in the browser
+        // split based on operation type
+        ({ query }) => {
+          const { kind, operation } = getMainDefinition(query)
+          return kind === 'OperationDefinition' && operation === 'subscription'
+        },
+        wsLink,
+        httpLink
+      )
+    : httpLink
 
-  const link = ApolloLink.from([stateLink, httpLinkWithMiddleware])
+  const wsHttpLinkWithMiddleware = afterwareLink.concat(
+    authLink.concat(wsHttpLink)
+  )
+
+  const link = ApolloLink.from([stateLink, wsHttpLinkWithMiddleware])
 
   // Check out https://github.com/zeit/next.js/pull/4611 if you want to use the AWSAppSyncClient
   return new ApolloClient({

@@ -12,21 +12,21 @@
       "password": "Password"
     }
   },
-  "add-channel-form": {
-    "title": "Add channel",
-    "submit-button": "Create channel",
-    "input": {
-      "name": {
-        "placeholder": "Channel name"
-      }
-    }
-  },
   "invite-user-form": {
     "title": "Invite users to your team",
     "submit-button": "Send invite",
     "input": {
       "email": {
         "placeholder": "User's email"
+      }
+    }
+  },
+  "add-channel-form": {
+    "title": "Add channel",
+    "submit-button": "Create channel",
+    "input": {
+      "name": {
+        "placeholder": "Channel name"
       }
     }
   },

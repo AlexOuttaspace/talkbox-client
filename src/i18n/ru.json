@@ -12,20 +12,20 @@
       "password": ""
     }
   },
-  "add-channel-form": {
-    "title": "",
-    "submit-button": "",
-    "input": {
-      "name": {
-        "placeholder": ""
-      }
-    }
-  },
   "invite-user-form": {
     "title": "",
     "submit-button": "",
     "input": {
       "email": {
+        "placeholder": ""
+      }
+    }
+  },
+  "add-channel-form": {
+    "title": "",
+    "submit-button": "",
+    "input": {
+      "name": {
         "placeholder": ""
       }
     }
