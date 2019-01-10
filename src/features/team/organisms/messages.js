@@ -32,21 +32,13 @@ export const MessagesView = ({ router }) => {
                 updateQuery: (prev, { subscriptionData }) => {
                   if (!subscriptionData) return prev
 
-                  const temp = {
+                  return {
                     ...prev,
                     messages: [
                       ...prev.messages,
                       subscriptionData.data.newChannelMessage
                     ]
                   }
-
-                  console.log(
-                    temp,
-                    subscriptionData.newChannelMessage,
-                    subscriptionData
-                  )
-
-                  return temp
                 },
                 onError: (error) => console.log(error)
               })
