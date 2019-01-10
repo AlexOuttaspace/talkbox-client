@@ -10,12 +10,13 @@ import { messagesQuery, newChannelMessageSubscription } from 'src/services'
 
 export const MessagesView = ({ router }) => {
   const channelId = +router.query.messagesId
-
+  // only refetch on client
+  const fetchPolicy = process.browser ? 'cache-and-network' : 'cache-first'
   return (
     <Query
       query={messagesQuery}
       variables={{ channelId }}
-      fetchPolicy="cache-and-network"
+      fetchPolicy={fetchPolicy}
     >
       {({ loading, error, data, subscribeToMore }) => {
         if (loading) return <div>loading</div>
