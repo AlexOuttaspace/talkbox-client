@@ -2,9 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Scrollbars } from 'react-custom-scrollbars'
 
-export const ScrollContainer = ({ children }) => {
+const ScrollContainerView = React.forwardRef(({ children, ...props }, ref) => {
   return (
     <Scrollbars
+      ref={ref}
+      {...props}
       universal
       autoHide
       autoHideTimeout={1000}
@@ -13,11 +15,13 @@ export const ScrollContainer = ({ children }) => {
       {children}
     </Scrollbars>
   )
-}
+})
 
-ScrollContainer.propTypes = {
+ScrollContainerView.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.element,
     PropTypes.arrayOf(PropTypes.element)
   ]).isRequired
 }
+
+export const ScrollContainer = ScrollContainerView

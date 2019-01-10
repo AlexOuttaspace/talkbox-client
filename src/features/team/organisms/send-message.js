@@ -71,6 +71,7 @@ class SendMessageView extends Component {
         <Form subscription={{ submitting: true }} onSubmit={this.onSubmit}>
           {({ handleSubmit, form: { reset } }) => (
             <FormRoot
+              autoComplete="off"
               onSubmit={(event) => {
                 handleSubmit(event)
                 reset()
