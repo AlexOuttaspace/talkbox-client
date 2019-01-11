@@ -82,6 +82,7 @@ function create(initialState, { token = '', refreshToken = '' }) {
     : null
 
   if (wsLink) {
+    // pass token to client
     wsLink.subscriptionClient.use([
       {
         async applyMiddleware(options, next) {
