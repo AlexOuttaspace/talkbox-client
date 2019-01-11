@@ -8,6 +8,7 @@ import { getMainDefinition } from 'apollo-utilities'
 import fetch from 'isomorphic-unfetch'
 import getConfig from 'next/config'
 import { WebSocketLink } from 'apollo-link-ws'
+
 import { storeTokensInCookie } from './manage-token'
 import { localStateResolvers, getTokens } from './localState'
 
@@ -73,16 +74,30 @@ function create(initialState, { token = '', refreshToken = '' }) {
 
   const wsLink = process.browser
     ? new WebSocketLink({
-      uri: WS_ENDPOINT,
-      options: {
-        reconnect: true
-      }
-    })
+        uri: WS_ENDPOINT,
+        options: {
+          reconnect: true
+        }
+      })
     : null
 
   if (wsLink) {
-    console.log(wsLink)
-    wsLink.setContext((...args) => console.log(args))
+    wsLink.subscriptionClient.use([
+      {
+        async applyMiddleware(options, next) {
+          console.log(options)
+          const { cache } = options.getContext()
+          const {
+            authState: { token, refreshToken }
+          } = cache.readQuery({
+            query: getTokens
+          })
+
+          options.context = { token, refreshToken }
+          next()
+        }
+      }
+    ])
   }
 
   const stateLink = withClientState({
