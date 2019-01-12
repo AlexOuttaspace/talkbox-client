@@ -8,10 +8,11 @@ import { MessagesList } from './messages-list'
 
 import { messagesQuery, newChannelMessageSubscription } from 'src/services'
 
-export const MessagesView = ({ router }) => {
+const ChannelMessagesView = ({ router }) => {
   const channelId = +router.query.messagesId
   // only refetch on client
   const fetchPolicy = process.browser ? 'cache-and-network' : 'cache-first'
+
   return (
     <Query
       query={messagesQuery}
@@ -48,7 +49,6 @@ export const MessagesView = ({ router }) => {
                 onError: (error) => console.log(error)
               })
             }
-            channelId={channelId}
             messages={data.messages || []}
           />
         )
@@ -57,10 +57,10 @@ export const MessagesView = ({ router }) => {
   )
 }
 
-MessagesView.propTypes = {
+ChannelMessagesView.propTypes = {
   router: PropTypes.object.isRequired
 }
 
 const enhance = compose(withRouter)
 
-export const Messages = enhance(MessagesView)
+export const ChannelMessages = enhance(ChannelMessagesView)

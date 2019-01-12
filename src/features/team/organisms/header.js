@@ -24,14 +24,14 @@ const Logo = styled.h2`
   }
 `
 
-export const Header = ({ channelName }) => {
+export const Header = ({ title }) => {
   return (
     <Root>
-      <Logo>#{channelName}</Logo>
+      <Logo>{title}</Logo>
     </Root>
   )
 }
 
 Header.propTypes = {
-  channelName: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired
 }

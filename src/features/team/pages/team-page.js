@@ -2,7 +2,15 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Query } from 'react-apollo'
 
-import { Header, Sidebar, Teams, SendMessage, Messages } from '../organisms'
+import {
+  Header,
+  Sidebar,
+  Teams,
+  SendChannelMessage,
+  SendDirectMessage,
+  ChannelMessages,
+  DirectMessages
+} from '../organisms'
 import { TeamLayout } from '../templates'
 import { ModalController } from '../common'
 
@@ -13,10 +21,7 @@ export class TeamPage extends Component {
   static propTypes = {
     currentTeamId: PropTypes.number,
     currentMessagesId: PropTypes.number,
-    authState: PropTypes.shape({
-      token: PropTypes.string.isRequired,
-      refreshToken: PropTypes.string.isRequired
-    })
+    messageTarget: PropTypes.oneOf(['user', 'channel'])
   }
 
   static getInitialProps = async (context) => {
@@ -24,7 +29,7 @@ export class TeamPage extends Component {
 
     const currentTeamId = +query.teamId
     const currentMessagesId = +query.messagesId
-
+    const messageTarget = query.messageTarget
     /*
       we need to use this if-statement because
       if we execute redirect while running getDataFromTree it
@@ -52,50 +57,43 @@ export class TeamPage extends Component {
         return redirect(context, redirectLink)
       }
 
-      const currentChannel = currentTeam.channels.find(
-        (channel) => channel.id === currentMessagesId
-      )
-
-      if (!currentChannel) {
-        const generalChannel = currentTeam.channels.find(
-          (channel) => channel.name === 'general'
+      if (messageTarget === 'channel') {
+        const currentChannel = currentTeam.channels.find(
+          (channel) => channel.id === currentMessagesId
         )
 
-        return redirect(
-          context,
-          `/team/${currentTeam.id}/channel/${generalChannel.id}`
-        )
+        if (!currentChannel) {
+          const generalChannel = currentTeam.channels.find(
+            (channel) => channel.name === 'general'
+          )
+
+          return redirect(
+            context,
+            `/team/${currentTeam.id}/channel/${generalChannel.id}`
+          )
+        }
+      }
+
+      if (messageTarget === 'user') {
+        // check if there is a user with id === messagesId
+        // if not, redirect to general channel
       }
     }
 
-    return { currentTeamId, currentMessagesId }
+    return { currentTeamId, currentMessagesId, messageTarget }
   }
 
   render() {
-    const { currentTeamId, currentMessagesId } = this.props
+    const { currentTeamId, currentMessagesId, messageTarget } = this.props
 
     return (
       <Query query={meQuery} fetchPolicy="cache-first">
         {({ loading, error, data }) => {
           if (loading) return <div>loading...</div>
 
-          if (error) {
-            console.log(error)
-            return <div>error...</div>
-          }
-
-          if (!data) {
-            return <div>error getting data</div>
-          }
+          if (error) return <div>error...</div>
 
           const { teams, username } = data.me
-
-          if (teams.length === 0) {
-            return (
-              // TODO: create a component or redirect here
-              <div>You do not have teams yet</div>
-            )
-          }
 
           const mappedTeams = teams.map((team) => ({
             id: team.id,
@@ -107,6 +105,26 @@ export class TeamPage extends Component {
           const currentChannel = currentTeam.channels.find(
             (channel) => channel.id === currentMessagesId
           )
+
+          let sendMessageComponent, pageTitle, messagesComponent
+
+          if (messageTarget === 'channel') {
+            sendMessageComponent = (
+              <SendChannelMessage channel={currentChannel} />
+            )
+            pageTitle = `#${currentChannel.name}`
+
+            messagesComponent = <ChannelMessages />
+          }
+
+          if (messageTarget === 'user') {
+            sendMessageComponent = (
+              <SendDirectMessage channel={currentChannel} />
+            )
+            pageTitle = `username`
+
+            messagesComponent = <DirectMessages />
+          }
 
           return (
             <ModalController>
@@ -123,10 +141,10 @@ export class TeamPage extends Component {
                     ]}
                   />
                 }
-                headerComponent={<Header channelName={currentChannel.name} />}
-                messagesComponent={<Messages />}
+                headerComponent={<Header title={pageTitle} />}
+                messagesComponent={messagesComponent}
                 teamsComponent={<Teams teams={mappedTeams} />}
-                sendMessageComponent={<SendMessage channel={currentChannel} />}
+                sendMessageComponent={sendMessageComponent}
               />
             </ModalController>
           )

@@ -72,6 +72,7 @@ module.exports = {
     "react/require-default-props": "off",
     "react/self-closing-comp": "warn",
     "react/sort-comp": "warn",
+    "react/display-name": "off",
 
     // prettier
     "prettier/prettier": [

@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { withRouter } from 'next/router'
+import { compose } from 'ramda'
 
 import { ScrollContainer } from '../templates'
 import { MessagesItem } from '../molecules'
@@ -15,11 +17,11 @@ const Root = styled.ul`
   overflow: hidden;
 `
 
-export class MessagesList extends Component {
+export class MessagesListView extends Component {
   static propTypes = {
     messages: PropTypes.arrayOf(propShapes.message).isRequired,
     subscribeToNewMessages: PropTypes.func.isRequired,
-    channelId: PropTypes.number.isRequired
+    router: PropTypes.object.isRequired
   }
 
   constructor(props) {
@@ -55,7 +57,9 @@ export class MessagesList extends Component {
       this.scrollbarRef.current.scrollToBottom()
     }
 
-    if (prevProps.channelId !== this.props.channelId) {
+    if (
+      prevProps.router.query.messagesId !== this.props.router.query.messagesId
+    ) {
       this.resubscribe()
     }
   }
@@ -89,3 +93,7 @@ export class MessagesList extends Component {
     )
   }
 }
+
+const enhance = compose(withRouter)
+
+export const MessagesList = enhance(MessagesListView)
