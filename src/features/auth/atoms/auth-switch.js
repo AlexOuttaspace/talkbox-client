@@ -22,7 +22,7 @@ const LinkInner = styled.a`
 
 export const AuthSwitch = ({ title, textInsideLink, route }) => (
   <Root>
-    <span>{title}</span>{' '}
+    <span>{title}</span>
     <Link route={route}>
       <LinkInner href={route}>{textInsideLink}</LinkInner>
     </Link>

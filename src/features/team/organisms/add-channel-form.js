@@ -77,7 +77,7 @@ class AddChannelFormView extends Component {
 
           // if it is not an optimistic response
           if (channel.id !== -1)
-            return Router.pushRoute(`/team/${teamId}/${channel.id}`)
+            return Router.pushRoute(`/team/${teamId}/channel/${channel.id}`)
         }
       })
       closeModal()

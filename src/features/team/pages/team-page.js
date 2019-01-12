@@ -47,7 +47,7 @@ export class TeamPage extends Component {
       if (!currentTeam) {
         const redirectTeamId = teams[0].id
         const redirectChannelId = teams[0].channels[0].id
-        const redirectLink = `/team/${redirectTeamId}/${redirectChannelId}`
+        const redirectLink = `/team/${redirectTeamId}/channel/${redirectChannelId}`
 
         return redirect(context, redirectLink)
       }
@@ -61,7 +61,10 @@ export class TeamPage extends Component {
           (channel) => channel.name === 'general'
         )
 
-        return redirect(context, `/team/${currentTeam.id}/${generalChannel.id}`)
+        return redirect(
+          context,
+          `/team/${currentTeam.id}/channel/${generalChannel.id}`
+        )
       }
     }
 
@@ -85,8 +88,8 @@ export class TeamPage extends Component {
             return <div>error getting data</div>
           }
 
-          const { teams, username, id: userId, admin } = data.me
-          console.log(data.me)
+          const { teams, username } = data.me
+
           if (teams.length === 0) {
             return (
               // TODO: create a component or redirect here

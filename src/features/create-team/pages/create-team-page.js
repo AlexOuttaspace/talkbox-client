@@ -39,7 +39,9 @@ const onSubmit = async (createTeamMutation, values) => {
         } catch (error) {
           // if cache is empty apollo throws error. for now there's no any other way to handle it.
         } finally {
-          return Router.pushRoute(`/team/${team.id}/${team.channels[0].id}`)
+          return Router.pushRoute(
+            `/team/${team.id}/channel/${team.channels[0].id}`
+          )
         }
       }
     })
