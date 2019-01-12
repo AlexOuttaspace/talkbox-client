@@ -7,7 +7,7 @@ import { withRouter } from 'next/router'
 import { graphql } from 'react-apollo'
 
 import { Router } from 'server/routes'
-import { createChannelMutation, allTeamsQuery } from 'src/services'
+import { createChannelMutation, meQuery } from 'src/services'
 import { SubmitButton } from 'src/ui/atoms'
 import { FormField, FormHeader } from 'src/ui/molecules'
 import { FormRoot } from 'src/ui/templates'
@@ -66,13 +66,14 @@ class AddChannelFormView extends Component {
           const { ok, channel } = createChannel
           if (!ok) return
 
-          const data = store.readQuery({ query: allTeamsQuery })
-          const teamIndex = data.allTeams.findIndex(
+          const data = store.readQuery({ query: meQuery })
+          const teamIndex = data.me.teams.findIndex(
             (team) => team.id === teamId
           )
-          data.allTeams[teamIndex].channels.push(channel)
 
-          store.writeQuery({ query: allTeamsQuery, data })
+          data.me.teams[teamIndex].channels.push(channel)
+
+          store.writeQuery({ query: meQuery, data })
 
           // if it is not an optimistic response
           if (channel.id !== -1)

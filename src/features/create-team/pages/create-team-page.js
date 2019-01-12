@@ -7,7 +7,7 @@ import { graphql } from 'react-apollo'
 import { Router } from 'server/routes'
 import { validateForm, handleServerErrors } from 'src/lib'
 import { createTeamSchema, storeTokensInCookie } from 'src/common'
-import { createTeamMutation } from 'src/services'
+import { createTeamMutation, meQuery } from 'src/services'
 import { FormHeader, FormField } from 'src/ui/molecules'
 import { SubmitButton } from 'src/ui/atoms'
 import { FormRoot } from 'src/ui/templates'
@@ -17,15 +17,34 @@ const onSubmit = async (createTeamMutation, values) => {
     const { name } = values
     const {
       data: {
-        createTeam: { ok, errors, team }
+        createTeam: { ok, errors }
       }
-    } = await createTeamMutation({ variables: { name } })
+    } = await createTeamMutation({
+      variables: { name },
+      update: (
+        store,
+        {
+          data: {
+            createTeam: { team, ok }
+          }
+        }
+      ) => {
+        if (!ok || !team) return
 
-    if (!ok) {
-      return handleServerErrors(errors)
-    }
+        try {
+          const data = store.readQuery({ query: meQuery })
+          data.me.teams.push(team)
 
-    return Router.pushRoute(`/team/${team.id}/${team.channels[0].id}`)
+          store.writeQuery({ query: meQuery, data })
+        } catch (error) {
+          // if cache is empty apollo throws error. for now there's no any other way to handle it.
+        } finally {
+          return Router.pushRoute(`/team/${team.id}/${team.channels[0].id}`)
+        }
+      }
+    })
+
+    if (!ok) return handleServerErrors(errors)
   } catch (error) {
     if (error.message.includes('Not authenticated')) {
       storeTokensInCookie(null, null)

@@ -32,5 +32,9 @@ Sidebar.propTypes = {
   teamName: PropTypes.string.isRequired,
   channels: PropTypes.arrayOf(propShapes.channel),
   users: PropTypes.arrayOf(propShapes.user),
-  isOwner: PropTypes.bool.isRequired
+  isOwner: PropTypes.bool
+}
+
+Sidebar.defaultProps = {
+  isOwner: false
 }

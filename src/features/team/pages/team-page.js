@@ -1,15 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Query } from 'react-apollo'
-import decode from 'jwt-decode'
 
 import { Header, Sidebar, Teams, SendMessage, Messages } from '../organisms'
 import { TeamLayout } from '../templates'
 import { ModalController } from '../common'
 
 import { redirect } from 'src/lib'
-import { getTokens } from 'src/common'
-import { allTeamsQuery } from 'src/services'
+import { meQuery } from 'src/services'
 
 export class TeamPage extends Component {
   static propTypes = {
@@ -35,22 +33,20 @@ export class TeamPage extends Component {
     */
     if (!apolloExtractData) {
       const response = await apolloClient.query({
-        query: allTeamsQuery
+        query: meQuery
       })
 
-      const { allTeams, inviteTeams } = response.data
+      const { teams } = response.data.me
 
-      const teamsArray = [...allTeams, ...inviteTeams]
-
-      const userHasNoTeams = teamsArray.length === 0
+      const userHasNoTeams = teams.length === 0
       if (userHasNoTeams) {
         return redirect(context, '/create-team')
       }
 
-      const currentTeam = teamsArray.find((team) => team.id === currentTeamId)
+      const currentTeam = teams.find((team) => team.id === currentTeamId)
       if (!currentTeam) {
-        const redirectTeamId = teamsArray[0].id
-        const redirectChannelId = teamsArray[0].channels[0].id
+        const redirectTeamId = teams[0].id
+        const redirectChannelId = teams[0].channels[0].id
         const redirectLink = `/team/${redirectTeamId}/${redirectChannelId}`
 
         return redirect(context, redirectLink)
@@ -69,20 +65,14 @@ export class TeamPage extends Component {
       }
     }
 
-    const { authState } = apolloClient.cache.readQuery({ query: getTokens })
-
-    return { currentTeamId, currentMessagesId, authState }
+    return { currentTeamId, currentMessagesId }
   }
 
   render() {
-    const {
-      currentTeamId,
-      currentMessagesId,
-      authState: { refreshToken }
-    } = this.props
+    const { currentTeamId, currentMessagesId } = this.props
 
     return (
-      <Query query={allTeamsQuery}>
+      <Query query={meQuery} fetchPolicy="cache-first">
         {({ loading, error, data }) => {
           if (loading) return <div>loading...</div>
 
@@ -95,33 +85,21 @@ export class TeamPage extends Component {
             return <div>error getting data</div>
           }
 
-          const { allTeams, inviteTeams } = data
-
-          const teamsArray = [...allTeams, ...inviteTeams]
-
-          if (teamsArray.length === 0) {
+          const { teams, username, id: userId, admin } = data.me
+          console.log(data.me)
+          if (teams.length === 0) {
             return (
               // TODO: create a component or redirect here
               <div>You do not have teams yet</div>
             )
           }
 
-          let user
-          try {
-            const decoded = decode(refreshToken)
-            user = decoded.user
-          } catch (error) {
-            console.log(error)
-          }
-
-          const teams = teamsArray.map((team) => ({
+          const mappedTeams = teams.map((team) => ({
             id: team.id,
             name: team.name.charAt(0)
           }))
 
-          const currentTeam = teamsArray.find(
-            (team) => team.id === currentTeamId
-          )
+          const currentTeam = teams.find((team) => team.id === currentTeamId)
 
           const currentChannel = currentTeam.channels.find(
             (channel) => channel.id === currentMessagesId
@@ -133,9 +111,9 @@ export class TeamPage extends Component {
                 sidebarComponent={
                   <Sidebar
                     teamName={currentTeam.name || ''}
-                    username={user.username}
+                    username={username}
                     channels={currentTeam.channels}
-                    isOwner={currentTeam.owner === user.id}
+                    isOwner={currentTeam.admin}
                     users={[
                       { id: 1, name: 'talkboxbot' },
                       { id: 2, name: 'Leonard Euler' }
@@ -144,7 +122,7 @@ export class TeamPage extends Component {
                 }
                 headerComponent={<Header channelName={currentChannel.name} />}
                 messagesComponent={<Messages />}
-                teamsComponent={<Teams teams={teams} />}
+                teamsComponent={<Teams teams={mappedTeams} />}
                 sendMessageComponent={<SendMessage channel={currentChannel} />}
               />
             </ModalController>
