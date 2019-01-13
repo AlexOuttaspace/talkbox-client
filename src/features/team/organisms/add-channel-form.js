@@ -6,11 +6,12 @@ import { intlShape, defineMessages } from 'react-intl'
 import { withRouter } from 'next/router'
 import { graphql } from 'react-apollo'
 
+import { ModalFormRoot } from '../atoms'
+
 import { Router } from 'server/routes'
 import { createChannelMutation, meQuery } from 'src/services'
 import { SubmitButton } from 'src/ui/atoms'
 import { FormField, FormHeader } from 'src/ui/molecules'
-import { FormRoot } from 'src/ui/templates'
 import { validateForm } from 'src/lib'
 import { createChannelSchema, withIntl, storeTokensInCookie } from 'src/common'
 
@@ -102,7 +103,7 @@ class AddChannelFormView extends Component {
           onSubmit={this.onSubmit}
         >
           {({ handleSubmit }) => (
-            <FormRoot onSubmit={handleSubmit}>
+            <ModalFormRoot onSubmit={handleSubmit}>
               <FormHeader mainHeading={intl.formatMessage(i18n.title)} />
 
               <FormField
@@ -114,7 +115,7 @@ class AddChannelFormView extends Component {
               <SubmitButton type="submit">
                 {intl.formatMessage(i18n.submitButton)}
               </SubmitButton>
-            </FormRoot>
+            </ModalFormRoot>
           )}
         </Form>
       </main>

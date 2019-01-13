@@ -6,6 +6,8 @@ import { intlShape, defineMessages } from 'react-intl'
 import { withRouter } from 'next/router'
 import { graphql } from 'react-apollo'
 
+import { ModalFormRoot } from '../atoms'
+
 import { Router } from 'server/routes'
 import { addMemberMutation } from 'src/services'
 import { SubmitButton } from 'src/ui/atoms'
@@ -78,7 +80,7 @@ class InviteUserFormView extends Component {
           onSubmit={this.onSubmit}
         >
           {({ handleSubmit }) => (
-            <FormRoot onSubmit={handleSubmit}>
+            <ModalFormRoot onSubmit={handleSubmit}>
               <FormHeader mainHeading={intl.formatMessage(i18n.title)} />
 
               <FormField
@@ -90,7 +92,7 @@ class InviteUserFormView extends Component {
               <SubmitButton type="submit">
                 {intl.formatMessage(i18n.submitButton)}
               </SubmitButton>
-            </FormRoot>
+            </ModalFormRoot>
           )}
         </Form>
       </main>

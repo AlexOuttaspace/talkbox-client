@@ -1,10 +1,14 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 import { compose } from 'ramda'
-import { Form } from 'react-final-form'
+import { Form, FormSpy } from 'react-final-form'
 import { intlShape, defineMessages } from 'react-intl'
 import { withRouter } from 'next/router'
 import { graphql } from 'react-apollo'
+
+import { AddChatUserList } from '../molecules'
+import { ModalFormRoot } from '../atoms'
 
 import { Router } from 'server/routes'
 import { addMemberMutation } from 'src/services'
@@ -25,9 +29,27 @@ const i18n = defineMessages({
   },
   submitButton: {
     id: 'add-dm-user-form.submit-button',
-    defaultMessage: 'Start chat'
+    defaultMessage: 'Go'
   }
 })
+
+const StyledModalFormRoot = styled(ModalFormRoot)`
+  margin-top: 30vh;
+  max-width: 44rem;
+`
+
+const StyledSubmitButton = styled(SubmitButton)`
+  margin-bottom: 0;
+  flex-basis: 50px;
+  margin-left: 2rem;
+  font-size: 1.4rem;
+`
+
+const RowWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+`
 
 class AddDirectMessageChatView extends Component {
   static propTypes = {
@@ -57,20 +79,32 @@ class AddDirectMessageChatView extends Component {
           validate={validateForm({ schema: addMemberSchema })}
           onSubmit={this.onSubmit}
         >
-          {({ handleSubmit }) => (
-            <FormRoot onSubmit={handleSubmit}>
-              <FormHeader mainHeading={intl.formatMessage(i18n.title)} />
+          {({ handleSubmit, ...rest }, ...rest2) => (
+            <Fragment>
+              {console.log(rest, rest2)}
+              <StyledModalFormRoot onSubmit={handleSubmit}>
+                <FormHeader mainHeading={intl.formatMessage(i18n.title)} />
 
-              <FormField
-                name="username"
-                type="text"
-                placeholder={intl.formatMessage(i18n.usernameInputPlaceholder)}
-              />
+                <RowWrapper>
+                  <FormField
+                    name="username"
+                    type="text"
+                    placeholder={intl.formatMessage(
+                      i18n.usernameInputPlaceholder
+                    )}
+                  />
 
-              <SubmitButton type="submit">
-                {intl.formatMessage(i18n.submitButton)}
-              </SubmitButton>
-            </FormRoot>
+                  <StyledSubmitButton type="submit">
+                    {intl.formatMessage(i18n.submitButton)}
+                  </StyledSubmitButton>
+                </RowWrapper>
+              </StyledModalFormRoot>
+              <FormSpy subscription={{ values: true }}>
+                {({ values }) => (
+                  <AddChatUserList currentInputValue={values.username} />
+                )}
+              </FormSpy>
+            </Fragment>
           )}
         </Form>
       </main>

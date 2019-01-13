@@ -23,7 +23,7 @@
   },
   "add-dm-user-form": {
     "title": "Select user to chat with",
-    "submit-button": "Start chat",
+    "submit-button": "Go",
     "input": {
       "email": {
         "placeholder": "Username"
