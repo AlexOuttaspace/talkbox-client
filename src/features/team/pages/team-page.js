@@ -58,21 +58,26 @@ export class TeamPage extends Component {
         return redirect(context, redirectLink)
       }
 
+      let messagesReceiver
       if (messageTarget === 'channel') {
-        const currentChannel = currentTeam.channels.find(
+        messagesReceiver = currentTeam.channels.find(
           (channel) => channel.id === currentMessagesId
         )
+      } else {
+        messagesReceiver = currentTeam.directMessageMembers.find(
+          (user) => user.id === currentMessagesId
+        )
+      }
 
-        if (!currentChannel) {
-          const generalChannel = currentTeam.channels.find(
-            (channel) => channel.name === 'general'
-          )
+      if (!messagesReceiver) {
+        const generalChannel = currentTeam.channels.find(
+          (channel) => channel.name === 'general'
+        )
 
-          return redirect(
-            context,
-            `/team/${currentTeam.id}/channel/${generalChannel.id}`
-          )
-        }
+        return redirect(
+          context,
+          `/team/${currentTeam.id}/channel/${generalChannel.id}`
+        )
       }
     }
 
