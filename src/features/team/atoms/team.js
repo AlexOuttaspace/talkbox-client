@@ -41,7 +41,7 @@ const LinkElement = styled.a`
 `
 
 export const Team = ({ team, isCurrent }) => {
-  const route = `/team/${team.id}`
+  const route = `/team/${team.id}/channel`
   return (
     <Root>
       <Link route={route}>

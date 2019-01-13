@@ -13,6 +13,7 @@ import {
 } from '../organisms'
 import { TeamLayout } from '../templates'
 import { ModalController } from '../common'
+import { message } from '../common/prop-shapes'
 
 import { redirect } from 'src/lib'
 import { meQuery } from 'src/services'
@@ -73,12 +74,6 @@ export class TeamPage extends Component {
           )
         }
       }
-
-      if (messageTarget === 'user') {
-        // TODO
-        // check if there is a user with id === messagesId
-        // if not, redirect to general channel
-      }
     }
 
     return { currentTeamId, currentMessagesId, messageTarget }
@@ -95,6 +90,8 @@ export class TeamPage extends Component {
           console.log(data)
 
           const { teams, username } = data.me
+
+          console.log('Current user ID:', data.me.id)
 
           const mappedTeams = teams.map((team) => ({
             id: team.id,

@@ -30,29 +30,34 @@ const DirectMessagesView = ({ router }) => {
           return <div>error</div>
         }
 
-        console.log(data)
-        return null
-        // <MessagesList
-        //   subscribeToNewMessages={() =>
-        //     subscribeToMore({
-        //       document: newChannelMessageSubscription,
-        //       variables: { channelId },
-        //       updateQuery: (prev, { subscriptionData }) => {
-        //         if (!subscriptionData) return prev
+        const messages = data.directMessages.map((message) => ({
+          ...message,
+          user: message.sender
+        }))
 
-        //         return {
-        //           ...prev,
-        //           messages: [
-        //             ...prev.messages,
-        //             subscriptionData.data.newChannelMessage
-        //           ]
-        //         }
-        //       },
-        //       onError: (error) => console.log(error)
-        //     })
-        //   }
-        //   messages={data.messages || []}
-        // />
+        return (
+          <MessagesList
+            subscribeToNewMessages={() => () => {}}
+            // subscribeToMore({
+            //   document: newChannelMessageSubscription,
+            //   variables: { channelId },
+            //   updateQuery: (prev, { subscriptionData }) => {
+            //     if (!subscriptionData) return prev
+
+            //     return {
+            //       ...prev,
+            //       messages: [
+            //         ...prev.messages,
+            //         subscriptionData.data.newChannelMessage
+            //       ]
+            //     }
+            //   },
+            //   onError: (error) => console.log(error)
+            // })
+
+            messages={messages || []}
+          />
+        )
       }}
     </Query>
   )
