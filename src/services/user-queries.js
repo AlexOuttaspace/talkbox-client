@@ -1,7 +1,7 @@
 import gql from 'graphql-tag'
 
 export const meQuery = gql`
-  {
+  query($teamId: Int!) {
     me {
       id
       username
@@ -18,6 +18,11 @@ export const meQuery = gql`
           name
         }
       }
+    }
+
+    getTeamMembers(teamId: $teamId) {
+      id
+      username
     }
   }
 `

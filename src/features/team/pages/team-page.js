@@ -39,19 +39,16 @@ export class TeamPage extends Component {
     */
     if (!apolloExtractData) {
       const response = await apolloClient.query({
-        query: meQuery
-      })
-
-      const {
-        data: { getTeamMembers }
-      } = await apolloClient.query({
-        query: getTeamMembersQuery,
+        query: meQuery,
         variables: {
           teamId: currentTeamId
         }
       })
 
-      const { teams } = response.data.me
+      const {
+        me: { teams },
+        getTeamMembers
+      } = response.data
 
       const userHasNoTeams = teams.length === 0
       if (userHasNoTeams) {
@@ -96,13 +93,20 @@ export class TeamPage extends Component {
   render() {
     const { currentTeamId, currentMessagesId, messageTarget } = this.props
     return (
-      <Query query={meQuery} fetchPolicy="cache-first">
+      <Query
+        query={meQuery}
+        variables={{ teamId: currentTeamId }}
+        fetchPolicy="cache-first"
+      >
         {({ loading, error, data }) => {
           if (loading) return <div>loading...</div>
 
           if (error) return <div>error...</div>
 
-          const { teams, username } = data.me
+          const {
+            me: { teams, username },
+            getTeamMembers
+          } = data
 
           const mappedTeams = teams.map((team) => ({
             id: team.id,
@@ -111,13 +115,13 @@ export class TeamPage extends Component {
 
           const currentTeam = teams.find((team) => team.id === currentTeamId)
 
-          const currentChannel = currentTeam.channels.find(
-            (channel) => channel.id === currentMessagesId
-          )
-
           let sendMessageComponent, pageTitle, messagesComponent
 
           if (messageTarget === 'channel') {
+            const currentChannel = currentTeam.channels.find(
+              (channel) => channel.id === currentMessagesId
+            )
+
             sendMessageComponent = (
               <SendChannelMessage channel={currentChannel} />
             )
@@ -127,18 +131,20 @@ export class TeamPage extends Component {
           }
 
           if (messageTarget === 'user') {
+            const currentUser = getTeamMembers.find(
+              (user) => user.id === currentMessagesId
+            )
+
             sendMessageComponent = (
               <SendDirectMessage
                 teamId={currentTeamId}
-                receiverId={currentMessagesId}
+                receiver={currentUser}
               />
             )
 
-            pageTitle = `username`
+            pageTitle = currentUser.username
 
-            messagesComponent = (
-              <DirectMessages receiverId={currentMessagesId} />
-            )
+            messagesComponent = <DirectMessages receiverId={currentUser.id} />
           }
 
           return (

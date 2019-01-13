@@ -8,7 +8,7 @@ import { propShapes } from '../common'
 import { MessageInput } from '../molecules'
 
 import { withIntl } from 'src/common'
-import { createDirectMessageMutation } from 'src/services'
+import { createDirectMessageMutation, meQuery } from 'src/services'
 
 const i18n = defineMessages({
   placeholder: {
@@ -19,20 +19,41 @@ const i18n = defineMessages({
 
 class SendDirectMessageView extends Component {
   static propTypes = {
-    receiverId: PropTypes.number.isRequired,
+    receiver: propShapes.user.isRequired,
     teamId: PropTypes.number.isRequired,
     intl: intlShape,
     createDirectMessageMutation: PropTypes.func.isRequired
   }
 
   onSubmit = async (values) => {
-    const { createDirectMessageMutation, receiverId, teamId } = this.props
+    const { createDirectMessageMutation, receiver, teamId } = this.props
 
     const response = await createDirectMessageMutation({
       variables: {
-        receiverId,
+        receiverId: receiver.id,
         teamId,
         text: values.message
+      },
+      optimisticResponse: true,
+      update: (store) => {
+        const data = store.readQuery({ query: meQuery })
+
+        const teamIdx = data.meQuery.teams.findIndex(
+          (team) => team.id === teamId
+        )
+
+        const notAlreadyThere = data.meQuery.teams[
+          teamIdx
+        ].directMessageMembers.every((member) => member.id !== receiver.id)
+
+        if (notAlreadyThere) {
+          data.meQuery.teams[teamIdx].directMessageMembers.push({
+            __typename: 'User',
+            ...receiver
+          })
+
+          store.writeQuery({ query: meQuery, data })
+        }
       }
     })
 
@@ -40,9 +61,11 @@ class SendDirectMessageView extends Component {
   }
 
   render() {
-    const { intl } = this.props
+    const { intl, receiver } = this.props
 
-    const placeholder = `${intl.formatMessage(i18n.placeholder)}`
+    const placeholder = `${intl.formatMessage(i18n.placeholder)} ${
+      receiver.username
+    }`
 
     return <MessageInput onSubmit={this.onSubmit} placeholder={placeholder} />
   }

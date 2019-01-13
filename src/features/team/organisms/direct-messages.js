@@ -16,6 +16,7 @@ const DirectMessagesView = ({ router }) => {
   const otherUserId = +router.query.messagesId
   // only refetch on client
   const fetchPolicy = process.browser ? 'cache-and-network' : 'cache-first'
+  console.log(fetchPolicy)
   return (
     <Query
       query={directMessagesQuery}
