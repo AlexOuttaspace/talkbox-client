@@ -3,11 +3,13 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { defineMessages, intlShape } from 'react-intl'
 import { compose } from 'ramda'
+import { withRouter } from 'next/router'
 
 import { propShapes } from '../common'
 import { User } from '../atoms'
 import { AddDirectMessagesButton } from '../atoms'
 
+import { Link } from 'server/routes'
 import { withIntl } from 'src/common'
 
 const i18n = defineMessages({
@@ -36,7 +38,11 @@ const Title = styled.h3`
   font-size: 1rem;
 `
 
-export const UserListView = ({ users, intl }) => {
+export const UserListView = ({ users, intl, router }) => {
+  const teamId = +router.query.teamId
+  const messagesId = +router.query.messagesId
+  const messageTarget = router.query.messageTarget
+
   return (
     <Root>
       <Header>
@@ -44,7 +50,12 @@ export const UserListView = ({ users, intl }) => {
         <AddDirectMessagesButton />
       </Header>
       {users.map((user) => (
-        <User key={user.id} user={user} />
+        <User
+          key={user.id}
+          selected={messagesId === user.id && messageTarget === 'user'}
+          teamId={teamId}
+          user={user}
+        />
       ))}
     </Root>
   )
@@ -52,9 +63,13 @@ export const UserListView = ({ users, intl }) => {
 
 UserListView.propTypes = {
   intl: intlShape,
-  users: PropTypes.arrayOf(propShapes.user)
+  users: PropTypes.arrayOf(propShapes.user),
+  router: PropTypes.object.isRequired
 }
 
-const enhance = compose(withIntl)
+const enhance = compose(
+  withIntl,
+  withRouter
+)
 
 export const UserList = enhance(UserListView)

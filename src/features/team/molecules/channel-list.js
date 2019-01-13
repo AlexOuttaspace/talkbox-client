@@ -39,6 +39,8 @@ const Title = styled.h3`
 export const ChannelListView = ({ channels, intl, router, isOwner }) => {
   const currentChannelId = +router.query.messagesId
   const teamId = +router.query.teamId
+  const messageTarget = router.query.messageTarget
+
   return (
     <Root>
       <Header>
@@ -48,7 +50,9 @@ export const ChannelListView = ({ channels, intl, router, isOwner }) => {
       {channels.map((channel) => (
         <Channel
           teamId={teamId}
-          selected={currentChannelId === channel.id}
+          selected={
+            currentChannelId === channel.id && messageTarget === 'channel'
+          }
           key={channel.id}
           channel={channel}
         />

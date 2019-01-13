@@ -17,3 +17,5 @@ export { newChannelMessageSubscription } from './subscriptions'
 export { createDirectMessageMutation } from './direct-messages-mutations'
 
 export { directMessagesQuery } from './direct-messages-queries'
+
+export { getTeamMembersQuery } from './team-queries'

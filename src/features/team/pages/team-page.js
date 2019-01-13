@@ -87,11 +87,8 @@ export class TeamPage extends Component {
           if (loading) return <div>loading...</div>
 
           if (error) return <div>error...</div>
-          console.log(data)
 
           const { teams, username } = data.me
-
-          console.log('Current user ID:', data.me.id)
 
           const mappedTeams = teams.map((team) => ({
             id: team.id,
@@ -139,10 +136,7 @@ export class TeamPage extends Component {
                     username={username}
                     channels={currentTeam.channels}
                     isOwner={currentTeam.admin}
-                    users={[
-                      { id: 1, username: 'talkboxbot' },
-                      { id: 2, username: 'Leonard Euler' }
-                    ]}
+                    users={currentTeam.directMessageMembers}
                   />
                 }
                 sendMessageComponent={sendMessageComponent}

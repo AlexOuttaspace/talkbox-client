@@ -1,22 +1,14 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { compose } from 'ramda'
-import { Form, FormSpy } from 'react-final-form'
 import { intlShape, defineMessages } from 'react-intl'
-import { withRouter } from 'next/router'
-import { graphql } from 'react-apollo'
 
 import { AddChatUserList } from '../molecules'
-import { ModalFormRoot } from '../atoms'
 
-import { Router } from 'server/routes'
-import { addMemberMutation } from 'src/services'
-import { SubmitButton } from 'src/ui/atoms'
-import { FormField, FormHeader } from 'src/ui/molecules'
-import { FormRoot } from 'src/ui/templates'
-import { validateForm, handleServerErrors } from 'src/lib'
-import { addMemberSchema, withIntl, storeTokensInCookie } from 'src/common'
+import { Input } from 'src/ui/atoms'
+import { FormHeader } from 'src/ui/molecules'
+import { withIntl } from 'src/common'
 
 const i18n = defineMessages({
   title: {
@@ -33,23 +25,18 @@ const i18n = defineMessages({
   }
 })
 
-const StyledModalFormRoot = styled(ModalFormRoot)`
+const StyledModalFormRoot = styled.div`
   margin-top: 30vh;
   max-width: 44rem;
   flex-shrink: 0;
-`
 
-const StyledSubmitButton = styled(SubmitButton)`
-  margin-bottom: 0;
-  flex-basis: 50px;
-  margin-left: 2rem;
-  font-size: 1.4rem;
-`
+  margin-left: auto;
+  margin-right: auto;
+  width: 95vw;
 
-const RowWrapper = styled.div`
   display: flex;
-  flex-direction: row;
-  width: 100%;
+  flex-direction: column;
+  align-items: center;
 `
 
 const MainRoot = styled.main`
@@ -62,72 +49,39 @@ const MainRoot = styled.main`
 class AddDirectMessageChatView extends Component {
   static propTypes = {
     intl: intlShape,
-    router: PropTypes.object.isRequired,
     closeModal: PropTypes.func.isRequired
   }
 
-  onSubmit = async ({ username }) => {
-    try {
-      console.log(username)
-    } catch (error) {
-      if (error.message.includes('Not authenticated')) {
-        storeTokensInCookie(null, null)
-        return Router.pushRoute('/login')
-      }
-    }
+  state = {
+    value: ''
   }
 
+  onChange = (e) => this.setState({ value: e.target.value })
+
   render() {
-    const { intl } = this.props
+    const { intl, closeModal } = this.props
+    const { value } = this.state
 
     return (
-      <Form
-        subscription={{ submitting: true }}
-        validate={validateForm({ schema: addMemberSchema })}
-        onSubmit={this.onSubmit}
-        mutators={{
-          setUsername: (args, state, utils) =>
-            utils.changeValue(state, 'username', () => args[0])
-        }}
-      >
-        {({ handleSubmit, form, ...rest }) => (
-          <MainRoot>
-            {console.log(rest)}
-            <StyledModalFormRoot onSubmit={handleSubmit}>
-              <FormHeader mainHeading={intl.formatMessage(i18n.title)} />
+      <MainRoot>
+        <StyledModalFormRoot>
+          <FormHeader mainHeading={intl.formatMessage(i18n.title)} />
 
-              <RowWrapper>
-                <FormField
-                  name="username"
-                  type="text"
-                  placeholder={intl.formatMessage(
-                    i18n.usernameInputPlaceholder
-                  )}
-                />
+          <Input
+            onChange={this.onChange}
+            value={value}
+            name="username"
+            type="text"
+            placeholder={intl.formatMessage(i18n.usernameInputPlaceholder)}
+          />
+        </StyledModalFormRoot>
 
-                <StyledSubmitButton type="submit">
-                  {intl.formatMessage(i18n.submitButton)}
-                </StyledSubmitButton>
-              </RowWrapper>
-            </StyledModalFormRoot>
-            <FormSpy subscription={{ values: true }}>
-              {({ values }) => (
-                <AddChatUserList
-                  setUsername={form.mutators.setUsername}
-                  currentInputValue={values.username || ''}
-                />
-              )}
-            </FormSpy>
-          </MainRoot>
-        )}
-      </Form>
+        <AddChatUserList onSelect={closeModal} currentInputValue={value} />
+      </MainRoot>
     )
   }
 }
 
-const enhance = compose(
-  withIntl,
-  withRouter
-)
+const enhance = compose(withIntl)
 
 export const AddDirectMessageChat = enhance(AddDirectMessageChatView)
