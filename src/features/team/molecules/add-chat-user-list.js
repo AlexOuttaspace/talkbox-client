@@ -36,7 +36,11 @@ export const AddChatUserListView = ({
   const teamId = +router.query.teamId
 
   return (
-    <Query query={getTeamMembersQuery} variables={{ teamId: 1 }}>
+    <Query
+      query={getTeamMembersQuery}
+      variables={{ teamId }}
+      fetchPolicy="cache-and-network"
+    >
       {({ loading, error, data }) => {
         if (loading) return <div>loading</div>
 

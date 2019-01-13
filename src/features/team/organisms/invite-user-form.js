@@ -9,7 +9,7 @@ import { graphql } from 'react-apollo'
 import { ModalFormRoot } from '../atoms'
 
 import { Router } from 'server/routes'
-import { addMemberMutation } from 'src/services'
+import { addMemberMutation, getTeamMembersQuery } from 'src/services'
 import { SubmitButton } from 'src/ui/atoms'
 import { FormField, FormHeader } from 'src/ui/molecules'
 import { FormRoot } from 'src/ui/templates'
@@ -51,7 +51,19 @@ class InviteUserFormView extends Component {
       const {
         data: { addTeamMember }
       } = await addMemberMutation({
-        variables: { teamId, email }
+        variables: { teamId, email },
+        update: (store, { data: { addTeamMember } }) => {
+          if (!addTeamMember.ok) return
+
+          const data = store.readQuery({
+            query: getTeamMembersQuery,
+            variables: { teamId }
+          })
+
+          data.getTeamMembers.push(addTeamMember.user)
+
+          store.writeQuery({ query: getTeamMembersQuery, data })
+        }
       })
 
       if (!addTeamMember.ok) {
