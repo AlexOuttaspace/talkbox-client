@@ -140,8 +140,8 @@ export class TeamPage extends Component {
                     channels={currentTeam.channels}
                     isOwner={currentTeam.admin}
                     users={[
-                      { id: 1, name: 'talkboxbot' },
-                      { id: 2, name: 'Leonard Euler' }
+                      { id: 1, username: 'talkboxbot' },
+                      { id: 2, username: 'Leonard Euler' }
                     ]}
                   />
                 }

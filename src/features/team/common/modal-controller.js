@@ -19,7 +19,7 @@ export class ModalController extends Component {
   }
 
   state = {
-    currentModal: ''
+    currentModal: 'add-dm'
   }
 
   closeModal = () => this.setState({ currentModal: '' })

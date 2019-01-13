@@ -7,7 +7,7 @@ export const channel = PropTypes.shape({
 
 export const user = PropTypes.shape({
   id: PropTypes.number.isRequired,
-  name: PropTypes.string.isRequired
+  username: PropTypes.string.isRequired
 })
 
 export const team = PropTypes.shape({

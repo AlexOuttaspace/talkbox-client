@@ -30,7 +30,7 @@ const Root = styled.li`
 `
 
 export const User = ({ user }) => {
-  return <Root>{user.name}</Root>
+  return <Root>{user.username}</Root>
 }
 
 User.propTypes = {
