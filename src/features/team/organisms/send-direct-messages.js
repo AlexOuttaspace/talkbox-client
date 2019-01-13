@@ -8,7 +8,7 @@ import { propShapes } from '../common'
 import { MessageInput } from '../molecules'
 
 import { withIntl } from 'src/common'
-import { createMessageMutation } from 'src/services'
+import { createDirectMessageMutation } from 'src/services'
 
 const i18n = defineMessages({
   placeholder: {
@@ -19,28 +19,30 @@ const i18n = defineMessages({
 
 class SendDirectMessageView extends Component {
   static propTypes = {
-    channel: propShapes.channel,
+    receiverId: PropTypes.number.isRequired,
+    teamId: PropTypes.number.isRequired,
     intl: intlShape,
-    createMessageMutation: PropTypes.func.isRequired
+    createDirectMessageMutation: PropTypes.func.isRequired
   }
 
-  onSubmit = (values) => {
-    const { createMessageMutation, channel } = this.props
+  onSubmit = async (values) => {
+    const { createDirectMessageMutation, receiverId, teamId } = this.props
 
-    createMessageMutation({
+    const response = await createDirectMessageMutation({
       variables: {
-        channelId: channel.id,
+        receiverId,
+        teamId,
         text: values.message
       }
     })
+
+    console.log(response)
   }
 
   render() {
-    const { channel, intl } = this.props
+    const { intl } = this.props
 
-    const placeholder = `${intl.formatMessage(i18n.placeholder)} #${
-      channel.name
-    }`
+    const placeholder = `${intl.formatMessage(i18n.placeholder)}`
 
     return <MessageInput onSubmit={this.onSubmit} placeholder={placeholder} />
   }
@@ -48,7 +50,7 @@ class SendDirectMessageView extends Component {
 
 const enhance = compose(
   withIntl,
-  graphql(createMessageMutation, { name: 'createMessageMutation' })
+  graphql(createDirectMessageMutation, { name: 'createDirectMessageMutation' })
 )
 
 export const SendDirectMessage = enhance(SendDirectMessageView)

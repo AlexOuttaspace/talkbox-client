@@ -75,6 +75,7 @@ export class TeamPage extends Component {
       }
 
       if (messageTarget === 'user') {
+        // TODO
         // check if there is a user with id === messagesId
         // if not, redirect to general channel
       }
@@ -85,13 +86,13 @@ export class TeamPage extends Component {
 
   render() {
     const { currentTeamId, currentMessagesId, messageTarget } = this.props
-
     return (
       <Query query={meQuery} fetchPolicy="cache-first">
         {({ loading, error, data }) => {
           if (loading) return <div>loading...</div>
 
           if (error) return <div>error...</div>
+          console.log(data)
 
           const { teams, username } = data.me
 
@@ -119,11 +120,17 @@ export class TeamPage extends Component {
 
           if (messageTarget === 'user') {
             sendMessageComponent = (
-              <SendDirectMessage channel={currentChannel} />
+              <SendDirectMessage
+                teamId={currentTeamId}
+                receiverId={currentMessagesId}
+              />
             )
+
             pageTitle = `username`
 
-            messagesComponent = <DirectMessages />
+            messagesComponent = (
+              <DirectMessages receiverId={currentMessagesId} />
+            )
           }
 
           return (
@@ -141,10 +148,10 @@ export class TeamPage extends Component {
                     ]}
                   />
                 }
-                headerComponent={<Header title={pageTitle} />}
-                messagesComponent={messagesComponent}
-                teamsComponent={<Teams teams={mappedTeams} />}
                 sendMessageComponent={sendMessageComponent}
+                messagesComponent={messagesComponent}
+                headerComponent={<Header title={pageTitle} />}
+                teamsComponent={<Teams teams={mappedTeams} />}
               />
             </ModalController>
           )

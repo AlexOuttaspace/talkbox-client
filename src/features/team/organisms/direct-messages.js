@@ -6,16 +6,20 @@ import { Query } from 'react-apollo'
 
 import { MessagesList } from './messages-list'
 
-import { messagesQuery, newChannelMessageSubscription } from 'src/services'
+import {
+  directMessagesQuery,
+  newChannelMessageSubscription
+} from 'src/services'
 
 const DirectMessagesView = ({ router }) => {
-  const channelId = +router.query.messagesId
+  const teamId = +router.query.teamId
+  const otherUserId = +router.query.messagesId
   // only refetch on client
   const fetchPolicy = process.browser ? 'cache-and-network' : 'cache-first'
   return (
     <Query
-      query={messagesQuery}
-      variables={{ channelId }}
+      query={directMessagesQuery}
+      variables={{ teamId, otherUserId }}
       fetchPolicy={fetchPolicy}
     >
       {({ loading, error, data, subscribeToMore }) => {
@@ -26,31 +30,29 @@ const DirectMessagesView = ({ router }) => {
           return <div>error</div>
         }
 
-        if (!data) return null
+        console.log(data)
+        return null
+        // <MessagesList
+        //   subscribeToNewMessages={() =>
+        //     subscribeToMore({
+        //       document: newChannelMessageSubscription,
+        //       variables: { channelId },
+        //       updateQuery: (prev, { subscriptionData }) => {
+        //         if (!subscriptionData) return prev
 
-        return (
-          <MessagesList
-            subscribeToNewMessages={() =>
-              subscribeToMore({
-                document: newChannelMessageSubscription,
-                variables: { channelId },
-                updateQuery: (prev, { subscriptionData }) => {
-                  if (!subscriptionData) return prev
-
-                  return {
-                    ...prev,
-                    messages: [
-                      ...prev.messages,
-                      subscriptionData.data.newChannelMessage
-                    ]
-                  }
-                },
-                onError: (error) => console.log(error)
-              })
-            }
-            messages={data.messages || []}
-          />
-        )
+        //         return {
+        //           ...prev,
+        //           messages: [
+        //             ...prev.messages,
+        //             subscriptionData.data.newChannelMessage
+        //           ]
+        //         }
+        //       },
+        //       onError: (error) => console.log(error)
+        //     })
+        //   }
+        //   messages={data.messages || []}
+        // />
       }}
     </Query>
   )

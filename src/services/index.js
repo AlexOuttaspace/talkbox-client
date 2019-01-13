@@ -13,3 +13,7 @@ export { createMessageMutation } from './message-mutations'
 export { messagesQuery } from './message-queries'
 
 export { newChannelMessageSubscription } from './subscriptions'
+
+export { createDirectMessageMutation } from './direct-messages-mutations'
+
+export { directMessagesQuery } from './direct-messages-queries'
