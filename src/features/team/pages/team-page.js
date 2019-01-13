@@ -13,7 +13,6 @@ import {
 } from '../organisms'
 import { TeamLayout } from '../templates'
 import { ModalController } from '../common'
-import { message } from '../common/prop-shapes'
 
 import { redirect } from 'src/lib'
 import { meQuery, getTeamMembersQuery } from 'src/services'
@@ -39,15 +38,11 @@ export class TeamPage extends Component {
     */
     if (!apolloExtractData) {
       const response = await apolloClient.query({
-        query: meQuery,
-        variables: {
-          teamId: currentTeamId
-        }
+        query: meQuery
       })
 
       const {
-        me: { teams },
-        getTeamMembers
+        me: { teams }
       } = response.data
 
       const userHasNoTeams = teams.length === 0
@@ -63,6 +58,15 @@ export class TeamPage extends Component {
 
         return redirect(context, redirectLink)
       }
+
+      const {
+        data: { getTeamMembers }
+      } = await apolloClient.query({
+        query: getTeamMembersQuery,
+        variables: {
+          teamId: currentTeamId
+        }
+      })
 
       let messagesReceiver
       if (messageTarget === 'channel') {
@@ -93,80 +97,87 @@ export class TeamPage extends Component {
   render() {
     const { currentTeamId, currentMessagesId, messageTarget } = this.props
     return (
-      <Query
-        query={meQuery}
-        variables={{ teamId: currentTeamId }}
-        fetchPolicy="cache-first"
-      >
-        {({ loading, error, data }) => {
-          if (loading) return <div>loading...</div>
+      <Query query={getTeamMembersQuery} variables={{ teamId: currentTeamId }}>
+        {({
+          loading: loadingOuter,
+          error: errorOuter,
+          data: { getTeamMembers }
+        }) => (
+          <Query query={meQuery} fetchPolicy="cache-first">
+            {({ loading, error, data }) => {
+              if (loading || loadingOuter) return <div>loading...</div>
 
-          if (error) return <div>error...</div>
+              if (error || errorOuter) return <div>error...</div>
 
-          const {
-            me: { teams, username },
-            getTeamMembers
-          } = data
+              const {
+                me: { teams, username }
+              } = data
 
-          const mappedTeams = teams.map((team) => ({
-            id: team.id,
-            name: team.name.charAt(0)
-          }))
+              const mappedTeams = teams.map((team) => ({
+                id: team.id,
+                name: team.name.charAt(0)
+              }))
 
-          const currentTeam = teams.find((team) => team.id === currentTeamId)
+              const currentTeam = teams.find(
+                (team) => team.id === currentTeamId
+              )
 
-          let sendMessageComponent, pageTitle, messagesComponent
+              let sendMessageComponent, pageTitle, messagesComponent
 
-          if (messageTarget === 'channel') {
-            const currentChannel = currentTeam.channels.find(
-              (channel) => channel.id === currentMessagesId
-            )
+              if (messageTarget === 'channel') {
+                const currentChannel = currentTeam.channels.find(
+                  (channel) => channel.id === currentMessagesId
+                )
 
-            sendMessageComponent = (
-              <SendChannelMessage channel={currentChannel} />
-            )
-            pageTitle = `#${currentChannel.name}`
+                sendMessageComponent = (
+                  <SendChannelMessage channel={currentChannel} />
+                )
+                pageTitle = `#${currentChannel.name}`
 
-            messagesComponent = <ChannelMessages />
-          }
+                messagesComponent = <ChannelMessages />
+              }
 
-          if (messageTarget === 'user') {
-            const currentUser = getTeamMembers.find(
-              (user) => user.id === currentMessagesId
-            )
+              if (messageTarget === 'user') {
+                const currentUser = getTeamMembers.find(
+                  (user) => user.id === currentMessagesId
+                )
 
-            sendMessageComponent = (
-              <SendDirectMessage
-                teamId={currentTeamId}
-                receiver={currentUser}
-              />
-            )
-
-            pageTitle = currentUser.username
-
-            messagesComponent = <DirectMessages receiverId={currentUser.id} />
-          }
-
-          return (
-            <ModalController>
-              <TeamLayout
-                sidebarComponent={
-                  <Sidebar
-                    teamName={currentTeam.name || ''}
-                    username={username}
-                    channels={currentTeam.channels}
-                    isOwner={currentTeam.admin}
-                    users={currentTeam.directMessageMembers}
+                sendMessageComponent = (
+                  <SendDirectMessage
+                    teamId={currentTeamId}
+                    receiver={currentUser}
                   />
-                }
-                sendMessageComponent={sendMessageComponent}
-                messagesComponent={messagesComponent}
-                headerComponent={<Header title={pageTitle} />}
-                teamsComponent={<Teams teams={mappedTeams} />}
-              />
-            </ModalController>
-          )
-        }}
+                )
+
+                pageTitle = currentUser.username
+
+                messagesComponent = (
+                  <DirectMessages receiverId={currentUser.id} />
+                )
+              }
+
+              return (
+                <ModalController>
+                  <TeamLayout
+                    sidebarComponent={
+                      <Sidebar
+                        teamName={currentTeam.name || ''}
+                        username={username}
+                        channels={currentTeam.channels}
+                        isOwner={currentTeam.admin}
+                        users={currentTeam.directMessageMembers}
+                      />
+                    }
+                    sendMessageComponent={sendMessageComponent}
+                    messagesComponent={messagesComponent}
+                    headerComponent={<Header title={pageTitle} />}
+                    teamsComponent={<Teams teams={mappedTeams} />}
+                  />
+                </ModalController>
+              )
+            }}
+          </Query>
+        )}
       </Query>
     )
   }

@@ -28,7 +28,7 @@ class SendDirectMessageView extends Component {
   onSubmit = async (values) => {
     const { createDirectMessageMutation, receiver, teamId } = this.props
 
-    const response = await createDirectMessageMutation({
+    await createDirectMessageMutation({
       variables: {
         receiverId: receiver.id,
         teamId,
@@ -38,16 +38,14 @@ class SendDirectMessageView extends Component {
       update: (store) => {
         const data = store.readQuery({ query: meQuery })
 
-        const teamIdx = data.meQuery.teams.findIndex(
-          (team) => team.id === teamId
-        )
+        const teamIdx = data.me.teams.findIndex((team) => team.id === teamId)
 
-        const notAlreadyThere = data.meQuery.teams[
+        const notAlreadyThere = data.me.teams[
           teamIdx
         ].directMessageMembers.every((member) => member.id !== receiver.id)
 
         if (notAlreadyThere) {
-          data.meQuery.teams[teamIdx].directMessageMembers.push({
+          data.me.teams[teamIdx].directMessageMembers.push({
             __typename: 'User',
             ...receiver
           })
@@ -56,8 +54,6 @@ class SendDirectMessageView extends Component {
         }
       }
     })
-
-    console.log(response)
   }
 
   render() {
