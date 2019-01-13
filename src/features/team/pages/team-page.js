@@ -16,7 +16,7 @@ import { ModalController } from '../common'
 import { message } from '../common/prop-shapes'
 
 import { redirect } from 'src/lib'
-import { meQuery } from 'src/services'
+import { meQuery, getTeamMembersQuery } from 'src/services'
 
 export class TeamPage extends Component {
   static propTypes = {
@@ -42,6 +42,15 @@ export class TeamPage extends Component {
         query: meQuery
       })
 
+      const {
+        data: { getTeamMembers }
+      } = await apolloClient.query({
+        query: getTeamMembersQuery,
+        variables: {
+          teamId: currentTeamId
+        }
+      })
+
       const { teams } = response.data.me
 
       const userHasNoTeams = teams.length === 0
@@ -64,7 +73,7 @@ export class TeamPage extends Component {
           (channel) => channel.id === currentMessagesId
         )
       } else {
-        messagesReceiver = currentTeam.directMessageMembers.find(
+        messagesReceiver = getTeamMembers.find(
           (user) => user.id === currentMessagesId
         )
       }
