@@ -4,14 +4,14 @@ import { ModalConsumer } from '../common'
 
 import { PlusButton } from './plus-button'
 
-export const AddChannelButton = () => {
+export const AddDirectMessagesButton = () => {
   return (
     <ModalConsumer>
       {(setModalComponentTo) => (
         <PlusButton
           onClick={(e) => {
             e.target.blur()
-            setModalComponentTo('add-channel')
+            setModalComponentTo('add-dm')
           }}
         />
       )}

@@ -6,6 +6,7 @@ import { compose } from 'ramda'
 
 import { propShapes } from '../common'
 import { User } from '../atoms'
+import { AddDirectMessagesButton } from '../atoms'
 
 import { withIntl } from 'src/common'
 
@@ -28,6 +29,7 @@ const Header = styled.header`
 
   display: flex;
   align-items: center;
+  justify-content: space-between;
 `
 
 const Title = styled.h3`
@@ -39,6 +41,7 @@ export const UserListView = ({ users, intl }) => {
     <Root>
       <Header>
         <Title>{intl.formatMessage(i18n.users)}</Title>
+        <AddDirectMessagesButton />
       </Header>
       {users.map((user) => (
         <User key={user.id} user={user} />

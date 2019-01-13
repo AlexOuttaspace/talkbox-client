@@ -16,54 +16,34 @@ import { addMemberSchema, withIntl, storeTokensInCookie } from 'src/common'
 
 const i18n = defineMessages({
   title: {
-    id: 'invite-user-form.title',
-    defaultMessage: 'Invite users to your team'
+    id: 'add-dm-user-form.title',
+    defaultMessage: 'Select user to chat with'
   },
-  emailInputPlaceholder: {
-    id: 'invite-user-form.input.email.placeholder',
-    defaultMessage: "User's email"
+  usernameInputPlaceholder: {
+    id: 'add-dm-user-form.input.email.placeholder',
+    defaultMessage: 'Username'
   },
   submitButton: {
-    id: 'invite-user-form.submit-button',
-    defaultMessage: 'Send invite'
+    id: 'add-dm-user-form.submit-button',
+    defaultMessage: 'Start chat'
   }
 })
 
-class InviteUserFormView extends Component {
+class AddDirectMessageChatView extends Component {
   static propTypes = {
     intl: intlShape,
     router: PropTypes.object.isRequired,
-    addMemberMutation: PropTypes.func.isRequired,
     closeModal: PropTypes.func.isRequired
   }
 
-  onSubmit = async ({ email }) => {
-    const {
-      closeModal,
-      addMemberMutation,
-      router: { query }
-    } = this.props
-
-    const teamId = +query.teamId
+  onSubmit = async ({ username }) => {
     try {
-      const {
-        data: { addTeamMember }
-      } = await addMemberMutation({
-        variables: { teamId, email }
-      })
-
-      if (!addTeamMember.ok) {
-        return handleServerErrors(addTeamMember.errors)
-      }
-
-      return closeModal()
+      console.log(username)
     } catch (error) {
       if (error.message.includes('Not authenticated')) {
         storeTokensInCookie(null, null)
         return Router.pushRoute('/login')
       }
-
-      // TODO: add handling for network errors
     }
   }
 
@@ -82,9 +62,9 @@ class InviteUserFormView extends Component {
               <FormHeader mainHeading={intl.formatMessage(i18n.title)} />
 
               <FormField
-                name="email"
+                name="username"
                 type="text"
-                placeholder={intl.formatMessage(i18n.emailInputPlaceholder)}
+                placeholder={intl.formatMessage(i18n.usernameInputPlaceholder)}
               />
 
               <SubmitButton type="submit">
@@ -100,8 +80,7 @@ class InviteUserFormView extends Component {
 
 const enhance = compose(
   withIntl,
-  withRouter,
-  graphql(addMemberMutation, { name: 'addMemberMutation' })
+  withRouter
 )
 
-export const InviteUserForm = enhance(InviteUserFormView)
+export const AddDirectMessageChat = enhance(AddDirectMessageChatView)

@@ -12,7 +12,16 @@
       "password": ""
     }
   },
-  "invite-user-form": {
+  "add-channel-form": {
+    "title": "",
+    "submit-button": "",
+    "input": {
+      "name": {
+        "placeholder": ""
+      }
+    }
+  },
+  "add-dm-user-form": {
     "title": "",
     "submit-button": "",
     "input": {
@@ -21,11 +30,11 @@
       }
     }
   },
-  "add-channel-form": {
+  "invite-user-form": {
     "title": "",
     "submit-button": "",
     "input": {
-      "name": {
+      "email": {
         "placeholder": ""
       }
     }
