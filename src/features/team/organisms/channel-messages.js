@@ -19,9 +19,7 @@ const ChannelMessagesView = ({ router }) => {
       variables={{ channelId }}
       fetchPolicy={fetchPolicy}
     >
-      {({ loading, error, data, subscribeToMore }) => {
-        if (loading) return <div>loading</div>
-
+      {({ error, data, subscribeToMore }) => {
         if (error) {
           console.log(error)
           return <div>error</div>

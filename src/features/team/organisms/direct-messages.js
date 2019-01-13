@@ -23,13 +23,13 @@ const DirectMessagesView = ({ router }) => {
       variables={{ teamId, otherUserId }}
       fetchPolicy={fetchPolicy}
     >
-      {({ loading, error, data, subscribeToMore }) => {
-        if (loading) return <div>loading</div>
-
+      {({ error, data, subscribeToMore }) => {
         if (error) {
           console.log(error)
           return <div>error</div>
         }
+
+        if (!data) return null
 
         const messages = data.directMessages.map((message) => ({
           ...message,
