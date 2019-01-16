@@ -35,11 +35,10 @@ export class MessagesListView extends Component {
     this.unsubscribe = this.props.subscribeToNewMessages()
   }
 
-  getSnapshotBeforeUpdate(prevProps) {
-    // we return here a boolean that is used to determine,
-    // whether we need to adjust scroll
+  componentDidUpdate(prevProps) {
     const newMessagesArrived =
       prevProps.messages.length < this.props.messages.length
+
     const currentlyScrolledToBottom =
       this.scrollbarRef.current.getValues().top === 1
 
@@ -48,21 +47,13 @@ export class MessagesListView extends Component {
         this.props.router.query.messagesId ||
       prevProps.router.query.teamId !== this.props.router.query.teamId
 
+    // when new messages arrive, they appear below last message in the least
+    // and outside of current viewbox, so we need to scroll down everytime a new
+    // message arrive, but only if user is already is scrolled to bottom
     const shouldScrollToBottom =
-      (newMessagesArrived || switchedToAnotherChat) && currentlyScrolledToBottom
+      (newMessagesArrived && currentlyScrolledToBottom) || switchedToAnotherChat
 
-    return { shouldScrollToBottom, switchedToAnotherChat }
-  }
-
-  componentDidUpdate(
-    prevProps,
-    prevState,
-    { shouldMoveScrollToBottom, switchedToAnotherChat }
-  ) {
-    // If we have a snapshot value, we've just added new items.
-    // Adjust scroll so these new items don't push the old ones out of view.
-    // (snapshot here is the value returned from getSnapshotBeforeUpdate)
-    if (shouldMoveScrollToBottom) {
+    if (shouldScrollToBottom) {
       this.scrollbarRef.current.scrollToBottom()
     }
 
