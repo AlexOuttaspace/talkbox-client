@@ -28,10 +28,14 @@ const DirectMessagesView = ({ router }) => {
 
         if (!data) return null
 
-        const messages = data.directMessages.map((message) => ({
-          ...message,
-          user: message.sender
-        }))
+        const { directMessages } = data
+
+        const messages = directMessages
+          ? directMessages.map((message) => ({
+              ...message,
+              user: message.sender
+            }))
+          : []
 
         return (
           <MessagesList

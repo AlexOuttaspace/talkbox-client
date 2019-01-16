@@ -43,24 +43,28 @@ export class MessagesListView extends Component {
     const currentlyScrolledToBottom =
       this.scrollbarRef.current.getValues().top === 1
 
-    if (newMessagesArrived && currentlyScrolledToBottom) {
-      return true
-    }
-    return false
+    const switchedToAnotherChat =
+      prevProps.router.query.messagesId !==
+        this.props.router.query.messagesId ||
+      prevProps.router.query.teamId !== this.props.router.query.teamId
+
+    const shouldScrollToBottom =
+      (newMessagesArrived || switchedToAnotherChat) && currentlyScrolledToBottom
+
+    return { shouldScrollToBottom, switchedToAnotherChat }
   }
 
-  componentDidUpdate(prevProps, prevState, shouldMoveScrollToBottom) {
+  componentDidUpdate(
+    prevProps,
+    prevState,
+    { shouldMoveScrollToBottom, switchedToAnotherChat }
+  ) {
     // If we have a snapshot value, we've just added new items.
     // Adjust scroll so these new items don't push the old ones out of view.
     // (snapshot here is the value returned from getSnapshotBeforeUpdate)
     if (shouldMoveScrollToBottom) {
       this.scrollbarRef.current.scrollToBottom()
     }
-
-    const switchedToAnotherChat =
-      prevProps.router.query.messagesId !==
-        this.props.router.query.messagesId ||
-      prevProps.router.query.teamId !== this.props.router.query.teamId
 
     if (switchedToAnotherChat) {
       this.resubscribe()
