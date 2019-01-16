@@ -12,7 +12,10 @@ export { createMessageMutation } from './message-mutations'
 
 export { messagesQuery } from './message-queries'
 
-export { newChannelMessageSubscription } from './subscriptions'
+export {
+  newChannelMessageSubscription,
+  newDirectMessageSubscription
+} from './subscriptions'
 
 export { createDirectMessageMutation } from './direct-messages-mutations'
 

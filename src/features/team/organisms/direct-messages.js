@@ -6,17 +6,14 @@ import { Query } from 'react-apollo'
 
 import { MessagesList } from './messages-list'
 
-import {
-  directMessagesQuery,
-  newChannelMessageSubscription
-} from 'src/services'
+import { directMessagesQuery, newDirectMessageSubscription } from 'src/services'
 
 const DirectMessagesView = ({ router }) => {
   const teamId = +router.query.teamId
   const otherUserId = +router.query.messagesId
   // only refetch on client
   const fetchPolicy = process.browser ? 'cache-and-network' : 'cache-first'
-  console.log(fetchPolicy)
+
   return (
     <Query
       query={directMessagesQuery}
@@ -38,24 +35,24 @@ const DirectMessagesView = ({ router }) => {
 
         return (
           <MessagesList
-            subscribeToNewMessages={() => () => {}}
-            // subscribeToMore({
-            //   document: newChannelMessageSubscription,
-            //   variables: { channelId },
-            //   updateQuery: (prev, { subscriptionData }) => {
-            //     if (!subscriptionData) return prev
+            subscribeToNewMessages={() =>
+              subscribeToMore({
+                document: newDirectMessageSubscription,
+                variables: { teamId, userId: otherUserId },
+                updateQuery: (prev, { subscriptionData }) => {
+                  if (!subscriptionData) return prev
 
-            //     return {
-            //       ...prev,
-            //       messages: [
-            //         ...prev.messages,
-            //         subscriptionData.data.newChannelMessage
-            //       ]
-            //     }
-            //   },
-            //   onError: (error) => console.log(error)
-            // })
-
+                  return {
+                    ...prev,
+                    directMessages: [
+                      ...prev.directMessages,
+                      subscriptionData.data.newDirectMessage
+                    ]
+                  }
+                },
+                onError: (error) => console.log(error)
+              })
+            }
             messages={messages || []}
           />
         )

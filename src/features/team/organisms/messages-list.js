@@ -57,9 +57,12 @@ export class MessagesListView extends Component {
       this.scrollbarRef.current.scrollToBottom()
     }
 
-    if (
-      prevProps.router.query.messagesId !== this.props.router.query.messagesId
-    ) {
+    const switchedToAnotherChat =
+      prevProps.router.query.messagesId !==
+        this.props.router.query.messagesId ||
+      prevProps.router.query.teamId !== this.props.router.query.teamId
+
+    if (switchedToAnotherChat) {
       this.resubscribe()
     }
   }

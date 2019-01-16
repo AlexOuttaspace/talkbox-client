@@ -34,7 +34,7 @@ class SendDirectMessageView extends Component {
         teamId,
         text: values.message
       },
-      optimisticResponse: true,
+      optimisticResponse: { createDirectMessage: true },
       update: (store) => {
         const data = store.readQuery({ query: meQuery })
 
