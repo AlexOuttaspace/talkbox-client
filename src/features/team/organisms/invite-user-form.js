@@ -67,7 +67,11 @@ class InviteUserFormView extends Component {
       })
 
       if (!addTeamMember.ok) {
-        return handleServerErrors(addTeamMember.errors)
+        const mappedErrors = handleServerErrors(addTeamMember.errors)
+        if (!Object.keys(mappedErrors).includes('email')) {
+          return { email: 'this user is already on the team' }
+        }
+        return mappedErrors
       }
 
       return closeModal()
