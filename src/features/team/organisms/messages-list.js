@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { withRouter } from 'next/router'
@@ -7,6 +7,7 @@ import { compose } from 'ramda'
 import { ScrollContainer } from '../templates'
 import { MessagesItem } from '../molecules'
 import { propShapes } from '../common'
+import { FileUpload } from '../atoms'
 
 const Root = styled.ul`
   list-style-type: none;
@@ -82,11 +83,13 @@ export class MessagesListView extends Component {
 
     return (
       <ScrollContainer ref={this.scrollbarRef}>
-        <Root>
-          {messages.map((message) => (
-            <MessagesItem message={message} key={message.id} />
-          ))}
-        </Root>
+        <FileUpload RootComponent={Root} disableClick>
+          <Fragment>
+            {messages.map((message) => (
+              <MessagesItem message={message} key={message.id} />
+            ))}
+          </Fragment>
+        </FileUpload>
       </ScrollContainer>
     )
   }

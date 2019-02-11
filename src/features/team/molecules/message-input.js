@@ -28,7 +28,7 @@ const Input = styled.input`
   }
 `
 
-const UploadButton = styled.label`
+const UploadIconWrapper = styled.div`
   border: none;
   background: none;
   cursor: pointer;
@@ -69,7 +69,7 @@ const FormRoot = styled.form`
     box-shadow: none;
     border-color: ${(p) => p.theme.gray500};
 
-    ${UploadButton} {
+    ${UploadIconWrapper} {
       border-color: ${(p) => p.theme.gray500};
     }
   }
@@ -87,10 +87,8 @@ export const MessageInput = ({ placeholder, onSubmit }) => {
               reset()
             }}
           >
-            <FileUpload>
-              <UploadButton tabIndex="0">
-                <PlusIcon withCircle={false} />
-              </UploadButton>
+            <FileUpload RootComponent={UploadIconWrapper}>
+              <PlusIcon withCircle={false} />
             </FileUpload>
 
             <Field name="message">
