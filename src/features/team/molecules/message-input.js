@@ -3,6 +3,9 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Form, Field } from 'react-final-form'
 import { lighten } from 'polished'
+import Dropzone from 'react-dropzone'
+
+import { FileUpload } from '../atoms'
 
 import { PlusIcon } from 'src/ui/atoms'
 
@@ -25,7 +28,7 @@ const Input = styled.input`
   }
 `
 
-const UploadButton = styled.button`
+const UploadButton = styled.label`
   border: none;
   background: none;
   cursor: pointer;
@@ -84,9 +87,12 @@ export const MessageInput = ({ placeholder, onSubmit }) => {
               reset()
             }}
           >
-            <UploadButton type="button">
-              <PlusIcon withCircle={false} />
-            </UploadButton>
+            <FileUpload>
+              <UploadButton tabIndex="0">
+                <PlusIcon withCircle={false} />
+              </UploadButton>
+            </FileUpload>
+
             <Field name="message">
               {({ input }) => (
                 <Input type="text" {...input} placeholder={placeholder} />
