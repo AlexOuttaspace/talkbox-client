@@ -10,7 +10,8 @@ module.exports = {
     "module": true,
     "process": true,
     "console": true,
-    "window": true
+    "window": true,
+    "global": true
   },
   "extends": [
     "plugin:import/errors", // See https://github.com/benmosher/eslint-plugin-import
