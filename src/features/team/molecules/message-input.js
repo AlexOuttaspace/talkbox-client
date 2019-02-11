@@ -37,7 +37,7 @@ const UploadButton = styled.button`
   height: 100%;
   border-top-left-radius: 4.5px;
   border-bottom-left-radius: 4.5px;
-
+  transition: all 0.15s ease-out;
   svg {
     fill: ${(p) => p.theme.gray500};
   }
