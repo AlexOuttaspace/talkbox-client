@@ -5,6 +5,7 @@ import { ApolloLink, split } from 'apollo-link'
 import { getMainDefinition } from 'apollo-utilities'
 import fetch from 'isomorphic-unfetch'
 import getConfig from 'next/config'
+import { createUploadLink } from 'apollo-upload-client'
 
 import {
   createAfterwareLink,
@@ -36,7 +37,7 @@ function create(initialState, { token = '', refreshToken = '' }) {
 
   const stateLink = createStateLink(cache, token, refreshToken)
 
-  const httpLink = new HttpLink({
+  const httpLink = createUploadLink({
     uri: GRAPHQL_ENDPOINT
   })
 
