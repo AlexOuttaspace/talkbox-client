@@ -2,16 +2,30 @@ import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import Dropzone from 'react-dropzone'
+import { graphql } from 'react-apollo'
+import { compose } from 'ramda'
+import { withRouter } from 'next/router'
+
+import { createMessageMutation } from 'src/services'
 
 const DefaultRoot = styled.div``
 
-export const FileUpload = ({
+const FileUploadView = ({
   children,
   disableFocus,
   disableClick,
-  RootComponent
+  RootComponent,
+  mutate,
+  router
 }) => (
-  <Dropzone disableClick={disableClick} onDrop={console.log}>
+  <Dropzone
+    disableClick={disableClick}
+    onDrop={async (file) => {
+      const channelId = +router.query.messagesId
+      const response = await mutate({ variables: { file, channelId } })
+      console.log(response)
+    }}
+  >
     {({ getRootProps, getInputProps }) => {
       const inputProps = disableFocus
         ? { hidden: true, type: 'file' }
@@ -27,15 +41,24 @@ export const FileUpload = ({
   </Dropzone>
 )
 
-FileUpload.propTypes = {
+FileUploadView.propTypes = {
   children: PropTypes.element.isRequired,
   disableFocus: PropTypes.bool,
-  disableClick: PropTypes.bool.isRequired,
-  RootComponent: PropTypes.object
+  disableClick: PropTypes.bool,
+  RootComponent: PropTypes.object,
+  router: PropTypes.object.isRequired,
+  mutate: PropTypes.func.isRequired
 }
 
-FileUpload.defaultProps = {
+FileUploadView.defaultProps = {
   disableFocus: false,
   disableClick: false,
   RootComponent: DefaultRoot
 }
+
+const enhance = compose(
+  withRouter,
+  graphql(createMessageMutation)
+)
+
+export const FileUpload = enhance(FileUploadView)
