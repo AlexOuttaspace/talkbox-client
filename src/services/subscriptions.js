@@ -6,6 +6,8 @@ export const newChannelMessageSubscription = gql`
       id
       text
       created_at
+      url
+      filetype
       user {
         id
         username
