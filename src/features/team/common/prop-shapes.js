@@ -18,7 +18,33 @@ export const team = PropTypes.shape({
 export const message = PropTypes.shape({
   created_at: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
-  text: PropTypes.string.isRequired,
+  text: (props, propName, componentName) => {
+    if (!props.text && !props.url) {
+      return new Error(
+        `One of props 'text' or 'url' was not specified in '${componentName}'.`
+      )
+    }
+
+    if (props.text && typeof props.text !== 'string') {
+      return new Error(
+        `Invalid prop ${propName} of type ${typeof props.text} supplied to ${componentName}. Should be string`
+      )
+    }
+  },
+
+  url: (props, propName, componentName) => {
+    if (!props.text && !props.url) {
+      return new Error(
+        `One of props 'url' or 'text' was not specified in '${componentName}'.`
+      )
+    }
+
+    if (props.url && typeof props.url !== 'string') {
+      return new Error(
+        `Invalid prop ${propName} of type ${typeof props.url} supplied to ${componentName}. Should be string`
+      )
+    }
+  },
   user: PropTypes.shape({
     username: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired

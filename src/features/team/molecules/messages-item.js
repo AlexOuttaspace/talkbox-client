@@ -27,6 +27,12 @@ const Date = styled.time`
   color: ${(p) => p.theme.gray500};
 `
 
+const Image = styled.img.attrs({ alt: 'image inside a message' })`
+  width: 100%;
+  max-width: 400px;
+  margin-top: 0.25rem;
+`
+
 export const MessagesItem = ({ message }) => {
   const date = dayjs
     .unix(parseInt(message.created_at, 10) / 1000)
@@ -39,6 +45,7 @@ export const MessagesItem = ({ message }) => {
         <Date>{date}</Date>
       </Header>
       <Text>{message.text}</Text>
+      {message.url && <Image src={`http://localhost:3020/${message.url}`} />}
     </Root>
   )
 }
