@@ -10,6 +10,16 @@ import { createMessageMutation } from 'src/services'
 
 const DefaultRoot = styled.div``
 
+const MIME_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'text/plain',
+  'audio/mpeg',
+  'audio/mpeg3',
+  'audio/wav'
+]
+
 const FileUploadView = ({
   children,
   disableFocus,
@@ -19,6 +29,7 @@ const FileUploadView = ({
   router
 }) => (
   <Dropzone
+    accept={MIME_TYPES}
     disableClick={disableClick}
     onDrop={async (file) => {
       const channelId = +router.query.messagesId

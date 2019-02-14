@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Form, Field } from 'react-final-form'
 import { lighten } from 'polished'
-import Dropzone from 'react-dropzone'
 
 import { FileUpload } from '../atoms'
 

@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import dayjs from 'dayjs'
 
+import { MessageMedia } from '../atoms'
 import { propShapes } from '../common'
 
 const Root = styled.li`
@@ -45,7 +46,9 @@ export const MessagesItem = ({ message }) => {
         <Date>{date}</Date>
       </Header>
       <Text>{message.text}</Text>
-      {message.url && <Image src={`http://localhost:3020/${message.url}`} />}
+      {message.url && (
+        <MessageMedia url={message.url} filetype={message.filetype} />
+      )}
     </Root>
   )
 }
