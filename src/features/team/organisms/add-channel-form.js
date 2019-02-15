@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 import { compose } from 'ramda'
-import { Form } from 'react-final-form'
+import { Form, Field } from 'react-final-form'
 import { intlShape, defineMessages } from 'react-intl'
 import { withRouter } from 'next/router'
 import { graphql } from 'react-apollo'
@@ -10,7 +11,7 @@ import { ModalFormRoot } from '../atoms'
 
 import { Router } from 'server/routes'
 import { createChannelMutation, meQuery } from 'src/services'
-import { SubmitButton } from 'src/ui/atoms'
+import { SubmitButton, Checkbox } from 'src/ui/atoms'
 import { FormField, FormHeader } from 'src/ui/molecules'
 import { validateForm } from 'src/lib'
 import { createChannelSchema, withIntl, storeTokensInCookie } from 'src/common'
@@ -27,8 +28,17 @@ const i18n = defineMessages({
   submitButton: {
     id: 'add-channel-form.submit-button',
     defaultMessage: 'Create channel'
+  },
+  checkbox: {
+    id: 'add-channel-form.private-checkbox.label',
+    defaultMessage: 'Create channel'
   }
 })
+
+const StyledCheckbox = styled(Checkbox)`
+  align-self: flex-start;
+  margin-bottom: 2rem;
+`
 
 class AddChannelFormView extends Component {
   static propTypes = {
@@ -99,6 +109,7 @@ class AddChannelFormView extends Component {
       <main>
         <Form
           subscription={{ submitting: true }}
+          initialValues={{ private: false }}
           validate={validateForm({ schema: createChannelSchema })}
           onSubmit={this.onSubmit}
         >
@@ -111,6 +122,17 @@ class AddChannelFormView extends Component {
                 type="text"
                 placeholder={intl.formatMessage(i18n.nameInputPlaceholder)}
               />
+
+              <Field name="private" type="checkbox">
+                {({ input: { value, onChange, ...inputProps } }) => (
+                  <StyledCheckbox
+                    value={value}
+                    onChange={onChange}
+                    labelText={intl.formatMessage(i18n.checkbox)}
+                    inputProps={inputProps}
+                  />
+                )}
+              </Field>
 
               <SubmitButton type="submit">
                 {intl.formatMessage(i18n.submitButton)}
