@@ -34,8 +34,8 @@ const i18n = defineMessages({
     defaultMessage: 'Create channel'
   },
   checkbox: {
-    id: 'add-channel-form.private-checkbox.label',
-    defaultMessage: 'Private channel'
+    id: 'add-channel-form.isPrivate-checkbox.label',
+    defaultMessage: 'Private'
   }
 })
 
@@ -52,7 +52,7 @@ class AddChannelFormView extends Component {
     closeModal: PropTypes.func.isRequired
   }
 
-  onSubmit = async ({ name }) => {
+  onSubmit = async ({ name, isPrivate, users }) => {
     const {
       closeModal,
       createChannelMutation,
@@ -62,7 +62,12 @@ class AddChannelFormView extends Component {
     const teamId = +query.teamId
     try {
       await createChannelMutation({
-        variables: { teamId, name },
+        variables: {
+          teamId,
+          name,
+          private: isPrivate,
+          members: users.map((user) => user.value)
+        },
         // We can use optimisctic response as channel name is not unique.
         // For the same reason we don't need to use handleServerErrors function.
         optimisticResponse: {
@@ -113,12 +118,12 @@ class AddChannelFormView extends Component {
     return (
       <main>
         <Form
-          subscription={{ submitting: true }}
-          initialValues={{ private: false, users: [] }}
+          subscription={{ submitting: true, values: true }}
+          initialValues={{ isPrivate: false, users: [] }}
           validate={validateForm({ schema: createChannelSchema })}
           onSubmit={this.onSubmit}
         >
-          {({ handleSubmit }) => (
+          {({ handleSubmit, values }) => (
             <ModalFormRoot onSubmit={handleSubmit}>
               <FormHeader mainHeading={intl.formatMessage(i18n.title)} />
 
@@ -128,7 +133,7 @@ class AddChannelFormView extends Component {
                 placeholder={intl.formatMessage(i18n.nameInputPlaceholder)}
               />
 
-              <Field name="private" type="checkbox">
+              <Field name="isPrivate" type="checkbox">
                 {({ input: { value, onChange, ...inputProps } }) => (
                   <StyledCheckbox
                     value={value}
@@ -139,30 +144,33 @@ class AddChannelFormView extends Component {
                 )}
               </Field>
 
-              <Query query={getTeamMembersQuery} variables={{ teamId }}>
-                {({ loading, error, data }) => (
-                  <Field name="users" type="checkbox">
-                    {({ input: { value, onChange, name } }) => {
-                      const options = loading
-                        ? []
-                        : data.getTeamMembers.map((member) => ({
-                            label: member.username,
-                            value: member.id
-                          }))
+              {values.isPrivate && (
+                <Query query={getTeamMembersQuery} variables={{ teamId }}>
+                  {({ loading, error, data }) => (
+                    <Field name="users" type="checkbox">
+                      {({ input: { value, onChange, name } }) => {
+                        const options =
+                          loading || error
+                            ? []
+                            : data.getTeamMembers.map((member) => ({
+                                label: member.username,
+                                value: member.id
+                              }))
 
-                      return (
-                        <MultiSelectUser
-                          value={value}
-                          onChange={onChange}
-                          name={name}
-                          options={options}
-                          labelText={intl.formatMessage(i18n.checkbox)}
-                        />
-                      )
-                    }}
-                  </Field>
-                )}
-              </Query>
+                        return (
+                          <MultiSelectUser
+                            value={value}
+                            onChange={onChange}
+                            name={name}
+                            options={options}
+                            labelText={intl.formatMessage(i18n.checkbox)}
+                          />
+                        )
+                      }}
+                    </Field>
+                  )}
+                </Query>
+              )}
 
               <SubmitButton type="submit">
                 {intl.formatMessage(i18n.submitButton)}
