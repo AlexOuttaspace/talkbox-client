@@ -5,12 +5,16 @@ import { compose } from 'ramda'
 import { Form, Field } from 'react-final-form'
 import { intlShape, defineMessages } from 'react-intl'
 import { withRouter } from 'next/router'
-import { graphql } from 'react-apollo'
+import { graphql, Query } from 'react-apollo'
 
-import { ModalFormRoot } from '../atoms'
+import { ModalFormRoot, MultiSelectUser } from '../atoms'
 
 import { Router } from 'server/routes'
-import { createChannelMutation, meQuery } from 'src/services'
+import {
+  createChannelMutation,
+  meQuery,
+  getTeamMembersQuery
+} from 'src/services'
 import { SubmitButton, Checkbox } from 'src/ui/atoms'
 import { FormField, FormHeader } from 'src/ui/molecules'
 import { validateForm } from 'src/lib'
@@ -31,7 +35,7 @@ const i18n = defineMessages({
   },
   checkbox: {
     id: 'add-channel-form.private-checkbox.label',
-    defaultMessage: 'Create channel'
+    defaultMessage: 'Private channel'
   }
 })
 
@@ -103,13 +107,14 @@ class AddChannelFormView extends Component {
   }
 
   render() {
-    const { intl } = this.props
+    const { intl, router } = this.props
+    const teamId = +router.query.teamId
 
     return (
       <main>
         <Form
           subscription={{ submitting: true }}
-          initialValues={{ private: false }}
+          initialValues={{ private: false, users: [] }}
           validate={validateForm({ schema: createChannelSchema })}
           onSubmit={this.onSubmit}
         >
@@ -133,6 +138,31 @@ class AddChannelFormView extends Component {
                   />
                 )}
               </Field>
+
+              <Query query={getTeamMembersQuery} variables={{ teamId }}>
+                {({ loading, error, data }) => (
+                  <Field name="users" type="checkbox">
+                    {({ input: { value, onChange, name } }) => {
+                      const options = loading
+                        ? []
+                        : data.getTeamMembers.map((member) => ({
+                            label: member.username,
+                            value: member.id
+                          }))
+
+                      return (
+                        <MultiSelectUser
+                          value={value}
+                          onChange={onChange}
+                          name={name}
+                          options={options}
+                          labelText={intl.formatMessage(i18n.checkbox)}
+                        />
+                      )
+                    }}
+                  </Field>
+                )}
+              </Query>
 
               <SubmitButton type="submit">
                 {intl.formatMessage(i18n.submitButton)}

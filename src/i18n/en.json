@@ -19,6 +19,9 @@
       "name": {
         "placeholder": "Channel name"
       }
+    },
+    "private-checkbox": {
+      "label": "Private channel"
     }
   },
   "add-dm-user-form": {

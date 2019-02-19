@@ -19,6 +19,9 @@
       "name": {
         "placeholder": ""
       }
+    },
+    "private-checkbox": {
+      "label": ""
     }
   },
   "add-dm-user-form": {
