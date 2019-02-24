@@ -20,8 +20,8 @@
         "placeholder": "Channel name"
       }
     },
-    "private-checkbox": {
-      "label": "Private channel"
+    "isPrivate-checkbox": {
+      "label": "Private"
     }
   },
   "add-dm-user-form": {
@@ -52,8 +52,8 @@
     },
     "placeholder": {
       "email": "Email",
-      "password": "Password",
       "username": "Username",
+      "password": "Password",
       "confirm-password": "Confirm password"
     }
   },

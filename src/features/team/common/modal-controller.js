@@ -19,7 +19,7 @@ export class ModalController extends Component {
   }
 
   state = {
-    currentModal: 'add-channel'
+    currentModal: ''
   }
 
   closeModal = () => this.setState({ currentModal: '' })
