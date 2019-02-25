@@ -28,13 +28,9 @@ const Date = styled.time`
   color: ${(p) => p.theme.gray500};
 `
 
-const Image = styled.img.attrs({ alt: 'image inside a message' })`
-  width: 100%;
-  max-width: 400px;
-  margin-top: 0.25rem;
-`
-
 export const MessagesItem = ({ message }) => {
+  if (!message.text && !message.url) return null
+
   const date = dayjs
     .unix(parseInt(message.created_at, 10) / 1000)
     .format('MMM DD HH:mm A')
@@ -45,7 +41,7 @@ export const MessagesItem = ({ message }) => {
         <Username>{message.user.username}</Username>
         <Date>{date}</Date>
       </Header>
-      <Text>{message.text}</Text>
+      {message.text && <Text>{message.text}</Text>}
       {message.url && (
         <MessageMedia url={message.url} filetype={message.filetype} />
       )}

@@ -22,7 +22,8 @@ export class MessagesListView extends Component {
   static propTypes = {
     messages: PropTypes.arrayOf(propShapes.message).isRequired,
     subscribeToNewMessages: PropTypes.func.isRequired,
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
+    fetchMoreMessages: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -79,15 +80,21 @@ export class MessagesListView extends Component {
   }
 
   render() {
-    const { messages } = this.props
+    const { messages, fetchMoreMessages } = this.props
 
     return (
       <ScrollContainer ref={this.scrollbarRef}>
         <FileUpload RootComponent={Root} disableClick>
           <Fragment>
-            {messages.map((message) => (
-              <MessagesItem message={message} key={message.id} />
-            ))}
+            <button onClick={fetchMoreMessages} type="button">
+              load more
+            </button>
+            {messages
+              .slice()
+              .reverse()
+              .map((message) => (
+                <MessagesItem message={message} key={message.id} />
+              ))}
           </Fragment>
         </FileUpload>
       </ScrollContainer>

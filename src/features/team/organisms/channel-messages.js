@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'next/router'
 import { compose } from 'ramda'
@@ -9,6 +9,7 @@ import { MessagesList } from './messages-list'
 import { messagesQuery, newChannelMessageSubscription } from 'src/services'
 
 const ChannelMessagesView = ({ router }) => {
+  const [hasMoreMessages, setHasMoreMessages] = useState(true)
   const channelId = +router.query.messagesId
   // only refetch on client
   const fetchPolicy = process.browser ? 'cache-and-network' : 'cache-first'
@@ -19,7 +20,7 @@ const ChannelMessagesView = ({ router }) => {
       variables={{ channelId }}
       fetchPolicy={fetchPolicy}
     >
-      {({ error, data, subscribeToMore }) => {
+      {({ error, data, subscribeToMore, fetchMore }) => {
         if (error) {
           console.log(error)
           return <div>error</div>
@@ -27,8 +28,36 @@ const ChannelMessagesView = ({ router }) => {
 
         if (!data) return null
 
+        const fetchMoreMessages = hasMoreMessages
+          ? () =>
+              fetchMore({
+                variables: {
+                  channelId,
+                  cursor: data.messages[data.messages.length - 1].created_at
+                },
+                updateQuery: (previousResult, { fetchMoreResult }) => {
+                  if (!fetchMoreResult) return previousResult
+
+                  // 20 is the number of messages per request
+                  // if (fetchMoreResult.messages.length < 20)
+                  //   setHasMoreMessages(false)
+
+                  return {
+                    ...previousResult,
+                    messages: [
+                      ...previousResult.messages,
+                      ...fetchMoreResult.messages
+                    ]
+                  }
+                }
+              })
+          : () => {}
+
+        console.log(data.messages.length)
+
         return (
           <MessagesList
+            fetchMoreMessages={fetchMoreMessages}
             subscribeToNewMessages={() =>
               subscribeToMore({
                 document: newChannelMessageSubscription,
@@ -39,8 +68,8 @@ const ChannelMessagesView = ({ router }) => {
                   return {
                     ...prev,
                     messages: [
-                      ...prev.messages,
-                      subscriptionData.data.newChannelMessage
+                      subscriptionData.data.newChannelMessage,
+                      ...prev.messages
                     ]
                   }
                 },
