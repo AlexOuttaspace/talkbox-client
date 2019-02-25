@@ -39,8 +39,8 @@ const ChannelMessagesView = ({ router }) => {
                   if (!fetchMoreResult) return previousResult
 
                   // 20 is the number of messages per request
-                  // if (fetchMoreResult.messages.length < 20)
-                  //   setHasMoreMessages(false)
+                  if (fetchMoreResult.messages.length < 20)
+                    setHasMoreMessages(false)
 
                   return {
                     ...previousResult,
@@ -52,8 +52,6 @@ const ChannelMessagesView = ({ router }) => {
                 }
               })
           : () => {}
-
-        console.log(data.messages.length)
 
         return (
           <MessagesList
