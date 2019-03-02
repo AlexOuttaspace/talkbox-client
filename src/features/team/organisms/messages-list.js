@@ -41,12 +41,16 @@ export class MessagesListView extends Component {
     this.unsubscribe = this.props.subscribeToNewMessages()
   }
 
-  componentDidUpdate(prevProps) {
+  getSnapshotBeforeUpdate = () => {
+    const currentlyScrolledToBottom =
+      this.scrollbarRef.current.getValues().top > 0.95
+
+    return { currentlyScrolledToBottom }
+  }
+
+  componentDidUpdate(prevProps, _, { currentlyScrolledToBottom }) {
     const newMessagesArrived =
       prevProps.messages.length < this.props.messages.length
-
-    const currentlyScrolledToBottom =
-      this.scrollbarRef.current.getValues().top === 1
 
     const switchedToAnotherChat =
       prevProps.router.query.messagesId !==
