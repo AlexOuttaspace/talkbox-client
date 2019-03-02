@@ -23,7 +23,11 @@ export class MessagesListView extends Component {
     messages: PropTypes.arrayOf(propShapes.message).isRequired,
     subscribeToNewMessages: PropTypes.func.isRequired,
     router: PropTypes.object.isRequired,
-    fetchMoreMessages: PropTypes.func.isRequired
+    fetchMoreMessages: PropTypes.func
+  }
+
+  static defaultProps = {
+    fetchMoreMessages: () => {}
   }
 
   constructor(props) {
@@ -83,12 +87,14 @@ export class MessagesListView extends Component {
     const { messages, fetchMoreMessages } = this.props
 
     return (
-      <ScrollContainer ref={this.scrollbarRef}>
+      <ScrollContainer
+        onUpdate={({ top }) => {
+          if (top === 0) fetchMoreMessages()
+        }}
+        ref={this.scrollbarRef}
+      >
         <FileUpload RootComponent={Root} disableClick>
           <Fragment>
-            <button onClick={fetchMoreMessages} type="button">
-              load more
-            </button>
             {messages
               .slice()
               .reverse()
