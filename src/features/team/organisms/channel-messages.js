@@ -46,30 +46,31 @@ class ChannelMessagesView extends Component {
 
           if (!data) return null
 
-          const fetchMoreMessages = hasMoreMessages
-            ? () =>
-                fetchMore({
-                  variables: {
-                    channelId,
-                    cursor: data.messages[data.messages.length - 1].created_at
-                  },
-                  updateQuery: (previousResult, { fetchMoreResult }) => {
-                    if (!fetchMoreResult) return previousResult
+          const fetchMoreMessages =
+            hasMoreMessages && data.messages
+              ? () =>
+                  fetchMore({
+                    variables: {
+                      channelId,
+                      cursor: data.messages[data.messages.length - 1].created_at
+                    },
+                    updateQuery: (previousResult, { fetchMoreResult }) => {
+                      if (!fetchMoreResult) return previousResult
 
-                    // 20 is the number of messages per request
-                    if (fetchMoreResult.messages.length < 20)
-                      this.setHasMoreMessages(false)
+                      // 20 is the number of messages per request
+                      if (fetchMoreResult.messages.length < 20)
+                        this.setHasMoreMessages(false)
 
-                    return {
-                      ...previousResult,
-                      messages: [
-                        ...previousResult.messages,
-                        ...fetchMoreResult.messages
-                      ]
+                      return {
+                        ...previousResult,
+                        messages: [
+                          ...previousResult.messages,
+                          ...fetchMoreResult.messages
+                        ]
+                      }
                     }
-                  }
-                })
-            : () => {}
+                  })
+              : () => {}
 
           return (
             <MessagesList

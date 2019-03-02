@@ -12,6 +12,7 @@ export const createWsLink = () =>
     ? new WebSocketLink({
         uri: WS_ENDPOINT,
         options: {
+          lazy: true,
           reconnect: true,
           connectionParams: () => {
             const { token, refreshToken } = extractTokens()
