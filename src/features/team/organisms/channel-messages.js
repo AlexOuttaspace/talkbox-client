@@ -47,7 +47,7 @@ class ChannelMessagesView extends Component {
           if (!data) return null
 
           const fetchMoreMessages =
-            hasMoreMessages && data.messages
+            hasMoreMessages && data.messages.length > 0 && data.messages
               ? () =>
                   fetchMore({
                     variables: {
